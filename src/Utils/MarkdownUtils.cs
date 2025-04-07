@@ -1,4 +1,4 @@
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 /// <summary>
 /// Markdownユーティリティクラス

@@ -1,6 +1,6 @@
 using Notion.Client;
 
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 public static partial class MarkdownUtils
 {

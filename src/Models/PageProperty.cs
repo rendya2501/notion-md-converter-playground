@@ -1,6 +1,6 @@
-using hoge.Services;
+using NotionMarkdownConverter.Services;
 
-namespace hoge.Models;
+namespace NotionMarkdownConverter.Models;
 
 /// <summary>
 /// ページのプロパティを表します。

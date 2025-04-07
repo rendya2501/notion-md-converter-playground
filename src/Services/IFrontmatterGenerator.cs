@@ -1,7 +1,7 @@
-using hoge.Models;
+using NotionMarkdownConverter.Models;
 using System.Text;
 
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// フロントマターを生成するインターフェース

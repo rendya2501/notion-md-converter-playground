@@ -1,7 +1,7 @@
-using hoge.Models;
 using Notion.Client;
+using NotionMarkdownConverter.Models;
 
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 public static class Transformer
 {

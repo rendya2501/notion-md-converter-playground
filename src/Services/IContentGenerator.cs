@@ -1,6 +1,6 @@
-using hoge.Models;
+using NotionMarkdownConverter.Models;
 
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// コンテンツを生成するインターフェース

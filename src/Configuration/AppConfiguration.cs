@@ -1,4 +1,4 @@
-namespace hoge.Configuration;
+namespace NotionMarkdownConverter.Configuration;
 
 /// <summary>
 /// アプリケーションの設定

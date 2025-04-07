@@ -1,7 +1,7 @@
 using Notion.Client;
 using System.Text;
 
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 public static partial class MarkdownUtils
 {

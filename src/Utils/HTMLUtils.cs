@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 /// <summary>
 /// HTMLユーティリティ

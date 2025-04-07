@@ -1,11 +1,11 @@
-using hoge.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotionMarkdownConverter.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace hoge.Services
+namespace NotionMarkdownConverter.Services
 {
     /// <summary>
     /// マークダウンの画像を処理するクラス

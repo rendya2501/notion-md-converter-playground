@@ -18,11 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\rendy\Desktop\notion-headless-cms-sample\src2\.editorconfig" />
+    <EditorConfigFiles Remove="C:\Users\rendy\Desktop\notion-headless-cms-sample\src\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="C:\Users\rendy\Desktop\notion-headless-cms-sample\src2\.editorconfig" />
+    <None Include="C:\Users\rendy\Desktop\notion-headless-cms-sample\src\.editorconfig" />
   </ItemGroup>
 
 </Project>

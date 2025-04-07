@@ -1,4 +1,4 @@
-namespace hoge.Models;
+namespace NotionMarkdownConverter.Models;
 
 /// <summary>
 /// Notionブロックの変換コンテキスト

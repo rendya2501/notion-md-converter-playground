@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace hoge.Utils;
+namespace NotionMarkdownConverter.Utils;
 
 public static partial class MarkdownUtils
 {

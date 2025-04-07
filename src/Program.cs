@@ -1,9 +1,9 @@
 // Program.cs - エントリポイント
-using hoge.Configuration;
-using hoge.Services;
+using NotionMarkdownConverter.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Notion.Client;
+using NotionMarkdownConverter.Configuration;
 
 // DIコンテナの設定
 var services = new ServiceCollection();

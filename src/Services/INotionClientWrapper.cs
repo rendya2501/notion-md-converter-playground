@@ -1,7 +1,7 @@
-using hoge.Models;
 using Notion.Client;
+using NotionMarkdownConverter.Models;
 
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// Notionクライアントラッパーのインターフェース

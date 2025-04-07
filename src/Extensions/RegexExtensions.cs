@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace hoge.Extensions;
+namespace NotionMarkdownConverter.Extensions;
 
 /// <summary>
 /// Regexの拡張メソッド

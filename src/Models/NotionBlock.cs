@@ -1,6 +1,6 @@
 using Notion.Client;
 
-namespace hoge.Models;
+namespace NotionMarkdownConverter.Models;
 
 /// <summary>
 /// Notionのブロックを表します。

@@ -1,4 +1,4 @@
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// Notionエクスポーターのインターフェース

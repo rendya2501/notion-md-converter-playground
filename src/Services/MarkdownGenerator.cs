@@ -1,6 +1,6 @@
-using hoge.Models;
+using NotionMarkdownConverter.Models;
 
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// マークダウンを生成するクラスです

@@ -1,9 +1,9 @@
-﻿using hoge.Services;
-using hoge.Utils;
+﻿using NotionMarkdownConverter.Services;
+using NotionMarkdownConverter.Utils;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace hoge.test;
+namespace NotionMarkdownConverter.test;
 
 public class UnitTest1
 {

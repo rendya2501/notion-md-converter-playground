@@ -1,10 +1,10 @@
-using hoge.Configuration;
-using hoge.Models;
 using Microsoft.Extensions.Logging;
 using Notion.Client;
+using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Models;
 using System.Text;
 
-namespace hoge.Services;
+namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// Notionのページをエクスポートするサービス

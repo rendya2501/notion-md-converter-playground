@@ -1,7 +1,6 @@
 // Program.cs - エントリポイント
 using hoge.Configuration;
 using hoge.Services;
-using hoge.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Notion.Client;

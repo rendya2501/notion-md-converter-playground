@@ -37,3 +37,8 @@ runs:
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
+          
+    - name: Pass output to parent workflow
+      shell: bash
+      run: |
+        echo "result=${{ steps.csharp-output.outputs.exported_count }}" >> $GITHUB_OUTPUT

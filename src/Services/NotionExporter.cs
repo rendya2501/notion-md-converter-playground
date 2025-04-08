@@ -169,18 +169,24 @@ public class NotionExporter(
     private void UpdateGitHubEnvironment(int exportedCount)
     {
         // GitHub Actions の環境変数ファイルパスを取得
-        var githubEnvPath = Environment.GetEnvironmentVariable("GITHUB_ENV");
+        var githubOutput  = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
 
         // 環境変数が設定されていない場合は警告を出力
-        if (string.IsNullOrEmpty(githubEnvPath))
+        if (string.IsNullOrEmpty(githubOutput))
         {
-            _logger.LogWarning("GITHUB_ENV not set, skipping environment update.");
+            _logger.LogWarning("GITHUB_OUTPUT not set, skipping environment update.");
             return;
         }
 
-        // エクスポート成功数を環境変数に追記
-        var exportCountLine = $"EXPORTED_COUNT={exportedCount}";
-        File.AppendAllText(githubEnvPath, exportCountLine + Environment.NewLine);
-        _logger.LogInformation("{exportCountLine}", exportCountLine);
+        using (StreamWriter writer = new StreamWriter(githubOutput, true))
+        {
+            writer.WriteLine($"exported_count={exportedCount}");
+        }
+        _logger.LogInformation("exported_count={exportedCount}", exportedCount);
+
+        // // エクスポート成功数を環境変数に追記
+        // var exportCountLine = $"EXPORTED_COUNT={exportedCount}";
+        // File.AppendAllText(githubOutput , exportCountLine + Environment.NewLine);
+        // _logger.LogInformation("{exportCountLine}", exportCountLine);
     }
 }

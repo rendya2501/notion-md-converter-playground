@@ -3,8 +3,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 as build-env
 
 # Copy everything and publish the release (publish implicitly restores and builds)
 WORKDIR /app
-COPY . ./src
-RUN dotnet publish ./NotionMarkdownConverter.csproj -c Release -o out --no-self-contained
+COPY . ./
+RUN dotnet publish ./src/NotionMarkdownConverter.csproj -c Release -o out --no-self-contained
 
 # # Label the container
 # LABEL maintainer="Yuichiro Mukai <y.iky917@gmail.com>"

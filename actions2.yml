@@ -1,0 +1,46 @@
+name: notion-to-markdown
+description: Custom action to export Notion database to local markdown files without Docker.
+
+inputs:
+  notion_auth_token:
+    description: Auth token of the Notion.
+    required: true
+  notion_database_id:
+    description: ID of the Notion database to be exported.
+    required: true
+  output_directory_path_template:
+    description: Directory path template to output files.
+    required: false
+    default: output/{{publish|date.to_string('%Y/%m')}}/{{slug}}
+
+outputs:
+  exported_count:
+    description: Number of exported files.
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
+
+    - name: Restore dependencies
+      run: dotnet restore src/NotionToMarkdown.csproj
+      shell: bash
+
+    - name: Build project
+      run: dotnet build src/NotionToMarkdown.csproj --configuration Release --no-restore
+      shell: bash
+
+    - name: Publish project
+      run: dotnet publish src/NotionToMarkdown.csproj --configuration Release --output ./out --no-build
+      shell: bash
+
+    - name: Run Notion to Markdown
+      run: |
+        dotnet ./out/NotionToMarkdown.dll \
+          "${{ inputs.notion_auth_token }}" \
+          "${{ inputs.notion_database_id }}" \
+          "${{ inputs.output_directory_path_template }}"
+      shell: bash

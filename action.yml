@@ -16,7 +16,8 @@ inputs:
 outputs:
   exported_count:
     description: Number of exported files.
-
+    value: ${{ steps.run-converter.outputs.exported_count }}
+    
 runs:
   using: "composite"
   steps:
@@ -25,20 +26,41 @@ runs:
       with:
         dotnet-version: '8.0'
 
-    - name: Run
-      id: csharp-output
+    - name: Run converter
+      id: run-converter
       shell: bash
       run: |
         cd ${{ github.action_path }}
         dotnet restore ./src/NotionMarkdownConverter.csproj
         dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
         dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-        dotnet ./out/NotionMarkdownConverter.dll \
+        
+        # 出力をキャプチャして処理
+        OUTPUT=$(dotnet ./out/NotionMarkdownConverter.dll \
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \
-          "${{ inputs.output_directory_path_template }}"
+          "${{ inputs.output_directory_path_template }}")
+        
+        # 出力から必要な情報を抽出（例：エクスポートされたファイル数）
+        EXPORTED_COUNT=$(echo "$OUTPUT" | grep "Exported" | grep -o '[0-9]\+' || echo "0")
+        
+        # GitHub Actionsの出力変数に設定
+        echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
+        
+    # - name: Run
+    #   id: csharp-output
+    #   shell: bash
+    #   run: |
+    #     cd ${{ github.action_path }}
+    #     dotnet restore ./src/NotionMarkdownConverter.csproj
+    #     dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+    #     dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
+    #     dotnet ./out/NotionMarkdownConverter.dll \
+    #       "${{ inputs.notion_auth_token }}" \
+    #       "${{ inputs.notion_database_id }}" \
+    #       "${{ inputs.output_directory_path_template }}"
           
-    - name: Pass output to parent workflow
-      shell: bash
-      run: |
-        echo "exported_count=${{ steps.csharp-output.outputs.exported_count }}" >> $GITHUB_OUTPUT
+    # - name: Pass output to parent workflow
+    #   shell: bash
+    #   run: |
+    #     echo "exported_count=${{ steps.csharp-output.outputs.exported_count }}" >> $GITHUB_OUTPUT

@@ -25,22 +25,14 @@ runs:
       with:
         dotnet-version: '8.0'
 
-    - name: Restore dependencies
-      run: dotnet restore src/NotionMarkdownConverter.csproj
+    - name: Run
+      id: csharp-output
       shell: bash
-
-    - name: Build project
-      run: dotnet build src/NotionMarkdownConverter.csproj --configuration Release --no-restore
-      shell: bash
-
-    - name: Publish project
-      run: dotnet publish src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-      shell: bash
-
-    - name: Run Notion to Markdown
       run: |
+        dotnet restore ./src/NotionMarkdownConverter.csproj
+        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
         dotnet ./out/NotionMarkdownConverter.dll \
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
-      shell: bash

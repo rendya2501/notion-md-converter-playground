@@ -55,9 +55,9 @@ runs:
           echo "No articles directory found in .notion-converter"
         fi
         
-        # 出力を読み取る
-        EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
-        echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
+        # # 出力を読み取る
+        # EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
+        # echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
 
     # - name: Run
     #   id: csharp-output

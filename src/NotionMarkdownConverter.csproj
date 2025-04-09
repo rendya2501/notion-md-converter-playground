@@ -17,12 +17,4 @@
     <PackageReference Include="Scriban" Version="5.12.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\rendy\Desktop\notion-headless-cms-sample\src\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="C:\Users\rendy\Desktop\notion-headless-cms-sample\src\.editorconfig" />
-  </ItemGroup>
-
 </Project>

@@ -178,7 +178,7 @@ public class NotionExporter(
             return;
         }
 
-        using (StreamWriter writer = new StreamWriter(githubOutput, true))
+        using (StreamWriter writer = new(githubOutput, true))
         {
             writer.WriteLine($"exported_count={exportedCount}");
         }

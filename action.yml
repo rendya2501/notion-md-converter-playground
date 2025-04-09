@@ -1,26 +1,90 @@
 name: notion-to-markdown
-description: Custom action to export Notion database to local markdown files.
+description: Custom action to export Notion database to local markdown files without Docker.
+
 inputs:
   notion_auth_token:
-    description: Auth token of the notion.
+    description: Auth token of the Notion.
     required: true
   notion_database_id:
-    description: ID of the notion database to be exported.
+    description: ID of the Notion database to be exported.
     required: true
   output_directory_path_template:
     description: Directory path template to output files.
     required: false
     default: output/{{publish|date.to_string('%Y/%m')}}/{{slug}}
+
 outputs:
   exported_count:
     description: Number of exported files.
+    value: ${{ steps.run-converter.outputs.exported_count }}
+    
 runs:
-  using: docker
-  image: Dockerfile
-  args:
-    - ${{ inputs.notion_auth_token }}
-    - ${{ inputs.notion_database_id }}
-    - ${{ inputs.output_directory_path_template }}
-branding:
-  color: orange
-  icon: download-cloud
+  using: "composite"
+  steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+      with:
+        repository: rendya2501/notion-md-converter-playground
+        path: ./.notion-converter
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0'
+
+    - name: Run converter
+      id: run-converter
+      shell: bash
+      run: |
+        cd ./.notion-converter
+        dotnet restore ./src/NotionMarkdownConverter.csproj
+        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
+        
+        # GITHUB_OUTPUTの手動設定（必要に応じて）
+        if [ -z "$GITHUB_OUTPUT" ]; then
+          export GITHUB_OUTPUT="/tmp/github_output"
+          touch $GITHUB_OUTPUT
+        fi
+        
+        # アプリケーションを実行
+        dotnet ./out/NotionMarkdownConverter.dll \
+          "${{ inputs.notion_auth_token }}" \
+          "${{ inputs.notion_database_id }}" \
+          "${{ inputs.output_directory_path_template }}"
+        
+        # 出力を確認
+        if [ -f "$GITHUB_OUTPUT" ]; then
+          echo "GitHub Output content:"
+          cat $GITHUB_OUTPUT
+          
+          # exported_countを読み取る
+          EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
+          echo "Extracted exported_count: $EXPORTED_COUNT"
+          
+          # GitHub Actionsの出力変数に設定
+          echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_ENV
+          echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
+        else
+          echo "GITHUB_OUTPUT file not found"
+          echo "exported_count=0" >> $GITHUB_OUTPUT
+        fi
+
+
+    # - name: Run
+    #   id: csharp-output
+    #   shell: bash
+    #   run: |
+    #     cd ${{ github.action_path }}
+    #     dotnet restore ./src/NotionMarkdownConverter.csproj
+    #     dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+    #     dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
+    #     dotnet ./out/NotionMarkdownConverter.dll \
+    #       "${{ inputs.notion_auth_token }}" \
+    #       "${{ inputs.notion_database_id }}" \
+    #       "${{ inputs.output_directory_path_template }}"
+          
+    # - name: Pass output to parent workflow
+    #   shell: bash
+    #   run: |
+    #     echo "exported_count=${{ steps.csharp-output.outputs.exported_count }}" >> $GITHUB_OUTPUT

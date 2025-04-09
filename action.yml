@@ -41,35 +41,23 @@ runs:
         dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
         dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
         
-        # GITHUB_OUTPUTの手動設定（必要に応じて）
-        if [ -z "$GITHUB_OUTPUT" ]; then
-          export GITHUB_OUTPUT="/tmp/github_output"
-          touch $GITHUB_OUTPUT
-        fi
-        
         # アプリケーションを実行
         dotnet ./out/NotionMarkdownConverter.dll \
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
         
-        # 出力を確認
-        if [ -f "$GITHUB_OUTPUT" ]; then
-          echo "GitHub Output content:"
-          cat $GITHUB_OUTPUT
-          
-          # exported_countを読み取る
-          EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
-          echo "Extracted exported_count: $EXPORTED_COUNT"
-          
-          # GitHub Actionsの出力変数に設定
-          echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_ENV
-          echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
+        # 出力されたファイルをメインディレクトリにコピー
+        if [ -d "./articles" ]; then
+          cp -r ./articles/* ${{ github.workspace }}/articles/
+          echo "Files copied to main repository."
         else
-          echo "GITHUB_OUTPUT file not found"
-          echo "exported_count=0" >> $GITHUB_OUTPUT
+          echo "No articles directory found in .notion-converter"
         fi
-
+        
+        # 出力を読み取る
+        EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
+        echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT
 
     # - name: Run
     #   id: csharp-output

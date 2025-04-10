@@ -29,19 +29,6 @@ runs:
       with:
         dotnet-version: '8.0'
 
-    - name: Run converter
-      id: run-converter
-      shell: bash
-      run: |
-        cd ${{ github.action_path  }}
-        dotnet restore ./src/NotionMarkdownConverter.csproj
-        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
-        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-        dotnet ./out/NotionMarkdownConverter.dll \
-          "${{ inputs.notion_auth_token }}" \
-          "${{ inputs.notion_database_id }}" \
-          "${{ github.workspace }}/${{ inputs.output_directory_path_template }}"
-        
     # - name: Run converter
     #   id: run-converter
     #   shell: bash
@@ -53,12 +40,25 @@ runs:
     #     dotnet ./out/NotionMarkdownConverter.dll \
     #       "${{ inputs.notion_auth_token }}" \
     #       "${{ inputs.notion_database_id }}" \
-    #       "${{ inputs.output_directory_path_template }}"
+    #       "${{ github.workspace }}/${{ inputs.output_directory_path_template }}"
         
-    #     # 出力されたファイルをメインディレクトリにコピー
-    #     if [ -d "./articles" ]; then
-    #       cp -r ./articles/* ${{ github.workspace }}/articles/
-    #       echo "Files copied to main repository."
-    #     else
-    #       echo "No articles directory found in .notion-converter"
-    #     fi
+    - name: Run converter
+      id: run-converter
+      shell: bash
+      run: |
+        cd ${{ github.action_path  }}
+        dotnet restore ./src/NotionMarkdownConverter.csproj
+        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
+        dotnet ./out/NotionMarkdownConverter.dll \
+          "${{ inputs.notion_auth_token }}" \
+          "${{ inputs.notion_database_id }}" \
+          "${{ inputs.output_directory_path_template }}"
+        
+        # 出力されたファイルをメインディレクトリにコピー
+        if [ -d "./articles" ]; then
+          cp -r ./articles/* ${{ github.workspace }}/articles/
+          echo "Files copied to main repository."
+        else
+          echo "No articles directory found in .notion-converter"
+        fi

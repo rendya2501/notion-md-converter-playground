@@ -23,9 +23,6 @@ runs:
   steps:
     - name: Check out repository
       uses: actions/checkout@v4
-      with:
-        repository: rendya2501/notion-md-converter-playground
-        path: ./.notion-converter
 
     - name: Set up .NET
       uses: actions/setup-dotnet@v4
@@ -36,7 +33,7 @@ runs:
       id: run-converter
       shell: bash
       run: |
-        cd ./.notion-converter
+        cd ${{ github.workspace }}
         dotnet restore ./src/NotionMarkdownConverter.csproj
         dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
         dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
@@ -47,13 +44,13 @@ runs:
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
         
-        # 出力されたファイルをメインディレクトリにコピー
-        if [ -d "./articles" ]; then
-          cp -r ./articles/* ${{ github.workspace }}/articles/
-          echo "Files copied to main repository."
-        else
-          echo "No articles directory found in .notion-converter"
-        fi
+      # # 出力されたファイルをメインディレクトリにコピー
+      # if [ -d "./articles" ]; then
+      #   cp -r ./articles/* ${{ github.workspace }}/articles/
+      #   echo "Files copied to main repository."
+      # else
+      #   echo "No articles directory found in .notion-converter"
+      # fi
       
       # # 出力を読み取る
       # EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")

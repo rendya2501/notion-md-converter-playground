@@ -43,14 +43,14 @@ runs:
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
         
-      # # 出力されたファイルをメインディレクトリにコピー
-      # if [ -d "./articles" ]; then
-      #   cp -r ./articles/* ${{ github.workspace }}/articles/
-      #   echo "Files copied to main repository."
-      # else
-      #   echo "No articles directory found in .notion-converter"
-      # fi
-      
+        # 出力されたファイルをメインディレクトリにコピー
+        if [ -d "./articles" ]; then
+          cp -r ./articles/* ${{ github.workspace }}/articles/
+          echo "Files copied to main repository."
+        else
+          echo "No articles directory found in .notion-converter"
+        fi
+        
       # # 出力を読み取る
       # EXPORTED_COUNT=$(grep "exported_count=" $GITHUB_OUTPUT | cut -d= -f2 || echo "0")
       # echo "exported_count=${EXPORTED_COUNT}" >> $GITHUB_OUTPUT

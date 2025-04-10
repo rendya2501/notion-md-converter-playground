@@ -38,7 +38,6 @@ runs:
         dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
         dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
         
-        # アプリケーションを実行
         dotnet ./out/NotionMarkdownConverter.dll \
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \

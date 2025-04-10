@@ -33,7 +33,7 @@ runs:
       id: run-converter
       shell: bash
       run: |
-        cd ${{ github.workspace }}
+        cd ${{ github.action_path  }}
         dotnet restore ./src/NotionMarkdownConverter.csproj
         dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
         dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build

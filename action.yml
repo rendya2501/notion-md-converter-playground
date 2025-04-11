@@ -36,12 +36,10 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       run: |
-          echo "Current path: $(pwd)"
-          ls -R
-    # dotnet run --project ./src/NotionMarkdownConverter.csproj --configuration Release -- \
-    #   "${{ inputs.notion_auth_token }}" \
-    #   "${{ inputs.notion_database_id }}" \
-    #   "${{ inputs.output_directory_path_template }}"
+        dotnet run --project ./src/NotionMarkdownConverter.csproj --configuration Release -- \
+          "${{ inputs.notion_auth_token }}" \
+          "${{ inputs.notion_database_id }}" \
+          "${{ inputs.output_directory_path_template }}"
 
 
     # ## 案1 コピーする

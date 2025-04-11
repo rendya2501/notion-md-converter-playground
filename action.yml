@@ -29,40 +29,27 @@ runs:
       with:
         dotnet-version: '8.0'
 
-
     ## 案1 コピーする
     - name: Run converter
       id: run-converter
       shell: bash
-      working-directory: ${{ github.action_path }}
       run: |
-        dotnet run --project ./src/NotionMarkdownConverter.csproj --configuration Release -- \
+        cd ${{ github.action_path  }}
+        dotnet restore ./src/NotionMarkdownConverter.csproj
+        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
+        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
+        dotnet ./out/NotionMarkdownConverter.dll \
           "${{ inputs.notion_auth_token }}" \
           "${{ inputs.notion_database_id }}" \
           "${{ inputs.output_directory_path_template }}"
-
-
-    # ## 案1 コピーする
-    # - name: Run converter
-    #   id: run-converter
-    #   shell: bash
-    #   run: |
-    #     cd ${{ github.action_path  }}
-    #     dotnet restore ./src/NotionMarkdownConverter.csproj
-    #     dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
-    #     dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-    #     dotnet ./out/NotionMarkdownConverter.dll \
-    #       "${{ inputs.notion_auth_token }}" \
-    #       "${{ inputs.notion_database_id }}" \
-    #       "${{ inputs.output_directory_path_template }}"
         
-    #     # 出力されたファイルをメインディレクトリにコピー
-    #     if [ -d "./articles" ]; then
-    #       cp -r ./articles/* ${{ github.workspace }}/articles/
-    #       echo "Files copied to main repository."
-    #     else
-    #       echo "No articles directory found in .notion-converter"
-    #     fi
+        # 出力されたファイルをメインディレクトリにコピー
+        if [ -d "./articles" ]; then
+          cp -r ./articles/* ${{ github.workspace }}/articles/
+          echo "Files copied to main repository."
+        else
+          echo "No articles directory found in .notion-converter"
+        fi
 
     ## 案2 引数でパス指定
     # - name: Run converter

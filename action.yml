@@ -34,7 +34,7 @@ runs:
     - name: Run converter
       id: run-converter
       shell: bash
-      working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.action_path }}
       run: |
           echo "Current path: $(pwd)"
           ls -R

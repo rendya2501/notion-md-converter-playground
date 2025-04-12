@@ -83,7 +83,8 @@ public static class Transformer
         {
             var block = context.CurrentBlock.GetOriginalBlock<CodeBlock>();
             var text = MarkdownUtils.RichTextsToMarkdown(block.Code.RichText);
-            var lang = context.CurrentBlock.GetOriginalBlock<CodeBlock>().Code.Language;
+            var lang = block.Code.Language;
+
             return MarkdownUtils.CodeBlock(text, lang);
         };
     }
@@ -137,7 +138,7 @@ public static class Transformer
             var text = MarkdownUtils.LineBreak(
                 MarkdownUtils.RichTextsToMarkdown(
                     context.CurrentBlock.GetOriginalBlock<CalloutBlock>().Callout.RichText));
-            
+        
             var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";
 
             return MarkdownUtils.Blockquote(result);
@@ -471,7 +472,7 @@ public static class Transformer
             var title = MarkdownUtils.LineBreak(
                 MarkdownUtils.RichTextsToMarkdown(
                     context.CurrentBlock.GetOriginalBlock<ToggleBlock>().Toggle.RichText));
-            
+        
             return MarkdownUtils.Details(title, children);
         };
     }
@@ -493,7 +494,7 @@ public static class Transformer
                 _ => string.Empty
             };
             var title = MarkdownUtils.RichTextsToMarkdown(block.Image.Caption);
-            
+        
             return MarkdownUtils.LineBreak(
                 MarkdownUtils.Image(title, url));
         };

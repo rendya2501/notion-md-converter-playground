@@ -153,6 +153,7 @@ public class NotionExporter(
         var slug = !string.IsNullOrEmpty(pageProperty.Slug)
             ? pageProperty.Slug
             : pageProperty.Title;
+
         // 出力ディレクトリパスをレンダリング
         return template.Render(new
         {
@@ -183,10 +184,6 @@ public class NotionExporter(
             writer.WriteLine($"exported_count={exportedCount}");
         }
         _logger.LogInformation("exported_count={exportedCount}", exportedCount);
-
-        // // エクスポート成功数を環境変数に追記
-        // var exportCountLine = $"EXPORTED_COUNT={exportedCount}";
-        // File.AppendAllText(githubOutput , exportCountLine + Environment.NewLine);
-        // _logger.LogInformation("{exportCountLine}", exportCountLine);
     }
 }
+

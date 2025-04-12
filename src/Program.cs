@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Transformer.Strategies;
+using NotionMarkdownConverter.Transformer;
 
 // DIコンテナの設定
 var services = new ServiceCollection();
@@ -41,6 +43,35 @@ services.Configure<ImageDownloaderOptions>(options =>
 });
 services.AddSingleton<IImageProcessor, ImageProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
+
+// ストラテジーの登録
+services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, DefaultTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
+services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
+services.AddSingleton<StrategySelector>();
 
 // サービスプロバイダーの構築
 var serviceProvider = services.BuildServiceProvider();

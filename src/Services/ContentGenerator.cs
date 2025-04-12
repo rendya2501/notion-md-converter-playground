@@ -1,84 +1,154 @@
-using Notion.Client;
 using NotionMarkdownConverter.Models;
-using NotionMarkdownConverter.Utils;
+using NotionMarkdownConverter.Transformer;
+using System.Text;
 
 namespace NotionMarkdownConverter.Services;
 
 /// <summary>
 /// コンテンツを生成するクラス
 /// </summary>
-public class ContentGenerator : IContentGenerator
+public class ContentGenerator(StrategySelector _selector) : IContentGenerator
 {
-    /// <summary>
-    /// ブロックに対応した処理を格納したディクショナリ
-    /// </summary>
-    private readonly Dictionary<Type, Func<NotionBlockTransformContext, string>> transformers = new()
-    {
-        { typeof(BookmarkBlock), Transformer.CreateMarkdownBookmarkTransformer() },
-        { typeof(BreadcrumbBlock), Transformer.CreateMarkdownBreadcrumbTransformer() },
-        { typeof(CalloutBlock), Transformer.CreateMarkdownCalloutTransformer() },
-        { typeof(CodeBlock), Transformer.CreateMarkdownCodeTransformer() },
-        { typeof(ColumnListBlock), Transformer.CreateMarkdownColumnListTransformer() },
-        { typeof(DividerBlock), Transformer.CreateMarkdownDividerTransformer() },
-        { typeof(EquationBlock), Transformer.CreateMarkdownEquationTransformer() },
-        { typeof(HeadingOneBlock), Transformer.CreateMarkdownHeadingTransformer() },
-        { typeof(HeadingTwoBlock), Transformer.CreateMarkdownHeadingTransformer() },
-        { typeof(HeadingThreeBlock), Transformer.CreateMarkdownHeadingTransformer() },
-        { typeof(LinkPreviewBlock), Transformer.CreateMarkdownLinkPreviewTransformer() },
-        { typeof(BulletedListItemBlock), Transformer.CreateMarkdownBulletedListItemTransformer() },
-        { typeof(NumberedListItemBlock), Transformer.CreateMarkdownNumberedListItemTransformer() },
-        { typeof(ToDoBlock), Transformer.CreateMarkdownTodoListItemTransformer() },
-        { typeof(ParagraphBlock), Transformer.CreateMarkdownParagraphTransformer() },
-        { typeof(QuoteBlock), Transformer.CreateMarkdownQuoteTransformer() },
-        { typeof(SyncedBlockBlock), Transformer.CreateMarkdownSyncedBlockTransformer() },
-        { typeof(TableOfContentsBlock), Transformer.CreateMarkdownTableOfContentsTransformer() },
-        { typeof(TableBlock), Transformer.CreateMarkdownTableTransformer() },
-        { typeof(ToggleBlock), Transformer.CreateMarkdownToggleTransformer() },
-        { typeof(ImageBlock), Transformer.CreateMarkdownImageTransformer() },
-        { typeof(VideoBlock), Transformer.CreateMarkdownVideoTransformer() },
-        { typeof(EmbedBlock), Transformer.CreateMarkdownEmbedTransformer() }
-    };
-
     /// <summary>
     /// コンテンツを生成します。
     /// </summary>
-    /// <param name="blocks"></param>
-    /// <returns></returns>
+    /// <param name="blocks">変換するブロック</param>
+    /// <returns>変換されたマークダウン文字列</returns>
     public string GenerateContentAsync(List<NotionBlock> blocks)
     {
-        // コンテキストを作成
         var context = new NotionBlockTransformContext
         {
-            // ブロックを変換する処理
             ExecuteTransformBlocks = GenerateContentAsync,
-            // ブロックのリスト
             Blocks = blocks,
-            // 現在のブロック
-            CurrentBlock = blocks.FirstOrDefault(),
-            // 現在のブロックのインデックス
+            CurrentBlock = blocks.First(),
             CurrentBlockIndex = 0
         };
+        
+        // StringBuilderの方がパフォーマンスが良い：
+        // 1. 文字列連結操作が多い場合、StringBuilderは内部バッファを再利用するため効率的
+        // 2. Listを使う方法では、各要素の追加とstring.Joinでの連結で余分なメモリ割り当てが発生
+        // 3. StringBuilderは不要な中間文字列オブジェクトを作成しない
+        //
+        // リーダビリティについては：
+        // - StringBuilderは処理の流れが直感的で、条件分岐が明確
+        // - Listは簡潔だが、nullチェックをWhere句で行うため少し分かりにくい
+        var sb = new StringBuilder();
 
-        // 変換されたブロックを格納するリスト
-        var transformedBlocks = new List<string>();
-
-        // ブロックを変換
         foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
         {
-            // コンテキストを更新
             context.CurrentBlock = block;
             context.CurrentBlockIndex = index;
 
-            // ブロックの型に応じた変換処理を実行
-            if (transformers.TryGetValue(block.GetOriginalBlock<Block>().GetType(), out var transformer))
+            var strategy = _selector.GetStrategy(block.Type);
+            var transformedBlock = strategy.Transform(context);
+        
+            if (transformedBlock is not null)
             {
-                transformedBlocks.Add(transformer(context));
+                if (sb.Length > 0)
+                {
+                    sb.Append('\n');
+                }
+                sb.Append(transformedBlock);
             }
         }
 
-        // 変換されたブロックを結合して返す
-        return string.Join("\n", transformedBlocks.Where(b => b is not null));
+        return sb.ToString();
+
+        // List方式：簡潔だが、パフォーマンス面では劣る
+        // var transformedBlocks = new List<string>();
+
+        // foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
+        // {
+        //     context.CurrentBlock = block;
+        //     context.CurrentBlockIndex = index;
+
+        //     var strategy = _selector.GetStrategy(block.Type);
+        //     transformedBlocks.Add(strategy.Transform(context));
+        // }
+
+        // return string.Join("\n", transformedBlocks.Where(b => b is not null));
+
     }
+}
+
+
+
+// /// <summary>
+// /// コンテンツを生成するクラス
+// /// </summary>
+// public class ContentGenerator : IContentGenerator
+// {
+//     /// <summary>
+//     /// ブロックに対応した処理を格納したディクショナリ
+//     /// </summary>
+//     private readonly Dictionary<Type, Func<NotionBlockTransformContext, string>> transformers = new()
+//     {
+//         { typeof(BookmarkBlock), Transformer.CreateMarkdownBookmarkTransformer() },
+//         { typeof(BreadcrumbBlock), Transformer.CreateMarkdownBreadcrumbTransformer() },
+//         { typeof(CalloutBlock), Transformer.CreateMarkdownCalloutTransformer() },
+//         { typeof(CodeBlock), Transformer.CreateMarkdownCodeTransformer() },
+//         { typeof(ColumnListBlock), Transformer.CreateMarkdownColumnListTransformer() },
+//         { typeof(DividerBlock), Transformer.CreateMarkdownDividerTransformer() },
+//         { typeof(EquationBlock), Transformer.CreateMarkdownEquationTransformer() },
+//         { typeof(HeadingOneBlock), Transformer.CreateMarkdownHeadingTransformer() },
+//         { typeof(HeadingTwoBlock), Transformer.CreateMarkdownHeadingTransformer() },
+//         { typeof(HeadingThreeBlock), Transformer.CreateMarkdownHeadingTransformer() },
+//         { typeof(LinkPreviewBlock), Transformer.CreateMarkdownLinkPreviewTransformer() },
+//         { typeof(BulletedListItemBlock), Transformer.CreateMarkdownBulletedListItemTransformer() },
+//         { typeof(NumberedListItemBlock), Transformer.CreateMarkdownNumberedListItemTransformer() },
+//         { typeof(ToDoBlock), Transformer.CreateMarkdownTodoListItemTransformer() },
+//         { typeof(ParagraphBlock), Transformer.CreateMarkdownParagraphTransformer() },
+//         { typeof(QuoteBlock), Transformer.CreateMarkdownQuoteTransformer() },
+//         { typeof(SyncedBlockBlock), Transformer.CreateMarkdownSyncedBlockTransformer() },
+//         { typeof(TableOfContentsBlock), Transformer.CreateMarkdownTableOfContentsTransformer() },
+//         { typeof(TableBlock), Transformer.CreateMarkdownTableTransformer() },
+//         { typeof(ToggleBlock), Transformer.CreateMarkdownToggleTransformer() },
+//         { typeof(ImageBlock), Transformer.CreateMarkdownImageTransformer() },
+//         { typeof(VideoBlock), Transformer.CreateMarkdownVideoTransformer() },
+//         { typeof(EmbedBlock), Transformer.CreateMarkdownEmbedTransformer() }
+//     };
+
+//     /// <summary>
+//     /// コンテンツを生成します。
+//     /// </summary>
+//     /// <param name="blocks"></param>
+//     /// <returns></returns>
+//     public string GenerateContentAsync(List<NotionBlock> blocks)
+//     {
+//         // コンテキストを作成
+//         var context = new NotionBlockTransformContext
+//         {
+//             // ブロックを変換する処理
+//             ExecuteTransformBlocks = GenerateContentAsync,
+//             // ブロックのリスト
+//             Blocks = blocks,
+//             // 現在のブロック
+//             CurrentBlock = blocks.FirstOrDefault(),
+//             // 現在のブロックのインデックス
+//             CurrentBlockIndex = 0
+//         };
+
+//         // 変換されたブロックを格納するリスト
+//         var transformedBlocks = new List<string>();
+
+//         // ブロックを変換
+//         foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
+//         {
+//             // コンテキストを更新
+//             context.CurrentBlock = block;
+//             context.CurrentBlockIndex = index;
+
+//             // ブロックの型に応じた変換処理を実行
+//             if (transformers.TryGetValue(block.GetOriginalBlock<Block>().GetType(), out var transformer))
+//             {
+//                 transformedBlocks.Add(transformer(context));
+//             }
+//         }
+
+//         // 変換されたブロックを結合して返す
+//         return string.Join("\n", transformedBlocks.Where(b => b is not null));
+//     }
+
 
     ///// <summary>
     ///// ブロックを追加します。
@@ -664,4 +734,3 @@ public class ContentGenerator : IContentGenerator
     //        }
     //    }
     //}
-}

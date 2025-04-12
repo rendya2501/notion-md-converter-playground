@@ -1,5 +1,4 @@
 using Notion.Client;
-using System.Text;
 
 namespace NotionMarkdownConverter.Utils;
 

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Transformer.Strategies;
 using NotionMarkdownConverter.Transformer;
 
 // DIコンテナの設定
@@ -71,7 +70,6 @@ services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
-services.AddSingleton<StrategySelector>();
 
 // サービスプロバイダーの構築
 var serviceProvider = services.BuildServiceProvider();

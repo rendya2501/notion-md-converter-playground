@@ -1,18 +1,18 @@
 using Notion.Client;
 using NotionMarkdownConverter.Models;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// リンクプレビュー変換ストラテジー
+/// 同期ブロック変換ストラテジー
 /// </summary>
-public class LinkPreviewTransformStrategy : IBlockTransformStrategy
+public class SyncedBlockTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.LinkPreview;
+    public BlockType BlockType => BlockType.SyncedBlock;
 
     /// <summary>
     /// ブロックを変換します。

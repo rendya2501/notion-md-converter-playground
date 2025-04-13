@@ -2,18 +2,18 @@ using Notion.Client;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// コールアウト変換ストラテジー
+/// 引用変換ストラテジー
 /// </summary>
-public class CalloutTransformStrategy : IBlockTransformStrategy
+public class QuoteTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Callout;
+    public BlockType BlockType => BlockType.Quote;
 
     /// <summary>
     /// ブロックを変換します
@@ -27,15 +27,15 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
             ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
             : string.Empty;
 
-        // コールアウトのテキストをMarkdown形式に変換
+        // 引用のテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                context.CurrentBlock.GetOriginalBlock<CalloutBlock>().Callout.RichText));
+                context.CurrentBlock.GetOriginalBlock<QuoteBlock>().Quote.RichText));
 
-        // 子ブロックが存在しない場合、コールアウトのテキストを返す
-        var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";
-
-        // コールアウトをブロック引用に変換
-        return MarkdownUtils.Blockquote(result);
+        // 子ブロックが存在しない場合、引用のテキストを返す
+        return MarkdownUtils.Blockquote(
+            string.IsNullOrEmpty(children) 
+                ? text 
+                : $"{text}\n{children}");
     }
-}
+} 

@@ -2,7 +2,7 @@ using Notion.Client;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
 /// ビデオ変換ストラテジー

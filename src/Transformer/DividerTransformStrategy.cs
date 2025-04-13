@@ -1,18 +1,19 @@
 using Notion.Client;
 using NotionMarkdownConverter.Models;
+using NotionMarkdownConverter.Utils;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// PDF変換ストラテジー
+/// 区切り線変換ストラテジー
 /// </summary>
-public class PDFTransformStrategy : IBlockTransformStrategy
+public class DividerTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.PDF;
+    public BlockType BlockType => BlockType.Divider;
 
     /// <summary>
     /// ブロックを変換します。
@@ -21,6 +22,7 @@ public class PDFTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
-        return string.Empty;
+        // 水平線を生成
+        return MarkdownUtils.HorizontalRule();
     }
 }

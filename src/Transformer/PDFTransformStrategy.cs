@@ -1,18 +1,18 @@
 using Notion.Client;
 using NotionMarkdownConverter.Models;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// ファイル変換ストラテジー
+/// PDF変換ストラテジー
 /// </summary>
-public class FileTransformStrategy : IBlockTransformStrategy
+public class PDFTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.File;
+    public BlockType BlockType => BlockType.PDF;
 
     /// <summary>
     /// ブロックを変換します。

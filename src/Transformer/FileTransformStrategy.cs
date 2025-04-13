@@ -1,18 +1,18 @@
 using Notion.Client;
 using NotionMarkdownConverter.Models;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// 目次変換ストラテジー
+/// ファイル変換ストラテジー
 /// </summary>
-public class TableOfContentsTransformStrategy : IBlockTransformStrategy
+public class FileTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.TableOfContents;
+    public BlockType BlockType => BlockType.File;
 
     /// <summary>
     /// ブロックを変換します。

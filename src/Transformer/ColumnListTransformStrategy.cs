@@ -1,7 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Models;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
 /// カラムリスト変換ストラテジー

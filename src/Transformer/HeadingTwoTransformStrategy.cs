@@ -2,18 +2,18 @@ using Notion.Client;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
-namespace NotionMarkdownConverter.Transformer.Strategies;
+namespace NotionMarkdownConverter.Transformer;
 
 /// <summary>
-/// コード変換ストラテジー
+/// 見出し変換ストラテジー
 /// </summary>
-public class CodeTransformStrategy : IBlockTransformStrategy
+public class HeadingTwoTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Code;
+    public BlockType BlockType => BlockType.Heading_2;
 
     /// <summary>
     /// ブロックを変換します
@@ -22,10 +22,12 @@ public class CodeTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
-        var codeBlock = context.CurrentBlock.GetOriginalBlock<CodeBlock>();
-        var language = codeBlock.Code.Language;
-        var text = MarkdownUtils.RichTextsToMarkdown(codeBlock.Code.RichText);
+        // ブロックを取得
+        var block = context.CurrentBlock.GetOriginalBlock<HeadingTwoBlock>();
+        // テキストを取得
+        var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_2.RichText);
 
-        return MarkdownUtils.CodeBlock(text, language);
+        // 見出しを生成
+        return MarkdownUtils.Heading(text, 2);
     }
 } 

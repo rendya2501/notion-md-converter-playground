@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +24,7 @@ public class VideoTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ビデオブロックを取得
-        var videoBlock = context.CurrentBlock.GetOriginalBlock<VideoBlock>();
+        var videoBlock = BlockConverter.GetOriginalBlock<VideoBlock>(context.CurrentBlock);
         // ビデオのURLを取得
         var url = videoBlock.Video switch
         {

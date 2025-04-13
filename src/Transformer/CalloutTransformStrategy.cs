@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -30,7 +31,7 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
         // コールアウトのテキストをMarkdown形式に変換
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                context.CurrentBlock.GetOriginalBlock<CalloutBlock>().Callout.RichText));
+                BlockConverter.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
 
         // 子ブロックが存在しない場合、コールアウトのテキストを返す
         var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";

@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -22,7 +23,7 @@ public class CodeTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
-        var codeBlock = context.CurrentBlock.GetOriginalBlock<CodeBlock>();
+        var codeBlock = BlockConverter.GetOriginalBlock<CodeBlock>(context.CurrentBlock);
         var language = codeBlock.Code.Language;
         var text = MarkdownUtils.RichTextsToMarkdown(codeBlock.Code.RichText);
 

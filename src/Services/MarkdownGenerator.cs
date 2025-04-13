@@ -1,4 +1,5 @@
-using NotionMarkdownConverter.Models;
+using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 namespace NotionMarkdownConverter.Services;
 

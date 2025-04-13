@@ -1,8 +1,9 @@
 using Notion.Client;
-using NotionMarkdownConverter.Models;
-using NotionMarkdownConverter.Utils;
+using NotionMarkdownConverter.Core.Enums;
+using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.Notion.Parsers;
 
-namespace NotionMarkdownConverter.Services;
+namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 /// <summary>
 /// Notionのクライアントラッパー
@@ -40,7 +41,6 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
             allPages.AddRange(pagination.Results);
             nextCursor = pagination.HasMore ? pagination.NextCursor : null;
         } while (nextCursor != null);
-
 
         return allPages;
     }
@@ -171,7 +171,7 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
                 }
             );
             // ページの親要素を追加
-            results.AddRange(pagination.Results.Cast<Block>().Select(s => new NotionBlock(s)));
+            results.AddRange(pagination.Results.Select(s => new NotionBlock(s)));
             // 次のカーソルを更新
             nextCursor = pagination.HasMore ? pagination.NextCursor : null;
         } while (nextCursor != null);
@@ -185,24 +185,4 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
         await Task.WhenAll(tasks);
         return results;
     }
-}
-
-
-/// <summary>
-/// 公開ステータス
-/// </summary>
-public enum PublicStatus
-{
-    /// <summary>
-    /// 公開済み
-    /// </summary>
-    Published,
-    /// <summary>
-    /// 公開待ち
-    /// </summary>
-    Queued,
-    /// <summary>
-    /// 非公開
-    /// </summary>
-    Unpublished
-}
+} 

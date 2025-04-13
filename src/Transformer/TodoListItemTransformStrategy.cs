@@ -1,4 +1,6 @@
 using Notion.Client;
+using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +25,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // タスクリストのブロックを取得 
-        var block = context.CurrentBlock.GetOriginalBlock<ToDoBlock>();
+        var block = BlockConverter.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
         // タスクリストのテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(block.ToDo.RichText));

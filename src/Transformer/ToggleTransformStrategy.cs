@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -27,7 +28,7 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
         // タイトルを取得して改行を追加
         var title = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                context.CurrentBlock.GetOriginalBlock<ToggleBlock>().Toggle.RichText));
+                BlockConverter.GetOriginalBlock<ToggleBlock>(context.CurrentBlock).Toggle.RichText));
             
         // 詳細を生成
         return MarkdownUtils.Details(title, children);

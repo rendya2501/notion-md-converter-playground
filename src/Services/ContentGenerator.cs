@@ -1,3 +1,4 @@
+using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Transformer;
 using System.Text;

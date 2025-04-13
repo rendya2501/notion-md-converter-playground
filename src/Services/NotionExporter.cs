@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Models;
+using NotionMarkdownConverter.Core.Enums;
+using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using System.Text;
 
 namespace NotionMarkdownConverter.Services;

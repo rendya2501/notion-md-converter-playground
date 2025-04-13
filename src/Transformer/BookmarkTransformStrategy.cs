@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +24,7 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックをブックマークブロックに変換
-        var originalBlock = context.CurrentBlock.GetOriginalBlock<BookmarkBlock>();
+        var originalBlock = BlockConverter.GetOriginalBlock<BookmarkBlock>(context.CurrentBlock);
         // // ブックマークブロックが存在しない場合は空文字を返す
         // if (originalBlock is not BookmarkBlock bookmarkBlock || string.IsNullOrEmpty(bookmarkBlock.Bookmark.Url))
         // {

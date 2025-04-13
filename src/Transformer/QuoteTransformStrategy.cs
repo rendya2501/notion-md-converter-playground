@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -30,7 +31,7 @@ public class QuoteTransformStrategy : IBlockTransformStrategy
         // 引用のテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                context.CurrentBlock.GetOriginalBlock<QuoteBlock>().Quote.RichText));
+                BlockConverter.GetOriginalBlock<QuoteBlock>(context.CurrentBlock).Quote.RichText));
 
         // 子ブロックが存在しない場合、引用のテキストを返す
         return MarkdownUtils.Blockquote(

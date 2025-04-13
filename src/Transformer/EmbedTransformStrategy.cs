@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +24,7 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックを埋め込みブロックに変換
-        var originalBlock = context.CurrentBlock.GetOriginalBlock<EmbedBlock>();
+        var originalBlock = BlockConverter.GetOriginalBlock<EmbedBlock>(context.CurrentBlock);
         // 埋め込みのURLを取得
         var url = originalBlock.Embed.Url;
         // 埋め込みのキャプションをMarkdown形式に変換

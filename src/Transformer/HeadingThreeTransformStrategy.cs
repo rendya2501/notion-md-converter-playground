@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +24,7 @@ public class HeadingThreeTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックを取得
-        var block = context.CurrentBlock.GetOriginalBlock<HeadingThreeBlock>();
+        var block = BlockConverter.GetOriginalBlock<HeadingThreeBlock>(context.CurrentBlock);
         // テキストを取得
         var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_3.RichText);
 

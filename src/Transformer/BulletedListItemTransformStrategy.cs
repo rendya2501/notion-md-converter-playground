@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -22,7 +23,7 @@ public class BulletedListItemTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
-        var block = context.CurrentBlock.GetOriginalBlock<BulletedListItemBlock>();
+        var block = BlockConverter.GetOriginalBlock<BulletedListItemBlock>(context.CurrentBlock);
         // テキストを改行で分割
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(block.BulletedListItem.RichText));

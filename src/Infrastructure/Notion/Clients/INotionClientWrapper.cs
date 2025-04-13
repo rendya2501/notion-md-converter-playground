@@ -1,10 +1,10 @@
 using Notion.Client;
-using NotionMarkdownConverter.Models;
+using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Services;
+namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 /// <summary>
-/// Notionクライアントラッパーのインターフェース
+/// Notionのクライアントラッパーインターフェース
 /// </summary>
 public interface INotionClientWrapper
 {
@@ -14,12 +14,14 @@ public interface INotionClientWrapper
     /// <param name="databaseId"></param>
     /// <returns></returns>
     Task<List<Page>> GetPagesForPublishingAsync(string databaseId);
+
     /// <summary>
     /// ページのプロパティをコピーします。
     /// </summary>
     /// <param name="page"></param>
     /// <returns></returns>
     PageProperty CopyPageProperties(Page page);
+
     /// <summary>
     /// ページのプロパティを更新します。
     /// </summary>
@@ -27,10 +29,11 @@ public interface INotionClientWrapper
     /// <param name="now"></param>
     /// <returns></returns>
     Task UpdatePagePropertiesAsync(string pageId, DateTime now);
+
     /// <summary>
     /// ページの全内容を取得します。
     /// </summary>
     /// <param name="blockId"></param>
     /// <returns></returns>
     Task<List<NotionBlock>> GetPageFullContent(string blockId);
-}
+} 

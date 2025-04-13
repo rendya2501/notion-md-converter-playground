@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -30,7 +31,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
             .Count() + 1;
 
         // 番号付きリストのブロックを取得   
-        var block = context.CurrentBlock.GetOriginalBlock<NumberedListItemBlock>();
+        var block = BlockConverter.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
         // 番号付きリストのテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Transformer;
+using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 // DIコンテナの設定
 var services = new ServiceCollection();

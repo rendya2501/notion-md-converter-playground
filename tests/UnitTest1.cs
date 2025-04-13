@@ -61,14 +61,6 @@ public class UnitTest1
         [Description("+")]
         Plus
     }
-
-    [Fact]
-    public void Test4()
-    {
-        // 使用例
-        string symbol = PublicStatus.Queued.ToString();
-        Console.WriteLine(symbol);
-    }
 }
 
 public static class EnumExtensions

@@ -1,3 +1,5 @@
+using NotionMarkdownConverter.Core.Models;
+
 namespace NotionMarkdownConverter.Models;
 
 /// <summary>

@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -33,7 +34,7 @@ public class ParagraphTransformStrategy : IBlockTransformStrategy
         // 段落のテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                currentBlock.GetOriginalBlock<ParagraphBlock>().Paragraph.RichText));
+                BlockConverter.GetOriginalBlock<ParagraphBlock>(currentBlock).Paragraph.RichText));
 
         // 子ブロックが存在しない場合、段落のテキストを返す
         return string.IsNullOrEmpty(children)

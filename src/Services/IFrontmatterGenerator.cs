@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Models;
+using NotionMarkdownConverter.Core.Models;
 using System.Text;
 
 namespace NotionMarkdownConverter.Services;

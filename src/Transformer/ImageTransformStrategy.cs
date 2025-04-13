@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Models;
 using NotionMarkdownConverter.Utils;
 
@@ -23,7 +24,7 @@ public class ImageTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // 画像ブロックを取得
-        var block = context.CurrentBlock.GetOriginalBlock<ImageBlock>();
+        var block = BlockConverter.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
         // 画像のURLを取得
         var url = block.Image switch
         {

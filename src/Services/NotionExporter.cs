@@ -3,6 +3,8 @@ using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+using NotionMarkdownConverter.Infrastructure.GitHub.Services;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using System.Text;
 
@@ -16,6 +18,8 @@ public class NotionExporter(
     INotionClientWrapper _notionClient,
     IMarkdownGenerator _markdownGenerator,
     IImageProcessor _imageProcessor,
+    IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
+    IOutputDirectoryBuilder _outputDirectoryBuilder,
     ILogger<NotionExporter> _logger) : INotionExporter
 {
     /// <summary>
@@ -53,7 +57,7 @@ public class NotionExporter(
             }
 
             // GitHub Actions の環境変数を更新
-            UpdateGitHubEnvironment(exportedCount);
+            _githubEnvironmentUpdater.UpdateEnvironment(exportedCount);
         }
         catch (Exception ex)
         {
@@ -82,8 +86,7 @@ public class NotionExporter(
             }
 
             // 出力ディレクトリを構築
-            var outputDirectory = BuildOutputDirectory(pageData);
-            Directory.CreateDirectory(outputDirectory);
+            var outputDirectory = _outputDirectoryBuilder.Build(pageData);
 
             // マークダウンを生成
             var markdown = await _markdownGenerator.GenerateMarkdownAsync(pageData);
@@ -140,52 +143,6 @@ public class NotionExporter(
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// 出力ディレクトリを構築します。
-    /// </summary>
-    /// <param name="pageProperty"></param>
-    /// <returns></returns>
-    private string BuildOutputDirectory(PageProperty pageProperty)
-    {
-        // 出力ディレクトリのパスをテンプレートから生成
-        var template = Scriban.Template.Parse(_config.OutputDirectoryPathTemplate);
-        // スラグが設定されていない場合はタイトルを使用
-        var slug = !string.IsNullOrEmpty(pageProperty.Slug)
-            ? pageProperty.Slug
-            : pageProperty.Title;
-
-        // 出力ディレクトリパスをレンダリング
-        return template.Render(new
-        {
-            publish = pageProperty.PublishedDateTime!.Value,
-            title = pageProperty.Title,
-            slug = slug
-        });
-    }
-
-    /// <summary>
-    /// GitHub Actions の環境変数を更新します。
-    /// </summary>
-    /// <param name="exportedCount"></param>
-    private void UpdateGitHubEnvironment(int exportedCount)
-    {
-        // GitHub Actions の環境変数ファイルパスを取得
-        var githubOutput  = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
-
-        // 環境変数が設定されていない場合は警告を出力
-        if (string.IsNullOrEmpty(githubOutput))
-        {
-            _logger.LogWarning("GITHUB_OUTPUT not set, skipping environment update.");
-            return;
-        }
-
-        using (StreamWriter writer = new(githubOutput, true))
-        {
-            writer.WriteLine($"exported_count={exportedCount}");
-        }
-        _logger.LogInformation("exported_count={exportedCount}", exportedCount);
     }
 }
 

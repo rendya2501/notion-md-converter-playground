@@ -6,6 +6,8 @@ using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Transformer;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
+using NotionMarkdownConverter.Infrastructure.GitHub.Services;
+using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
 
 // DIコンテナの設定
 var services = new ServiceCollection();
@@ -30,6 +32,8 @@ services.AddSingleton<INotionClient>(provider =>
 
 // サービスの登録
 services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
+services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
 services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
 services.AddSingleton<IContentGenerator, ContentGenerator>();
 services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();

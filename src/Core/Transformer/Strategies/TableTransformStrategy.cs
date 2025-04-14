@@ -23,20 +23,31 @@ public class TableTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
-        // var table = BlockConverter.GetOriginalBlock<TableBlock>(context.CurrentBlock);
+        // テーブルブロックは親ブロックの子ブロックとして存在するため、親ブロックは取得しても意味がないので取得しない。
 
+        // テーブルの最初の行をヘッダーとして取得 (Children[0]はヘッダー行)
         var headers = BlockConverter.GetOriginalBlock<TableRowBlock>(context.CurrentBlock.Children[0]);
+        // テーブルの残りの行を取得 (Children[1]以降はデータ行)
         var rows = context.CurrentBlock.Children.Skip(1);
 
+        // ヘッダー行のセルを取得
         var headerCells = headers.TableRow.Cells.Select(cell => MarkdownUtils.RichTextsToMarkdown(cell)).ToList();
+        // データ行のセルを取得
         var rowsCells = rows
             .Select(s => BlockConverter.GetOriginalBlock<TableRowBlock>(s).
                 TableRow.Cells.Select(cell => MarkdownUtils.RichTextsToMarkdown(cell)).ToList())
             .ToList();
 
+        // テーブルを生成
         return Table(headerCells, rowsCells);
     }
 
+    /// <summary>
+    /// テーブルを生成します。
+    /// </summary>
+    /// <param name="headers"></param>
+    /// <param name="rows"></param>
+    /// <returns></returns>
     private static string Table(List<string> headers, List<List<string>> rows)
     {
         // 各列の最大長を計算
@@ -44,6 +55,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
         {
             var cellsInColumn = new[] { header }.Concat(rows.Select(row => row[index]));
             var maxLength = cellsInColumn.Max(content => content.Length);
+            // 3行分の間隔を開ける為の最低値
             return Math.Max(maxLength, 3);
         }).ToList();
 

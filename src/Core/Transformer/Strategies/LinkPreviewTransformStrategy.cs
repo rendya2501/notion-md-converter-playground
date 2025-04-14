@@ -1,5 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Infrastructure.Notion.Services;
+using NotionMarkdownConverter.Utils;
 
 namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 
@@ -21,6 +23,9 @@ public class LinkPreviewTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
-        return string.Empty;
+        var linkPreview = BlockConverter.GetOriginalBlock<LinkPreviewBlock>(context.CurrentBlock);
+        var url = linkPreview.LinkPreview.Url;
+        
+        return MarkdownUtils.Link(url,url);
     }
 }

@@ -1,5 +1,4 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Infrastructure.Notion.Services;
 using NotionMarkdownConverter.Utils;
@@ -42,11 +41,11 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // チェックボックスを生成
-        var checkbox = block.ToDo.IsChecked ? "[x]" : "[ ]";
+        var checkbox = MarkdownUtils.CheckList(formattedText, block.ToDo.IsChecked);
 
         // 子ブロックが存在しない場合、タスクリストを返す
         return string.IsNullOrEmpty(children)
-            ? $"{checkbox} {formattedText}"
-            : $"{checkbox} {formattedText}\n{MarkdownUtils.Indent(children)}";
+            ? $"{checkbox}"
+            : $"{checkbox}\n{MarkdownUtils.Indent(children)}";
     }
 } 

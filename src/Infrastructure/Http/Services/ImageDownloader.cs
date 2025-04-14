@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Infrastructure.Http.Model;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -103,13 +104,3 @@ public class ImageDownloader : IImageDownloader
         return $"{Convert.ToHexString(MD5.HashData(fileNameBytes))}{Path.GetExtension(uri.LocalPath)}";
     }
 }
-
-/// <summary>
-/// ダウンロードした画像の情報
-/// </summary>
-/// <remarks>
-/// コンストラクタ
-/// </remarks>
-/// <param name="OriginalUrl">元のURL</param>
-/// <param name="FileName">ファイル名</param>
-public record DownloadedImage(string OriginalUrl, string FileName);

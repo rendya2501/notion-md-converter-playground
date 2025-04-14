@@ -1,3 +1,5 @@
+using NotionMarkdownConverter.Infrastructure.Http.Model;
+
 namespace NotionMarkdownConverter.Infrastructure.Http.Services;
 
 /// <summary>

@@ -1,9 +1,9 @@
-﻿using NotionMarkdownConverter.Services;
+using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Utils;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace NotionMarkdownConverter.test;
+namespace NotionMarkdownConverter.Tests;
 
 public class UnitTest1
 {

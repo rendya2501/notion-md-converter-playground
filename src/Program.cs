@@ -1,13 +1,15 @@
 // Program.cs - エントリポイント
-using NotionMarkdownConverter.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Notion.Client;
+using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Transformer;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
-using NotionMarkdownConverter.Infrastructure.GitHub.Services;
+using NotionMarkdownConverter.Core.Services.Markdown;
+using NotionMarkdownConverter.Core.Transformer.Strategies;
 using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+using NotionMarkdownConverter.Infrastructure.GitHub.Services;
+using NotionMarkdownConverter.Infrastructure.Http.Services;
+using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 // DIコンテナの設定
 var services = new ServiceCollection();
@@ -41,11 +43,11 @@ services.Configure<ImageDownloaderOptions>(options =>
 {
     options.MaxRetryCount = 3;
     options.RetryDelayMilliseconds = 1000;
-    options.MaxConcurrentDownloads = 4;
     options.TimeoutSeconds = 30;
     options.SkipExistingFiles = true;
 });
-services.AddSingleton<IImageProcessor, ImageProcessor>();
+services.AddSingleton<IImageDownloader, ImageDownloader>();
+services.AddSingleton<IMarkdownImageProcessor, MarkdownImageProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
 
 // ストラテジーの登録

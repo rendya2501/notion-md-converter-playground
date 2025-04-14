@@ -42,9 +42,3 @@ src/
 │   ├── FileSystem/        # ファイルシステム操作
 │   └── Markdown/          # Markdown生成関連
 └── Console/           # コンソールアプリケーション
-
-src/
-├── Core/                    # コアドメインロジック
-├── Application/            # アプリケーション層
-├── Infrastructure/         # インフラストラクチャ層
-└── Presentation/          # プレゼンテーション層

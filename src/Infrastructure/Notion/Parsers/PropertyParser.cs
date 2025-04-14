@@ -24,7 +24,7 @@ public static class PropertyParser
                 {
                     return false;
                 }
-                dateTime = dateProperty.Date.Start.Value;
+                dateTime = dateProperty.Date.Start.Value.DateTime;
                 return true;
 
             case CreatedTimePropertyValue createdTimeProperty:

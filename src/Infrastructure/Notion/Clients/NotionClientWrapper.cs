@@ -38,7 +38,7 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
                 StartCursor = nextCursor
             });
 
-            allPages.AddRange(pagination.Results);
+            allPages.AddRange(pagination.Results.OfType<Page>());
             nextCursor = pagination.HasMore ? pagination.NextCursor : null;
         } while (nextCursor != null);
 
@@ -164,9 +164,9 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
         {
             // ページの親要素を取得
             var pagination = await _client.Blocks.RetrieveChildrenAsync(
-                blockId,
-                new BlocksRetrieveChildrenParameters
+                new BlockRetrieveChildrenRequest
                 {
+                    BlockId = blockId,
                     StartCursor = nextCursor
                 }
             );
@@ -185,4 +185,4 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
         await Task.WhenAll(tasks);
         return results;
     }
-} 
+}

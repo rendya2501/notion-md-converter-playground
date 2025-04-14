@@ -1,0 +1,187 @@
+このプログラムをもっと高凝集 疎結合に組み直すとしたらどうなりますか？
+プログラムを高凝集・疎結合にするためには、以下のようなリファクタリングを行います：
+
+1. **依存関係の注入**：`NotionClient`の作成を依存関係の注入に変更します。
+2. **責務の分離**：各機能を別々のクラスに分割します。
+3. **インターフェースの導入**：インターフェースを使用して依存関係を抽象化します。
+
+以下にリファクタリング後のコード例を示します。
+
+### インターフェースの定義
+
+```csharp
+public interface INotionService
+{
+    Task<IEnumerable<Page>> GetPagesAsync(string databaseId, CheckboxFilter filter);
+    Task<bool> ExportPageToMarkdownAsync(Page page, DateTime now, bool forceExport = false);
+    Task UpdatePagePropertiesAsync(string pageId, Dictionary<string, PropertyValue> properties);
+}
+```
+
+### NotionServiceの実装
+
+```csharp
+public class NotionService : INotionService
+{
+    private readonly NotionClient _client;
+
+    public NotionService(NotionClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<IEnumerable<Page>> GetPagesAsync(string databaseId, CheckboxFilter filter)
+    {
+        var pagination = await _client.Databases.QueryAsync(databaseId, new DatabasesQueryParameters { Filter = filter });
+        var pages = new List<Page>();
+
+        do
+        {
+            pages.AddRange(pagination.Results);
+            if (!pagination.HasMore) break;
+            pagination = await _client.Databases.QueryAsync(databaseId, new DatabasesQueryParameters { Filter = filter, StartCursor = pagination.NextCursor });
+        } while (true);
+
+        return pages;
+    }
+
+    public async Task<bool> ExportPageToMarkdownAsync(Page page, DateTime now, bool forceExport = false)
+    {
+        // ... (元のExportPageToMarkdownAsyncメソッドの内容)
+    }
+
+    public async Task UpdatePagePropertiesAsync(string pageId, Dictionary<string, PropertyValue> properties)
+    {
+        await _client.Pages.UpdateAsync(pageId, new PagesUpdateParameters { Properties = properties });
+    }
+}
+```
+
+### Program.csのリファクタリング
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Notion.Client;
+using System.Security.Cryptography;
+using System.Text;
+
+var serviceProvider = new ServiceCollection()
+    .AddSingleton<NotionClient>(sp => NotionClientFactory.Create(new ClientOptions { AuthToken = args[0] }))
+    .AddSingleton<INotionService, NotionService>()
+    .BuildServiceProvider();
+
+var notionService = serviceProvider.GetRequiredService<INotionService>();
+
+var notionDatabaseId = args[1];
+var outputDirectoryPathTemplate = args[2];
+
+var filter = new CheckboxFilter("RequestPublishing", true);
+var pages = await notionService.GetPagesAsync(notionDatabaseId, filter);
+
+var now = DateTime.Now;
+var exportedCount = 0;
+
+foreach (var page in pages)
+{
+    if (!await notionService.ExportPageToMarkdownAsync(page, now))
+    {
+        continue;
+    }
+
+    var properties = new Dictionary<string, PropertyValue>
+    {
+        ["_SystemCrawledAt"] = new DatePropertyValue { Date = new Date { Start = now } },
+        ["RequestPublishing"] = new CheckboxPropertyValue { Checkbox = false }
+    };
+    await notionService.UpdatePagePropertiesAsync(page.Id, properties);
+
+    exportedCount++;
+}
+
+var githubEnvPath = Environment.GetEnvironmentVariable("GITHUB_ENV") ?? string.Empty;
+if (string.IsNullOrEmpty(githubEnvPath))
+{
+    Console.WriteLine("Environment.GetEnvironmentVariable(GITHUB_ENV) is null !!");
+}
+
+var writeLineExportedCount = $"EXPORTED_COUNT={exportedCount}";
+using (var writer = new StreamWriter(githubEnvPath, true))
+{
+    writer.WriteLine(writeLineExportedCount);
+}
+Console.WriteLine(writeLineExportedCount);
+```
+
+### コメントの追加
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Notion.Client;
+using System.Security.Cryptography;
+using System.Text;
+
+// DIコンテナの設定
+var serviceProvider = new ServiceCollection()
+    .AddSingleton<NotionClient>(sp => NotionClientFactory.Create(new ClientOptions { AuthToken = args[0] }))
+    .AddSingleton<INotionService, NotionService>()
+    .BuildServiceProvider();
+
+// Notionサービスの取得
+var notionService = serviceProvider.GetRequiredService<INotionService>();
+
+// 引数からNotionのデータベースIDと出力ディレクトリパスのテンプレートを取得
+var notionDatabaseId = args[1];
+var outputDirectoryPathTemplate = args[2];
+
+// Notionデータベースのフィルタを設定
+var filter = new CheckboxFilter("RequestPublishing", true);
+// 更新フラグが立っているページを取得
+var pages = await notionService.GetPagesAsync(notionDatabaseId, filter);
+
+var now = DateTime.Now;
+// ページのエクスポート数
+var exportedCount = 0;
+
+// ページを取得してMarkdown形式でエクスポート
+foreach (var page in pages)
+{
+    // ページをMarkdown形式でエクスポート
+    if (!await notionService.ExportPageToMarkdownAsync(page, now))
+    {
+        // エクスポートに失敗した場合は次のページに進む
+        continue;
+    }
+
+    // ページのプロパティを更新
+    var properties = new Dictionary<string, PropertyValue>
+    {
+        ["_SystemCrawledAt"] = new DatePropertyValue { Date = new Date { Start = now } },
+        ["RequestPublishing"] = new CheckboxPropertyValue { Checkbox = false }
+    };
+    await notionService.UpdatePagePropertiesAsync(page.Id, properties);
+
+    exportedCount++;
+}
+
+// GITHUB_ENV環境変数のパスを取得
+var githubEnvPath = Environment.GetEnvironmentVariable("GITHUB_ENV") ?? string.Empty;
+if (string.IsNullOrEmpty(githubEnvPath))
+{
+    Console.WriteLine("Environment.GetEnvironmentVariable(GITHUB_ENV) is null !!");
+}
+
+// GITHUB_ENVにエクスポートされたファイルの数を書き込む
+var writeLineExportedCount = $"EXPORTED_COUNT={exportedCount}";
+using (var writer = new StreamWriter(githubEnvPath, true))
+{
+    writer.WriteLine(writeLineExportedCount);
+}
+Console.WriteLine(writeLineExportedCount);
+```
+
+このリファクタリングにより、コードの凝集度が高まり、疎結合が実現されます。各クラスは単一の責務を持ち、依存関係の注入によりテストが容易になります。
+
+
+
+
+

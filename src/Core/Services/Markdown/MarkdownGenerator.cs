@@ -1,4 +1,5 @@
 using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Core.Services.Test;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 namespace NotionMarkdownConverter.Core.Services.Markdown;
@@ -17,7 +18,8 @@ public class MarkdownGenerator(
     INotionClientWrapper _notionClient,
     IFrontmatterGenerator _frontmatterGenerator,
     IContentGenerator _contentGenerator,
-    IMarkdownImageProcessor _imageProcessor) : IMarkdownGenerator
+    IMarkdownImageProcessor _imageProcessor,
+    IFileProcessor _fileProcessor) : IMarkdownGenerator
 {
     /// <summary>
     /// マークダウンを生成します。
@@ -39,10 +41,12 @@ public class MarkdownGenerator(
         // 画像処理 
         var processedContent = await _imageProcessor.ProcessMarkdownImagesAsync(content, outputDirectory);
 
+        var sss = await _fileProcessor.ProcessFileAsync(processedContent, outputDirectory);
+
         // マークダウンを出力
-        return $"{frontmatter}{processedContent}";
+        return $"{frontmatter}{sss}";
     }
-} 
+}
 
 /*
 using NotionMarkdownConverter.Core.Models;

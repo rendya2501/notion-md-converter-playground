@@ -1,7 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 
-namespace NotionMarkdownConverter.Utils;
+namespace NotionMarkdownConverter.Core.Utils;
 
 /// <summary>
 /// Markdown変換ユーティリティ

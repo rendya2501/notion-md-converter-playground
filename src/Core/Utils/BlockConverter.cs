@@ -1,7 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.Notion.Services;
+namespace NotionMarkdownConverter.Core.Utils;
 
 /// <summary>
 /// ブロック変換サービス

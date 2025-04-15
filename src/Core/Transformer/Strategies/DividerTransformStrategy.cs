@@ -1,6 +1,6 @@
 using Notion.Client;
 using NotionMarkdownConverter.Core.Transformer.State;
-using NotionMarkdownConverter.Utils;
+using NotionMarkdownConverter.Core.Utils;
 
 namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 

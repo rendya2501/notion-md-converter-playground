@@ -14,7 +14,7 @@ public class ImageDownloader : IImageDownloader
 {
     private readonly ILogger<ImageDownloader> _logger;
     private readonly HttpClient _httpClient;
-    private readonly ImageDownloaderOptions _options;
+    private readonly DownloaderOptions _options;
 
     /// <summary>
     /// コンストラクタ
@@ -23,7 +23,7 @@ public class ImageDownloader : IImageDownloader
     /// <param name="options">オプション</param>
     public ImageDownloader(
         ILogger<ImageDownloader> logger,
-        IOptions<ImageDownloaderOptions> options)
+        IOptions<DownloaderOptions> options)
     {
         _logger = logger;
         _options = options.Value;

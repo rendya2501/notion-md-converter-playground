@@ -1,9 +1,9 @@
 namespace NotionMarkdownConverter.Configuration;
 
 /// <summary>
-/// 画像ダウンローダーのオプション
+/// ダウンローダーのオプション
 /// </summary>
-public class ImageDownloaderOptions
+public class DownloaderOptions
 {
     /// <summary>
     /// 最大リトライ回数
@@ -17,11 +17,11 @@ public class ImageDownloaderOptions
     /// <value></value>
     public int RetryDelayMilliseconds { get; set; } = 1000;
 
-    /// <summary>
-    /// 最大同時ダウンロード数
-    /// </summary>
-    /// <value></value>
-    public int MaxConcurrentDownloads { get; set; } = 4;
+    ///// <summary>
+    ///// 最大同時ダウンロード数
+    ///// </summary>
+    ///// <value></value>
+    //public int MaxConcurrentDownloads { get; set; } = 4;
 
     /// <summary>
     /// タイムアウト秒

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Models;
 using Scriban;
@@ -9,7 +10,7 @@ namespace NotionMarkdownConverter.Infrastructure.FileSystem.Services;
 /// 出力ディレクトリ構築サービス
 /// </summary>
 public class OutputDirectoryBuilder(
-    AppConfiguration _config,
+    IOptions<AppConfiguration> _config,
     ILogger<OutputDirectoryBuilder> _logger) : IOutputDirectoryBuilder
 {
     /// <summary>
@@ -20,7 +21,7 @@ public class OutputDirectoryBuilder(
     public string Build(PageProperty pageProperty)
     {
         // 出力ディレクトリのパスをテンプレートから生成
-        var template = Template.Parse(_config.OutputDirectoryPathTemplate);
+        var template = Template.Parse(_config.Value.OutputDirectoryPathTemplate);
         // スラグが設定されていない場合はタイトルを使用
         var slug = !string.IsNullOrEmpty(pageProperty.Slug)
             ? pageProperty.Slug
@@ -40,4 +41,4 @@ public class OutputDirectoryBuilder(
 
         return outputDirectory;
     }
-} 
+}

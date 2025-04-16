@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Enums;
@@ -15,7 +16,7 @@ namespace NotionMarkdownConverter.Application.Services;
 /// Notionのページをエクスポートするサービス
 /// </summary>
 public class NotionExporter(
-    AppConfiguration _config,
+    IOptions<AppConfiguration> _config,
     INotionClientWrapper _notionClient,
     IMarkdownGenerator _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
@@ -32,7 +33,7 @@ public class NotionExporter(
         try
         {
             // 公開可能なページを取得
-            var pages = await _notionClient.GetPagesForPublishingAsync(_config.NotionDatabaseId);
+            var pages = await _notionClient.GetPagesForPublishingAsync(_config.Value.NotionDatabaseId);
             // 現在の日時
             var now = DateTime.Now;
             // エクスポート成功数

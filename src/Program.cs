@@ -1,6 +1,7 @@
 // Program.cs - エントリポイント
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Configuration;
@@ -23,15 +24,29 @@ services.AddLogging(builder =>
 });
 
 // コマンドライン引数から設定を取得
-var config = AppConfiguration.FromCommandLine(args);
-services.AddSingleton(config);
+services.Configure<AppConfiguration>(config =>
+{
+    if (args.Length != 3)
+    {
+        throw new ArgumentException("Required arguments: [NotionAuthToken] [DatabaseId] [OutputPathTemplate]");
+    }
+
+    config.NotionAuthToken = args[0];
+    config.NotionDatabaseId = args[1];
+    config.OutputDirectoryPathTemplate = args[2];
+});
 
 // NotionClientの登録
 services.AddSingleton<INotionClient>(provider =>
     NotionClientFactory.Create(new ClientOptions
     {
+    var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
+    var config = options.Value;
+    return NotionClientFactory.Create(new ClientOptions
+    {
         AuthToken = config.NotionAuthToken
-    }));
+    });
+});
 
 // サービスの登録
 services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();

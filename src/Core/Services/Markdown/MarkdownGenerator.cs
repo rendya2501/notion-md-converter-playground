@@ -13,13 +13,12 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// <param name="_notionClient">Notionクライアント</param>
 /// <param name="_frontmatterGenerator">フロントマター生成器</param>
 /// <param name="_contentGenerator">コンテンツ生成器</param>
-/// <param name="_imageProcessor">画像プロセッサ</param>
+/// <param name="_markdownLinkProcessor">マークダウン内のリンクを処理するサービス</param>
 public class MarkdownGenerator(
     INotionClientWrapper _notionClient,
     IFrontmatterGenerator _frontmatterGenerator,
     IContentGenerator _contentGenerator,
-    IMarkdownImageProcessor _imageProcessor,
-    IFileProcessor _fileProcessor) : IMarkdownGenerator
+    IMarkdownLinkProcessor _markdownLinkProcessor) : IMarkdownGenerator
 {
     /// <summary>
     /// マークダウンを生成します。
@@ -36,15 +35,13 @@ public class MarkdownGenerator(
         var frontmatter = _frontmatterGenerator.GenerateFrontmatter(pageProperty);
 
         // ページの全内容をマークダウンに変換
-        var content = _contentGenerator.GenerateContentAsync(await pageFullContent);
+        var content = _contentGenerator.GenerateContent(await pageFullContent);
 
-        // 画像処理 
-        var processedContent = await _imageProcessor.ProcessMarkdownImagesAsync(content, outputDirectory);
-
-        var sss = await _fileProcessor.ProcessFileAsync(processedContent, outputDirectory);
+        // ファイルのダウンロードとリンクの変換処理 
+        var processedContent = await _markdownLinkProcessor.ProcessLinksAsync(content, outputDirectory);
 
         // マークダウンを出力
-        return $"{frontmatter}{sss}";
+        return $"{frontmatter}{processedContent}";
     }
 }
 
@@ -82,30 +79,7 @@ public class MarkdownGenerator : IMarkdownGenerator
         // マークダウン生成ロジック
         var markdown = new StringBuilder();
 
-        // タイトル
-        markdown.AppendLine($"# {pageProperty.Title}");
-        markdown.AppendLine();
-
-        // 公開日時
-        if (pageProperty.PublishedDateTime.HasValue)
-        {
-            markdown.AppendLine($"公開日: {pageProperty.PublishedDateTime.Value:yyyy-MM-dd}");
-            markdown.AppendLine();
-        }
-
-        // タグ
-        if (pageProperty.Tags.Any())
-        {
-            markdown.AppendLine("タグ: " + string.Join(", ", pageProperty.Tags));
-            markdown.AppendLine();
-        }
-
-        // 本文
-        foreach (var block in pageProperty.Blocks)
-        {
-            markdown.AppendLine(block.ToMarkdown());
-            markdown.AppendLine();
-        }
+        // ページの全内容を取得
 
         // マークダウンドキュメントを作成
         var document = new MarkdownDocument(markdown.ToString());

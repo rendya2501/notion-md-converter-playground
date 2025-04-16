@@ -61,10 +61,8 @@ services.Configure<DownloaderOptions>(options =>
     options.TimeoutSeconds = 30;
     options.SkipExistingFiles = true;
 });
-services.AddSingleton<IImageDownloader, ImageDownloader>();
 services.AddSingleton<IFileDownloader, FileDownloader>();
-services.AddSingleton<IMarkdownImageProcessor, MarkdownImageProcessor>();
-services.AddSingleton<IFileProcessor, FileProcessor>();
+services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
 
 services.AddSingleton<EventBus>();

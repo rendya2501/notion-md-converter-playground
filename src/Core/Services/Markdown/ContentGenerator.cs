@@ -11,16 +11,16 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) : IContentGenerator
 {
     /// <summary>
-    /// コンテンツを生成します。
+    /// コンテンツを生成します
     /// </summary>
     /// <param name="blocks">変換するブロック</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string GenerateContentAsync(List<NotionBlock> blocks)
+    public string GenerateContent(List<NotionBlock> blocks)
     {
         // 変換コンテキストを作成
         var context = new NotionBlockTransformState
         {
-            ExecuteTransformBlocks = GenerateContentAsync,
+            ExecuteTransformBlocks = GenerateContent,
             Blocks = blocks,
             CurrentBlock = blocks.First(),
             CurrentBlockIndex = 0

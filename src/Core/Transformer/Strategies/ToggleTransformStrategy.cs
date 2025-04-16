@@ -24,12 +24,12 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
     {
         // 子ブロックを変換
         var children = context.ExecuteTransformBlocks(context.CurrentBlock.Children);
-
+        // トグルブロックを取得
         var toggleBlock = BlockConverter.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
         // タイトルを取得して改行を追加
         var title = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText));
-            
+            MarkdownUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText), LineBreakStyle.BR);
+
         // 詳細を生成
         return MarkdownUtils.Details(title, children);
     }

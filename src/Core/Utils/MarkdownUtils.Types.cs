@@ -23,30 +23,39 @@ public enum HolizontalRuleStyle
 }
 
 /// <summary>
-/// テーブルセル
+/// 改行スタイル
 /// </summary>
-public class TableCell
+public enum LineBreakStyle
 {
-    public required string Content { get; set; }
-}
-
-/// <summary>
-/// テーブルヘッダー
-/// </summary>
-public class TableHeader
-{
-    public required string Content { get; set; }
-    public Alignment Alignment { get; set; }
-}
-
-public enum Alignment
-{
-    Left,
-    Center,
-    Right
+    Newline, // \n
+    BR       // <BR>
 }
 
 /// <summary>
 /// カラーマップの型
 /// </summary>
 public class ColorMap : Dictionary<Color, string> { } 
+
+///// <summary>
+///// テーブルセル
+///// </summary>
+//public class TableCell
+//{
+//    public required string Content { get; set; }
+//}
+
+///// <summary>
+///// テーブルヘッダー
+///// </summary>
+//public class TableHeader
+//{
+//    public required string Content { get; set; }
+//    public Alignment Alignment { get; set; }
+//}
+
+//public enum Alignment
+//{
+//    Left,
+//    Center,
+//    Right
+//}

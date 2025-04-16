@@ -57,7 +57,7 @@ public static partial class MarkdownUtils
     public static string Indent(string text, int spaces = 2)
     {
         var lines = text.Split('\n');
-        var indentedLines = lines.Select(line => 
+        var indentedLines = lines.Select(line =>
             string.IsNullOrEmpty(line)
                 ? line
                 : $"{new string(' ', spaces)}{line}");
@@ -67,18 +67,25 @@ public static partial class MarkdownUtils
     /// <summary>
     /// 文字列の各行末に改行を追加
     /// </summary>
-    /// <param name="richTexts"></param>
+    /// <param name="text"></param>
     /// <returns></returns>
-    public static string LineBreak(string text)
+    public static string LineBreak(string text, LineBreakStyle lineBreakType = LineBreakStyle.Newline)
     {
+        var lineBreak = lineBreakType switch
+        {
+            LineBreakStyle.Newline => "\n",
+            LineBreakStyle.BR => "<BR>",
+            _ => "\n"
+        };
+
         var lines = text.Split('\n');
         var indentedLines = lines.Select(line =>
             string.IsNullOrWhiteSpace(line)
                 ? line
                 : WithLineBreak(line));
-        return string.Join("\n", indentedLines);
+        return string.Join(lineBreak, indentedLines);
     }
-    
+
     /// <summary>
     /// detailsタグに変換
     /// </summary>
@@ -97,4 +104,4 @@ public static partial class MarkdownUtils
         };
         return string.Join("\n", result);
     }
-} 
+}

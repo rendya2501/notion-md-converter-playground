@@ -22,7 +22,8 @@ public class TableTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
-        // テーブルブロックは親ブロックの子ブロックとして存在するため、親ブロックは取得しても意味がないので取得しない。
+        // テーブルブロックに親ブロックの子ブロックとして存在するため、親ブロックは取得しても意味がないので取得しない。
+        // var tableBlock = BlockConverter.GetOriginalBlock<TableBlock>(context.CurrentBlock);
 
         // テーブルの最初の行をヘッダーとして取得 (Children[0]はヘッダー行)
         var headers = BlockConverter.GetOriginalBlock<TableRowBlock>(context.CurrentBlock.Children[0]);
@@ -71,8 +72,8 @@ public class TableTransformStrategy : IBlockTransformStrategy
         }
 
         // データ行を生成（パディングを追加）
-        var dataRows = rows.Select(row =>
-            "| " + string.Join(" | ", row.Select((cell, i) => cell.Replace("\n", "<br>").PadRight(columnWidths[i]))) + " |").ToList();
+        var dataRows = rows.Select(row => 
+            "| " + string.Join(" | ", row.Select((cell, i) => MarkdownUtils.LineBreak(cell, LineBreakStyle.BR).PadRight(columnWidths[i]))) + " |");
 
         return $"{headerRow}\n{alignmentRow}\n{string.Join("\n", dataRows)}";
     }

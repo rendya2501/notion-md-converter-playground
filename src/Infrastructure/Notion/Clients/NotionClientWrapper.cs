@@ -1,7 +1,7 @@
 using Notion.Client;
+using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Infrastructure.Notion.Parsers;
 
 namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
@@ -10,15 +10,6 @@ namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
 /// </summary>
 public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
 {
-    private const string TitlePropertyName = "Title";
-    private const string TypePropertyName = "Type";
-    private const string PublishedAtPropertyName = "PublishedAt";
-    private const string CrawledAtPropertyName = "_SystemCrawledAt";
-    private const string TagsPropertyName = "Tags";
-    private const string DescriptionPropertyName = "Description";
-    private const string SlugPropertyName = "Slug";
-    private const string PublicStatusName = "PublicStatus";
-
     /// <summary>
     /// 公開用ページを取得します。
     /// </summary>
@@ -27,7 +18,7 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
     public async Task<List<Page>> GetPagesForPublishingAsync(string databaseId)
     {
         var allPages = new List<Page>();
-        var filter = new SelectFilter(PublicStatusName, PublicStatus.Queued.ToString());
+        var filter = new SelectFilter(NotionPagePropertyNames.PublicStatusName, PublicStatus.Queued.ToString());
         string? nextCursor = null;
 
         do
@@ -46,78 +37,6 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
     }
 
     /// <summary>
-    /// ページのプロパティをコピーします。
-    /// </summary>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    public PageProperty CopyPageProperties(Page page)
-    {
-        var pageProperty = new PageProperty { PageId = page.Id };
-
-        foreach (var property in page.Properties)
-        {
-            if (property.Key == PublishedAtPropertyName)
-            {
-                if (PropertyParser.TryParseAsDateTime(property.Value, out var publishedAt))
-                {
-                    pageProperty.PublishedDateTime = publishedAt;
-                }
-            }
-            else if (property.Key == CrawledAtPropertyName)
-            {
-                if (PropertyParser.TryParseAsDateTime(property.Value, out var crawledAt))
-                {
-                    pageProperty.LastCrawledDateTime = crawledAt;
-                }
-            }
-            else if (property.Key == SlugPropertyName)
-            {
-                if (PropertyParser.TryParseAsPlainText(property.Value, out var slug))
-                {
-                    pageProperty.Slug = slug;
-                }
-            }
-            else if (property.Key == TitlePropertyName)
-            {
-                if (PropertyParser.TryParseAsPlainText(property.Value, out var title))
-                {
-                    pageProperty.Title = title;
-                }
-            }
-            else if (property.Key == DescriptionPropertyName)
-            {
-                if (PropertyParser.TryParseAsPlainText(property.Value, out var description))
-                {
-                    pageProperty.Description = description;
-                }
-            }
-            else if (property.Key == TagsPropertyName)
-            {
-                if (PropertyParser.TryParseAsStringList(property.Value, out var tags))
-                {
-                    pageProperty.Tags = tags;
-                }
-            }
-            else if (property.Key == TypePropertyName)
-            {
-                if (PropertyParser.TryParseAsPlainText(property.Value, out var type))
-                {
-                    pageProperty.Type = type;
-                }
-            }
-            else if (property.Key == PublicStatusName)
-            {
-                if (PropertyParser.TryParseAsEnum<PublicStatus>(property.Value, out var publicStatus))
-                {
-                    pageProperty.PublicStatus = publicStatus;
-                }
-            }
-        }
-
-        return pageProperty;
-    }
-
-    /// <summary>
     /// ページのプロパティを更新します。
     /// </summary>
     /// <param name="pageId"></param>
@@ -129,14 +48,14 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
         {
             Properties = new Dictionary<string, PropertyValue>
             {
-                [CrawledAtPropertyName] = new DatePropertyValue
+                [NotionPagePropertyNames.CrawledAtPropertyName] = new DatePropertyValue
                 {
                     Date = new Date
                     {
                         Start = now
                     }
                 },
-                [PublicStatusName] = new SelectPropertyValue
+                [NotionPagePropertyNames.PublicStatusName] = new SelectPropertyValue
                 {
                     Select = new SelectOption
                     {

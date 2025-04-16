@@ -16,13 +16,6 @@ public interface INotionClientWrapper
     Task<List<Page>> GetPagesForPublishingAsync(string databaseId);
 
     /// <summary>
-    /// ページのプロパティをコピーします。
-    /// </summary>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    PageProperty CopyPageProperties(Page page);
-
-    /// <summary>
     /// ページのプロパティを更新します。
     /// </summary>
     /// <param name="pageId"></param>

@@ -79,7 +79,7 @@ public class NotionExporter(
         try
         {
             // ページのプロパティをコピー
-            var pageData = _notionClient.CopyPageProperties(page);
+            var pageData = PagePropertyMapper.CopyPageProperties(page);
 
             // ページをエクスポートするかどうかを判定
             if (!ShouldExportPage(pageData, now))

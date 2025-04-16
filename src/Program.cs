@@ -38,7 +38,6 @@ services.Configure<AppConfiguration>(config =>
 
 // NotionClientの登録
 services.AddSingleton<INotionClient>(provider =>
-    NotionClientFactory.Create(new ClientOptions
     {
     var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
     var config = options.Value;

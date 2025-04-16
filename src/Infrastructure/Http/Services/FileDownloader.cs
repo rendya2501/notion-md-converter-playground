@@ -1,15 +1,14 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Configuration;
-using System.Security.Cryptography;
-using System.Text;
+using NotionMarkdownConverter.Core.Services.Test;
 
 namespace NotionMarkdownConverter.Infrastructure.Http.Services;
 
 /// <summary>
 /// ファイルダウンローダー
 /// </summary>
-public class FileDownloader: IFileDownloader
+public class FileDownloader : IFileDownloader
 {
     private readonly ILogger<FileDownloader> _logger;
     private readonly HttpClient _httpClient;
@@ -35,30 +34,30 @@ public class FileDownloader: IFileDownloader
     /// <summary>
     /// 出力ディレクトリへファイルをダウンロードします。
     /// </summary>
-    /// <param name="downloadLink">ダウンロードリンク</param>
+    /// <param name="urlFilePair">URLとファイル名のペア</param>
     /// <param name="outputDirectory">出力ディレクトリ</param>
     /// <returns>ダウンロードしたファイル名</returns>
-    public async Task<string> DownloadAsync(string downloadLink, string outputDirectory)
+    public async Task DownloadAsync(UrlFilePair urlFilePair, string outputDirectory)
     {
-        var uri = new Uri(downloadLink);
-        var fileName = GenerateFileName(uri);
+        var url = urlFilePair.OriginalUrl;
+        var fileName = urlFilePair.ConversionFileName;
         var filePath = Path.Combine(outputDirectory, fileName);
 
         if (_options.SkipExistingFiles && File.Exists(filePath))
         {
             _logger.LogInformation("スキップ: 既に存在するファイル {FileName}", fileName);
-            return fileName;
+            return;
         }
 
         for (var retry = 0; retry < _options.MaxRetryCount; retry++)
         {
             try
             {
-                var content = await ExecuteDownloadAsync(downloadLink);
+                var content = await ExecuteDownloadAsync(url);
                 await File.WriteAllBytesAsync(filePath, content);
 
                 _logger.LogInformation("ダウンロード成功: {FileName}", fileName);
-                return fileName;
+                return;
             }
             catch (Exception ex)
             {
@@ -90,16 +89,5 @@ public class FileDownloader: IFileDownloader
         var response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsByteArrayAsync();
-    }
-
-    /// <summary>
-    /// ファイル名を生成します。
-    /// </summary>
-    /// <param name="uri">URI</param>
-    /// <returns>ファイル名</returns>
-    private static string GenerateFileName(Uri uri)
-    {
-        var fileNameBytes = Encoding.UTF8.GetBytes(uri.LocalPath);
-        return $"{Convert.ToHexString(MD5.HashData(fileNameBytes))}{Path.GetExtension(uri.LocalPath)}";
     }
 }

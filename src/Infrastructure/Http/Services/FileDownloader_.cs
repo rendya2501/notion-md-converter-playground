@@ -1,18 +1,18 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Infrastructure.Http.Model;
+using NotionMarkdownConverter.Core.Services.Test;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace NotionMarkdownConverter.Infrastructure.Http.Services;
 
 /// <summary>
-/// 画像ダウンローダー
+/// ファイルダウンローダー
 /// </summary>
-public class ImageDownloader : IImageDownloader
+public class FileDownloader_ : IFileDownloader_
 {
-    private readonly ILogger<ImageDownloader> _logger;
+    private readonly ILogger<FileDownloader> _logger;
     private readonly HttpClient _httpClient;
     private readonly DownloaderOptions _options;
 
@@ -21,8 +21,8 @@ public class ImageDownloader : IImageDownloader
     /// </summary>
     /// <param name="logger">ロガー</param>
     /// <param name="options">オプション</param>
-    public ImageDownloader(
-        ILogger<ImageDownloader> logger,
+    public FileDownloader_(
+        ILogger<FileDownloader> logger,
         IOptions<DownloaderOptions> options)
     {
         _logger = logger;
@@ -34,32 +34,32 @@ public class ImageDownloader : IImageDownloader
     }
 
     /// <summary>
-    /// 画像をダウンロードします。
+    /// 出力ディレクトリへファイルをダウンロードします。
     /// </summary>
-    /// <param name="url">画像URL</param>
+    /// <param name="downloadLink">ダウンロードリンク</param>
     /// <param name="outputDirectory">出力ディレクトリ</param>
-    /// <returns>ダウンロードした画像の情報</returns>
-    public async Task<DownloadedImage> DownloadAsync(string url, string outputDirectory)
+    /// <returns>ダウンロードしたファイル名</returns>
+    public async Task<UrlFilePair> DownloadAsync(string downloadLink, string outputDirectory)
     {
-        var uri = new Uri(url);
+        var uri = new Uri(downloadLink);
         var fileName = GenerateFileName(uri);
         var filePath = Path.Combine(outputDirectory, fileName);
 
         if (_options.SkipExistingFiles && File.Exists(filePath))
         {
             _logger.LogInformation("スキップ: 既に存在するファイル {FileName}", fileName);
-            return new DownloadedImage(url, fileName);
+            return new UrlFilePair(downloadLink, fileName);
         }
 
         for (var retry = 0; retry < _options.MaxRetryCount; retry++)
         {
             try
             {
-                var content = await DownloadImageAsync(url);
+                var content = await ExecuteDownloadAsync(downloadLink);
                 await File.WriteAllBytesAsync(filePath, content);
 
                 _logger.LogInformation("ダウンロード成功: {FileName}", fileName);
-                return new DownloadedImage(url, fileName);
+                return new UrlFilePair(downloadLink, fileName);
             }
             catch (Exception ex)
             {
@@ -82,11 +82,11 @@ public class ImageDownloader : IImageDownloader
     }
 
     /// <summary>
-    /// 画像をダウンロードします。
+    /// ダウンロードを実行します。
     /// </summary>
-    /// <param name="url">画像URL</param>
-    /// <returns>ダウンロードした画像のバイト配列</returns>
-    private async Task<byte[]> DownloadImageAsync(string url)
+    /// <param name="url">URL</param>
+    /// <returns>ダウンロードしたファイルのバイト配列</returns>
+    private async Task<byte[]> ExecuteDownloadAsync(string url)
     {
         var response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();

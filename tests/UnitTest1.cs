@@ -1,5 +1,4 @@
 using NotionMarkdownConverter.Core.Utils;
-using NotionMarkdownConverter.Utils;
 using System.ComponentModel;
 using System.Reflection;
 

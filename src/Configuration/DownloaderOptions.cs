@@ -17,12 +17,6 @@ public class DownloaderOptions
     /// <value></value>
     public int RetryDelayMilliseconds { get; set; } = 1000;
 
-    ///// <summary>
-    ///// 最大同時ダウンロード数
-    ///// </summary>
-    ///// <value></value>
-    //public int MaxConcurrentDownloads { get; set; } = 4;
-
     /// <summary>
     /// タイムアウト秒
     /// </summary>

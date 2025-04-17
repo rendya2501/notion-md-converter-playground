@@ -29,7 +29,7 @@ public class MarkdownGenerator(
     public async Task<string> GenerateMarkdownAsync(PageProperty pageProperty, string outputDirectory)
     {
         // ページの全内容を取得(非同期で実行)
-        var pageFullContent = _notionClient.GetPageFullContent(pageProperty.PageId);
+        var pageFullContent = _notionClient.GetPageFullContentAsync(pageProperty.PageId);
 
         // フロントマターを作成
         var frontmatter = _frontmatterGenerator.GenerateFrontmatter(pageProperty);

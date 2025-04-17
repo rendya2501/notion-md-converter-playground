@@ -28,5 +28,5 @@ public interface INotionClientWrapper
     /// </summary>
     /// <param name="blockId"></param>
     /// <returns></returns>
-    Task<List<NotionBlock>> GetPageFullContent(string blockId);
+    Task<List<NotionBlock>> GetPageFullContentAsync(string blockId);
 } 

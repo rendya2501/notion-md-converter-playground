@@ -71,7 +71,7 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
     /// </summary>
     /// <param name="blockId"></param>
     /// <returns></returns>
-    public async Task<List<NotionBlock>> GetPageFullContent(string blockId)
+    public async Task<List<NotionBlock>> GetPageFullContentAsync(string blockId)
     {
         // ページの全内容を取得するためのリスト
         List<NotionBlock> results = [];
@@ -98,7 +98,7 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
         // ページの子要素を取得
         var tasks = results
             .Where(block => block.HasChildren)
-            .Select(async block => block.Children = await GetPageFullContent(block.Id))
+            .Select(async block => block.Children = await GetPageFullContentAsync(block.Id))
             .ToList();
 
         await Task.WhenAll(tasks);

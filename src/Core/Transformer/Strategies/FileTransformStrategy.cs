@@ -1,3 +1,4 @@
+using MediatR;
 using Notion.Client;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Utils;
@@ -7,7 +8,7 @@ namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 /// <summary>
 /// ファイル変換ストラテジー
 /// </summary>
-public class FileTransformStrategy : IBlockTransformStrategy
+public class FileTransformStrategy(IMediator _mediator) : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
@@ -24,13 +25,21 @@ public class FileTransformStrategy : IBlockTransformStrategy
     {
         // ファイルブロックを取得
         var block = BlockConverter.GetOriginalBlock<FileBlock>(context.CurrentBlock);
+
         // ファイルのURLを取得
-        var url = block.File switch
+        var url = string.Empty;
+        switch (block.File)
         {
-            ExternalFile externalFile => externalFile.External.Url,
-            UploadedFile uploadedFile => uploadedFile.File.Url,
-            _ => string.Empty
-        };
+            case ExternalFile externalFile:
+                url = externalFile.External.Url;
+                break;
+            case UploadedFile uploadedFile:
+                url = uploadedFile.File.Url;
+                // アップロードしたファイルのみダウンロードURLをDownloadLinkCollectorに通知
+                _mediator.Publish(new FileDownloadNotification(url)).GetAwaiter().GetResult();
+                break;
+        }
+
         // キャプションを取得
         var caption = block.File.Caption.Any()
             ? MarkdownUtils.RichTextsToMarkdown(block.File.Caption)

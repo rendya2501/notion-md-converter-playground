@@ -1,29 +1,17 @@
+using MediatR;
 using Notion.Client;
+using NotionMarkdownConverter.Core.Services.Test;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Utils;
-using NotionMarkdownConverter.Infrastructure.Http.Services;
 
 namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 
 /// <summary>
 /// 画像変換ストラテジー
 /// </summary>
-public class ImageTransformStrategy(IFileDownloader _fileDownloader)
-    : IBlockTransformStrategy, IEventSubscriber<OutputDirectoryChangedEvent>
+public class ImageTransformStrategy(IMediator _mediator, IMarkdownLinkProcessor2 _linkProcessor) : IBlockTransformStrategy
 {
-    private string? _outputDirectory;
-
     public BlockType BlockType => BlockType.Image;
-
-    /// <summary>
-    /// ブロックタイプ
-    /// </summary>
-    /// <value></value>
-
-    public void OnEvent(OutputDirectoryChangedEvent eventData)
-    {
-        _outputDirectory = eventData.OutputDirectory;
-    }
 
     ///  <summary>
     /// ブロックを変換します。
@@ -32,20 +20,25 @@ public class ImageTransformStrategy(IFileDownloader _fileDownloader)
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
-        if (string.IsNullOrEmpty(_outputDirectory))
-            throw new InvalidOperationException("Output directory is not set.");
-
         // 画像ブロックを取得
         var block = BlockConverter.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
-        // 画像のURLを取得
-        var url = block.Image switch
-        {
-            ExternalFile externalFile => externalFile.External.Url,
-            UploadedFile uploadedFile => uploadedFile.File.Url,
-            _ => string.Empty
-        };
 
-        var aaa = _fileDownloader.DownloadAsync(url, _outputDirectory);
+        // 画像のURLを取得
+        var url = string.Empty;
+        switch (block.Image)
+        {
+            case ExternalFile externalFile:
+                url = externalFile.External.Url;
+                break;
+            case UploadedFile uploadedFile:
+                url = uploadedFile.File.Url;
+                // アップロードした画像ファイルのみダウンロードURLをDownloadLinkCollectorに通知
+                _mediator.Publish(new FileDownloadNotification(url)).GetAwaiter().GetResult();
+
+                //var outputDirectory = context.OutputDirectory;
+                //url = _linkProcessor.ProcessLinksAsync(uploadedFile.File.Url, outputDirectory);
+                break;
+        }
 
         // 画像のタイトルを取得
         var title = MarkdownUtils.RichTextsToMarkdown(block.Image.Caption);

@@ -1,4 +1,5 @@
 // Program.cs - エントリポイント
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,7 +39,7 @@ services.Configure<AppConfiguration>(config =>
 
 // NotionClientの登録
 services.AddSingleton<INotionClient>(provider =>
-    {
+{
     var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
     var config = options.Value;
     return NotionClientFactory.Create(new ClientOptions
@@ -46,6 +47,19 @@ services.AddSingleton<INotionClient>(provider =>
         AuthToken = config.NotionAuthToken
     });
 });
+
+// MediatRの登録
+services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
+    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+// MediatRの通知ハンドラー用クラスを登録
+services.AddSingleton<DownloadLinkCollector>();
+// MediatRの通知ハンドラーを登録
+services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
+    provider.GetRequiredService<DownloadLinkCollector>());
+// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
 
 // サービスの登録
 services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
@@ -65,8 +79,8 @@ services.AddSingleton<IFileDownloader, FileDownloader>();
 services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
 
-services.AddSingleton<EventBus>();
-services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<EventBus>());
+//services.AddSingleton<EventBus>();
+//services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<EventBus>());
 
 
 // ストラテジーの登録
@@ -84,14 +98,7 @@ services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
-// services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy>(sp => {
-    var downloader = sp.GetRequiredService<IFileDownloader>();
-    var bus = sp.GetRequiredService<EventBus>();
-    var strategy = new ImageTransformStrategy(downloader);
-    bus.Subscribe(strategy);
-    return strategy;
-});
+services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
@@ -119,39 +126,68 @@ if (serviceProvider is IDisposable disposable)
 
 
 
-// --- OutputDirectoryChangedEvent.cs ---
-public record OutputDirectoryChangedEvent(string OutputDirectory);
+/// <summary>
+/// マークダウン内のファイルダウンロード通知
+/// </summary>
+/// <remarks>
+/// コンストラクタ
+/// </remarks>
+/// <param name="DownloadLink">ダウンロードリンク</param>
+public record FileDownloadNotification(string DownloadLink) : INotification;
 
-// --- IEventPublisher.cs ---
-public interface IEventPublisher
+
+/// <summary>
+/// ダウンロードリンクコレクター
+/// </summary>
+public class DownloadLinkCollector : INotificationHandler<FileDownloadNotification>
 {
-    void Publish<T>(T eventData);
-}
+    private readonly List<string> _downloadLinks = [];
 
-// --- IEventSubscriber.cs ---
-public interface IEventSubscriber<T>
-{
-    void OnEvent(T eventData);
-}
-
-// --- EventBus.cs ---
-public class EventBus : IEventPublisher
-{
-    private readonly List<object> _subscribers = new();
-
-    public void Subscribe<T>(IEventSubscriber<T> subscriber)
+    public Task Handle(FileDownloadNotification notification, CancellationToken cancellationToken)
     {
-        _subscribers.Add(subscriber);
+        _downloadLinks.Add(notification.DownloadLink);
+        return Task.CompletedTask;
     }
 
-    public void Publish<T>(T eventData)
-    {
-        foreach (var subscriber in _subscribers.OfType<IEventSubscriber<T>>())
-        {
-            subscriber.OnEvent(eventData);
-        }
-    }
+    public IReadOnlyList<string> GetCollectedUrls() => _downloadLinks.AsReadOnly();
+
+    public void ClearCollectedUrls() => _downloadLinks.Clear();
 }
+
+
+//// --- OutputDirectoryChangedEvent.cs ---
+//public record OutputDirectoryChangedEvent(string OutputDirectory);
+
+//// --- IEventPublisher.cs ---
+//public interface IEventPublisher
+//{
+//    void Publish<T>(T eventData);
+//}
+
+//// --- IEventSubscriber.cs ---
+//public interface IEventSubscriber<T>
+//{
+//    void OnEvent(T eventData);
+//}
+
+//// --- EventBus.cs ---
+//public class EventBus : IEventPublisher
+//{
+//    private readonly List<object> _subscribers = new();
+
+//    public void Subscribe<T>(IEventSubscriber<T> subscriber)
+//    {
+//        _subscribers.Add(subscriber);
+//    }
+
+//    public void Publish<T>(T eventData)
+//    {
+//        foreach (var subscriber in _subscribers.OfType<IEventSubscriber<T>>())
+//        {
+//            subscriber.OnEvent(eventData);
+//        }
+//    }
+//}
 
 
 

@@ -20,7 +20,7 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // ブロックを埋め込みブロックに変換
         var originalBlock = BlockConverter.GetOriginalBlock<EmbedBlock>(context.CurrentBlock);
@@ -32,7 +32,8 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
         var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
 
         // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownUtils.WithLineBreak(
-            MarkdownUtils.Link(displayText, url));
+        return Task.FromResult(
+            MarkdownUtils.WithLineBreak(
+                MarkdownUtils.Link(displayText, url)));
     }
 }

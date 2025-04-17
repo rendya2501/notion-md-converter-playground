@@ -20,11 +20,11 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 子ブロックが存在する場合、子ブロックを変換
         var children = context.CurrentBlock.HasChildren
-            ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
+            ? await context.GenerateContentAsync(context.CurrentBlock.Children)
             : string.Empty;
 
         // コールアウトのテキストをMarkdown形式に変換

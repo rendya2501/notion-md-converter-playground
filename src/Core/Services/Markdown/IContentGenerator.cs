@@ -12,5 +12,5 @@ public interface IContentGenerator
     /// </summary>
     /// <param name="blocks"></param>
     /// <returns></returns>
-    string GenerateContent(List<NotionBlock> blocks);
+    Task<string> GenerateContentAsync(List<NotionBlock> blocks);
 }

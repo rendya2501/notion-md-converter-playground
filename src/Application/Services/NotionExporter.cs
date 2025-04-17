@@ -6,6 +6,7 @@ using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Services.Markdown;
+using NotionMarkdownConverter.Core.Services.Test;
 using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
 using NotionMarkdownConverter.Infrastructure.GitHub.Services;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
@@ -22,6 +23,7 @@ public class NotionExporter(
     IMarkdownGenerator _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryBuilder _outputDirectoryBuilder,
+    IMarkdownLinkProcessor _linkProcessor,
     ILogger<NotionExporter> _logger) : INotionExporter
 {
     /// <summary>
@@ -90,8 +92,10 @@ public class NotionExporter(
             // 出力ディレクトリを構築
             var outputDirectory = _outputDirectoryBuilder.Build(pageData);
 
+            _linkProcessor.SetOutputDirectory(outputDirectory);
+
             // マークダウンを生成
-            var markdown = await _markdownGenerator.GenerateMarkdownAsync(pageData, outputDirectory);
+            var markdown = await _markdownGenerator.GenerateMarkdownAsync(pageData);
 
             // マークダウンを出力
             await File.WriteAllTextAsync(

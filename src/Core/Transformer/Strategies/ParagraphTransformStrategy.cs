@@ -20,14 +20,14 @@ public class ParagraphTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 現在のブロックを取得
         var currentBlock = context.CurrentBlock;
 
         // 子ブロックが存在する場合、子ブロックを変換
         var children = currentBlock.HasChildren
-            ? context.ExecuteTransformBlocks(currentBlock.Children)
+            ? await context.GenerateContentAsync(currentBlock.Children)
             : string.Empty;
 
         // 段落のテキストを取得して改行を追加

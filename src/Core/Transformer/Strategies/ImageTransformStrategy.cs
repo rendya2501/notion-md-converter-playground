@@ -9,7 +9,7 @@ namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 /// <summary>
 /// 画像変換ストラテジー
 /// </summary>
-public class ImageTransformStrategy(IMediator _mediator, IMarkdownLinkProcessor2 _linkProcessor) : IBlockTransformStrategy
+public class ImageTransformStrategy(IMarkdownLinkProcessor _linkProcessor) : IBlockTransformStrategy
 {
     public BlockType BlockType => BlockType.Image;
 
@@ -18,7 +18,7 @@ public class ImageTransformStrategy(IMediator _mediator, IMarkdownLinkProcessor2
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 画像ブロックを取得
         var block = BlockConverter.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
@@ -31,12 +31,10 @@ public class ImageTransformStrategy(IMediator _mediator, IMarkdownLinkProcessor2
                 url = externalFile.External.Url;
                 break;
             case UploadedFile uploadedFile:
-                url = uploadedFile.File.Url;
+                // url = uploadedFile.File.Url;
                 // アップロードした画像ファイルのみダウンロードURLをDownloadLinkCollectorに通知
-                _mediator.Publish(new FileDownloadNotification(url)).GetAwaiter().GetResult();
-
-                //var outputDirectory = context.OutputDirectory;
-                //url = _linkProcessor.ProcessLinksAsync(uploadedFile.File.Url, outputDirectory);
+                // _mediator.Publish(new FileDownloadNotification(url)).GetAwaiter().GetResult();
+                url = await _linkProcessor.ProcessLinksAsync(uploadedFile.File.Url);
                 break;
         }
 

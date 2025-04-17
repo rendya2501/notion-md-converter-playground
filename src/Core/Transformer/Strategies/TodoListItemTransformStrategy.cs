@@ -20,7 +20,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // タスクリストのブロックを取得 
         var block = BlockConverter.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
@@ -36,7 +36,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
 
         // 子ブロックが存在する場合、子ブロックを変換
         var children = context.CurrentBlock.HasChildren
-            ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
+            ? await context.GenerateContentAsync(context.CurrentBlock.Children)
             : string.Empty;
 
         // チェックボックスを生成

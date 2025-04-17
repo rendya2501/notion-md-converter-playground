@@ -48,18 +48,18 @@ services.AddSingleton<INotionClient>(provider =>
     });
 });
 
-// MediatRの登録
-services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
-    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-});
-// MediatRの通知ハンドラー用クラスを登録
-services.AddSingleton<DownloadLinkCollector>();
-// MediatRの通知ハンドラーを登録
-services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
-    provider.GetRequiredService<DownloadLinkCollector>());
-// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
+//// MediatRの登録
+//services.AddMediatR(cfg =>
+//{
+//    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
+//    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+//});
+//// MediatRの通知ハンドラー用クラスを登録
+//services.AddSingleton<DownloadLinkCollector>();
+//// MediatRの通知ハンドラーを登録
+//services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
+//    provider.GetRequiredService<DownloadLinkCollector>());
+//// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
 
 // サービスの登録
 services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
@@ -78,9 +78,6 @@ services.Configure<DownloaderOptions>(options =>
 services.AddSingleton<IFileDownloader, FileDownloader>();
 services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
-
-//services.AddSingleton<EventBus>();
-//services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<EventBus>());
 
 
 // ストラテジーの登録
@@ -153,42 +150,6 @@ public class DownloadLinkCollector : INotificationHandler<FileDownloadNotificati
 
     public void ClearCollectedUrls() => _downloadLinks.Clear();
 }
-
-
-//// --- OutputDirectoryChangedEvent.cs ---
-//public record OutputDirectoryChangedEvent(string OutputDirectory);
-
-//// --- IEventPublisher.cs ---
-//public interface IEventPublisher
-//{
-//    void Publish<T>(T eventData);
-//}
-
-//// --- IEventSubscriber.cs ---
-//public interface IEventSubscriber<T>
-//{
-//    void OnEvent(T eventData);
-//}
-
-//// --- EventBus.cs ---
-//public class EventBus : IEventPublisher
-//{
-//    private readonly List<object> _subscribers = new();
-
-//    public void Subscribe<T>(IEventSubscriber<T> subscriber)
-//    {
-//        _subscribers.Add(subscriber);
-//    }
-
-//    public void Publish<T>(T eventData)
-//    {
-//        foreach (var subscriber in _subscribers.OfType<IEventSubscriber<T>>())
-//        {
-//            subscriber.OnEvent(eventData);
-//        }
-//    }
-//}
-
 
 
 

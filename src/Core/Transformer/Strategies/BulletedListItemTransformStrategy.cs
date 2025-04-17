@@ -20,7 +20,7 @@ public class BulletedListItemTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         var block = BlockConverter.GetOriginalBlock<BulletedListItemBlock>(context.CurrentBlock);
         // テキストを改行で分割
@@ -35,7 +35,7 @@ public class BulletedListItemTransformStrategy : IBlockTransformStrategy
 
         // 子ブロックが存在する場合、子ブロックを変換
         var children = context.CurrentBlock.HasChildren
-            ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
+            ? await context.GenerateContentAsync(context.CurrentBlock.Children)
             : string.Empty;
 
         // 子ブロックが存在しない場合、箇条書きリストを生成

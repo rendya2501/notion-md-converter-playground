@@ -19,5 +19,5 @@ public interface IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    string Transform(NotionBlockTransformState context);
+    Task<string> TransformAsync(NotionBlockTransformState context);
 } 

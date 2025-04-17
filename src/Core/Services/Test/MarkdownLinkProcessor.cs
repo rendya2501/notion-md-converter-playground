@@ -12,19 +12,36 @@ public interface IMarkdownLinkProcessor
     /// <summary>
     /// マークダウン内のリンクを処理します
     /// </summary>
-    /// <param name="markdown">マークダウン</param>
+    /// <param name="downloadLink">ダウンロードリンク</param>
     /// <param name="outputDirectory">出力ディレクトリ</param>
-    /// <returns>処理後のマークダウン</returns>
-    Task<string> ProcessLinksAsync(string markdown, string outputDirectory);
+    /// <returns>ダウンロードリンクから変換したファイル名</returns>
+    Task<string> ProcessLinksAsync(string downloadLink);
+
+    /// <summary>
+    /// 出力ディレクトリを設定します。
+    /// </summary>
+    /// <param name="outputDirectory"></param>
+    void SetOutputDirectory(string outputDirectory);
 }
 
 /// <summary>
 /// マークダウン内のリンクを処理するサービス
 /// </summary>
-public class MarkdownLinkProcessor(
-    IFileDownloader _imageDownloader,
-    DownloadLinkCollector _collector) : IMarkdownLinkProcessor
+public class MarkdownLinkProcessor(IFileDownloader _imageDownloader) : IMarkdownLinkProcessor
 {
+    /// <summary>
+    /// 出力ディレクトリ
+    /// </summary>
+    private string _outputDirectory = string.Empty;
+
+    /// <summary>
+    /// 出力ディレクトリを設定します。
+    /// </summary>
+    /// <param name="outputDirectory"></param>
+    public void SetOutputDirectory(string outputDirectory)
+    {
+        _outputDirectory = outputDirectory;
+    }
 
     /// <summary>
     /// マークダウン内のリンクを処理します
@@ -32,51 +49,21 @@ public class MarkdownLinkProcessor(
     /// <param name="markdown"></param>
     /// <param name="outputDirectory"></param>
     /// <returns></returns>
-    public async Task<string> ProcessLinksAsync(string markdown, string outputDirectory)
+    public async Task<string> ProcessLinksAsync(string downloadLink)
     {
-        // マークダウン内の画像URLを収集
-        var urls = _collector.GetCollectedUrls();
-
-        // 収集したURLがない場合はそのまま返す
-        if (urls.Count == 0)
+        if (string.IsNullOrEmpty(_outputDirectory))
         {
-            return markdown;
+            throw new InvalidOperationException("Output directory is not set.");
         }
 
         // URLとファイル名のペアを生成
-        var urlFilePairs = urls.Select(url => new UrlFilePair(url, GenerateFileName(url)));
+        var urlFilePair = new UrlFilePair(downloadLink, GenerateFileName(downloadLink));
 
         // 収集したURLをダウンロード
-        var downloadTasks = urlFilePairs.Select(async urlFilePair =>
-            await _imageDownloader.DownloadAsync(urlFilePair, outputDirectory));
-        // ダウンロードが完了するまで待機
-        await Task.WhenAll(downloadTasks);
+        await _imageDownloader.DownloadAsync(urlFilePair, _outputDirectory);
 
-        // ダウンロードしたファイルのURLを置換
-        var replacedMarkdown = ReplaceUrls(markdown, urlFilePairs);
-
-        // コレクターがstaticなので、全ての処理が完了した後にクリアする
-        _collector.ClearCollectedUrls();
-
-        return replacedMarkdown;
-    }
-
-    /// <summary>
-    /// マークダウン内の画像URLを置換する
-    /// </summary>
-    /// <param name="markdown"></param>
-    /// <param name="downloadedFiles"></param>
-    /// <returns></returns>
-    private static string ReplaceUrls(
-        string markdown,
-        IEnumerable<UrlFilePair> downloadedFiles)
-    {
-        var result = markdown;
-        foreach (var file in downloadedFiles)
-        {
-            result = result.Replace(file.OriginalUrl, file.ConversionFileName);
-        }
-        return result;
+        // ダウンロードリンクから変換したファイル名を返す
+        return urlFilePair.ConversionFileName;
     }
 
     /// <summary>

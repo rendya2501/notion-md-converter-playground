@@ -15,12 +15,12 @@ public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) 
     /// </summary>
     /// <param name="blocks">変換するブロック</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string GenerateContent(List<NotionBlock> blocks)
+    public async Task<string> GenerateContentAsync(List<NotionBlock> blocks)
     {
         // 変換コンテキストを作成
         var context = new NotionBlockTransformState
         {
-            ExecuteTransformBlocks = GenerateContent,
+            GenerateContentAsync = GenerateContentAsync,
             Blocks = blocks,
             CurrentBlock = blocks.First(),
             CurrentBlockIndex = 0
@@ -40,7 +40,7 @@ public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) 
                 ?? new DefaultTransformStrategy();
 
             // ブロックを変換
-            var transformedBlock = strategy.Transform(context);
+            var transformedBlock = await strategy.TransformAsync(context);
 
             // 変換されたブロックが存在する場合
             if (transformedBlock is not null)
@@ -49,7 +49,7 @@ public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) 
                 {
                     sb.Append('\n');
                 }
-                
+
                 sb.Append(transformedBlock);
             }
         }

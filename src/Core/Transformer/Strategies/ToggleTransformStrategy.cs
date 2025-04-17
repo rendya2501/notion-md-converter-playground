@@ -20,10 +20,10 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 子ブロックを変換
-        var children = context.ExecuteTransformBlocks(context.CurrentBlock.Children);
+        var children = await context.GenerateContentAsync(context.CurrentBlock.Children);
         // トグルブロックを取得
         var toggleBlock = BlockConverter.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
         // タイトルを取得して改行を追加

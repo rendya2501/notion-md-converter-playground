@@ -20,7 +20,7 @@ public class EquationTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 方程式ブロックを取得
         var block = BlockConverter.GetOriginalBlock<EquationBlock>(context.CurrentBlock);
@@ -31,6 +31,6 @@ public class EquationTransformStrategy : IBlockTransformStrategy
             ? MarkdownUtils.CodeBlock(text, "txt")
             : MarkdownUtils.BlockEquation(text);
 
-        return result;
+        return Task.FromResult(result);
     }
 }

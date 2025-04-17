@@ -20,11 +20,12 @@ public class LinkPreviewTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         var linkPreview = BlockConverter.GetOriginalBlock<LinkPreviewBlock>(context.CurrentBlock);
         var url = linkPreview.LinkPreview.Url;
         
-        return MarkdownUtils.Link(url,url);
+        return Task.FromResult(
+            MarkdownUtils.Link(url,url));
     }
 }

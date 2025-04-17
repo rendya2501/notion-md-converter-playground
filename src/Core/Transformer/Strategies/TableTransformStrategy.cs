@@ -20,7 +20,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // テーブルブロックに親ブロックの子ブロックとして存在するため、親ブロックは取得しても意味がないので取得しない。
         // var tableBlock = BlockConverter.GetOriginalBlock<TableBlock>(context.CurrentBlock);
@@ -39,7 +39,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
             .ToList();
 
         // テーブルを生成
-        return Table(headerCells, rowsCells);
+        return Task.FromResult(Table(headerCells, rowsCells));
     }
 
     /// <summary>

@@ -20,16 +20,10 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // ブロックをブックマークブロックに変換
         var originalBlock = BlockConverter.GetOriginalBlock<BookmarkBlock>(context.CurrentBlock);
-        // // ブックマークブロックが存在しない場合は空文字を返す
-        // if (originalBlock is not BookmarkBlock bookmarkBlock || string.IsNullOrEmpty(bookmarkBlock.Bookmark.Url))
-        // {
-        //     return string.Empty;
-        // }
-
         // ブックマークのURLを取得
         var url = originalBlock.Bookmark.Url;
         // ブックマークのキャプションをMarkdown形式に変換
@@ -38,7 +32,8 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
         var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
     
         // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownUtils.WithLineBreak(
-            MarkdownUtils.Link(displayText, url));
+        return Task.FromResult(
+            MarkdownUtils.WithLineBreak(
+                MarkdownUtils.Link(displayText, url)));
     }
 }

@@ -20,7 +20,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public async Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // 番号付きリストのリスト数を取得
         var listCount = context.Blocks
@@ -44,7 +44,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
 
         // 子ブロックが存在する場合、子ブロックを変換
         var children = context.CurrentBlock.HasChildren
-            ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
+            ? await context.GenerateContentAsync(context.CurrentBlock.Children)
             : string.Empty;
 
         // 子ブロックが存在しない場合、番号付きリストを返す

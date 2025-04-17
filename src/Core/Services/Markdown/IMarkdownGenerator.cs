@@ -11,7 +11,6 @@ public interface IMarkdownGenerator
     /// マークダウンを生成します。
     /// </summary>
     /// <param name="pageProperty">ページのプロパティ</param>
-    /// <param name="outputDirectory">出力ディレクトリ</param>
     /// <returns>生成されたマークダウン</returns>
-    Task<string> GenerateMarkdownAsync(PageProperty pageProperty, string outputDirectory);
+    Task<string> GenerateMarkdownAsync(PageProperty pageProperty);
 } 

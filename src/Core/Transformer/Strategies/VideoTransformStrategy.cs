@@ -20,7 +20,7 @@ public class VideoTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // ビデオブロックを取得
         var videoBlock = BlockConverter.GetOriginalBlock<VideoBlock>(context.CurrentBlock);
@@ -33,6 +33,7 @@ public class VideoTransformStrategy : IBlockTransformStrategy
         };
 
         // ビデオのURLをMarkdown形式に変換
-        return MarkdownUtils.Video(url);
+        return Task.FromResult(
+            MarkdownUtils.Video(url));
     }
 }

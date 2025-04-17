@@ -20,7 +20,7 @@ public class HeadingTwoTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public Task<string> TransformAsync(NotionBlockTransformState context)
     {
         // ブロックを取得
         var block = BlockConverter.GetOriginalBlock<HeadingTwoBlock>(context.CurrentBlock);
@@ -28,6 +28,7 @@ public class HeadingTwoTransformStrategy : IBlockTransformStrategy
         var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_2.RichText);
 
         // 見出しを生成
-        return MarkdownUtils.Heading(text, 2);
+        return Task.FromResult(
+            MarkdownUtils.Heading(text, 2));
     }
 } 

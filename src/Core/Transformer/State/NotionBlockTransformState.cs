@@ -11,7 +11,7 @@ public class NotionBlockTransformState
     /// ブロックを変換する
     /// </summary>
     /// <value></value>
-    public required Func<List<NotionBlock>, string> ExecuteTransformBlocks { get; set; }
+    public required Func<List<NotionBlock>, Task<string>> GenerateContentAsync { get; set; }
 
     /// <summary>
     /// ブロックのリスト

@@ -53,7 +53,11 @@ public class FileDownloader : IFileDownloader
         {
             try
             {
-                var content = await ExecuteDownloadAsync(url);
+                //var content = await ExecuteDownloadAsync(url);
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsByteArrayAsync();
+
                 await File.WriteAllBytesAsync(filePath, content);
 
                 _logger.LogInformation("ダウンロード成功: {FileName}", fileName);

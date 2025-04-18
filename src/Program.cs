@@ -37,6 +37,28 @@ services.Configure<AppConfiguration>(config =>
     config.OutputDirectoryPathTemplate = args[2];
 });
 
+services.Configure<DownloaderOptions>(options =>
+{
+    options.MaxRetryCount = 3;
+    options.RetryDelayMilliseconds = 1000;
+    options.TimeoutSeconds = 30;
+    options.SkipExistingFiles = true;
+});
+
+//// MediatRの登録
+//services.AddMediatR(cfg =>
+//{
+//    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
+//    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+//});
+//// MediatRの通知ハンドラー用クラスを登録
+//services.AddSingleton<DownloadLinkCollector>();
+//// MediatRの通知ハンドラーを登録
+//services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
+//    provider.GetRequiredService<DownloadLinkCollector>());
+// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
+
+
 // NotionClientの登録
 services.AddSingleton<INotionClient>(provider =>
 {
@@ -47,20 +69,6 @@ services.AddSingleton<INotionClient>(provider =>
         AuthToken = config.NotionAuthToken
     });
 });
-
-// MediatRの登録
-services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
-    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-});
-// MediatRの通知ハンドラー用クラスを登録
-services.AddSingleton<DownloadLinkCollector>();
-// MediatRの通知ハンドラーを登録
-services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
-    provider.GetRequiredService<DownloadLinkCollector>());
-// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
-
 // サービスの登録
 services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
 services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
@@ -68,15 +76,8 @@ services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
 services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
 services.AddSingleton<IContentGenerator, ContentGenerator>();
 services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
-services.Configure<DownloaderOptions>(options =>
-{
-    options.MaxRetryCount = 3;
-    options.RetryDelayMilliseconds = 1000;
-    options.TimeoutSeconds = 30;
-    options.SkipExistingFiles = true;
-});
 services.AddSingleton<IFileDownloader, FileDownloader>();
-services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
+services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
 
 //services.AddSingleton<EventBus>();

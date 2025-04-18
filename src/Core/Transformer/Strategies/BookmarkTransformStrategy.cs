@@ -24,12 +24,6 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
     {
         // ブロックをブックマークブロックに変換
         var originalBlock = BlockConverter.GetOriginalBlock<BookmarkBlock>(context.CurrentBlock);
-        // // ブックマークブロックが存在しない場合は空文字を返す
-        // if (originalBlock is not BookmarkBlock bookmarkBlock || string.IsNullOrEmpty(bookmarkBlock.Bookmark.Url))
-        // {
-        //     return string.Empty;
-        // }
-
         // ブックマークのURLを取得
         var url = originalBlock.Bookmark.Url;
         // ブックマークのキャプションをMarkdown形式に変換

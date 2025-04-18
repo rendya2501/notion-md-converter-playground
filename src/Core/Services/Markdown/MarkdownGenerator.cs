@@ -18,7 +18,7 @@ public class MarkdownGenerator(
     INotionClientWrapper _notionClient,
     IFrontmatterGenerator _frontmatterGenerator,
     IContentGenerator _contentGenerator,
-    IMarkdownLinkProcessor _markdownLinkProcessor) : IMarkdownGenerator
+    IDownloadLinkProcessor _markdownLinkProcessor) : IMarkdownGenerator
 {
     /// <summary>
     /// マークダウンを生成します。
@@ -38,7 +38,7 @@ public class MarkdownGenerator(
         var content = _contentGenerator.GenerateContent(await pageFullContent);
 
         // ファイルのダウンロードとリンクの変換処理 
-        var processedContent = await _markdownLinkProcessor.ProcessLinksAsync(content, outputDirectory);
+        var processedContent = await _markdownLinkProcessor.ProcessLinkAsync(content, outputDirectory);
 
         // マークダウンを出力
         return $"{frontmatter}{processedContent}";

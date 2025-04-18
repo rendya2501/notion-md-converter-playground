@@ -3,7 +3,7 @@ namespace NotionMarkdownConverter.Core.Constants;
 /// <summary>
 /// Notionページのプロパティ名を定義するクラス
 /// </summary>
-public class NotionPagePropertyNames
+public static class NotionPagePropertyNames
 {
     public const string TitlePropertyName = "Title";
     public const string TypePropertyName = "Type";

@@ -1,12 +1,12 @@
 name: notion-to-markdown
-description: Custom action to export Notion database to local markdown files without Docker.
+description: Custom action to export Notion database to local markdown files.
 
 inputs:
   notion_auth_token:
-    description: Auth token of the Notion.
+    description: Auth token of the notion.
     required: true
   notion_database_id:
-    description: ID of the Notion database to be exported.
+    description: ID of the notion database to be exported.
     required: true
   output_directory_path_template:
     description: Directory path template to output files.
@@ -16,51 +16,15 @@ inputs:
 outputs:
   exported_count:
     description: Number of exported files.
-    value: ${{ steps.run-converter.outputs.exported_count }}
-    
+
 runs:
-  using: "composite"
-  steps:
-    - name: Check out repository
-      uses: actions/checkout@v4
-
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0'
-
-    ## 案1 コピーする
-    - name: Run converter
-      id: run-converter
-      shell: bash
-      run: |
-        cd ${{ github.action_path  }}
-        dotnet restore ./src/NotionMarkdownConverter.csproj
-        dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
-        dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-        dotnet ./out/NotionMarkdownConverter.dll \
-          "${{ inputs.notion_auth_token }}" \
-          "${{ inputs.notion_database_id }}" \
-          "${{ inputs.output_directory_path_template }}"
-        
-        # 出力されたファイルをメインディレクトリにコピー
-        if [ -d "./articles" ]; then
-          cp -r ./articles/* ${{ github.workspace }}/articles/
-          echo "Files copied to main repository."
-        else
-          echo "No articles directory found in .notion-converter"
-        fi
-
-    ## 案2 引数でパス指定
-    # - name: Run converter
-    #   id: run-converter
-    #   shell: bash
-    #   run: |
-    #     cd ${{ github.action_path  }}
-    #     dotnet restore ./src/NotionMarkdownConverter.csproj
-    #     dotnet build ./src/NotionMarkdownConverter.csproj --configuration Release --no-restore
-    #     dotnet publish ./src/NotionMarkdownConverter.csproj --configuration Release --output ./out --no-build
-    #     dotnet ./out/NotionMarkdownConverter.dll \
-    #       "${{ inputs.notion_auth_token }}" \
-    #       "${{ inputs.notion_database_id }}" \
-    #       "${{ github.workspace }}/${{ inputs.output_directory_path_template }}"
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.notion_auth_token }}
+    - ${{ inputs.notion_database_id }}
+    - ${{ inputs.output_directory_path_template }}
+    
+branding:
+  color: orange
+  icon: download-cloud

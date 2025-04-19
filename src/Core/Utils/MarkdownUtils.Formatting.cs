@@ -92,24 +92,4 @@ public static partial class MarkdownUtils
     {
         return $"{text}  ";
     }
-
-    // /// <summary>
-    // /// 改行を追加
-    // /// </summary>
-    // /// <param name="text">元のテキスト</param>
-    // /// <returns>改行が追加されたテキスト</returns>
-    // public static string WithNewLine(string text)
-    // {
-    //     return $"{text}\n";
-    // }
-
-    // /// <summary>
-    // /// 改行用のスペースと改行を追加
-    // /// </summary>
-    // /// <param name="text">元のテキスト</param>
-    // /// <returns>改行用スペースと改行が追加されたテキスト</returns>
-    // public static string WithLineBreakAndNewLine(string text)
-    // {
-    //     return $"{text}  \n";
-    // }
 } 

@@ -53,7 +53,6 @@ public class FileDownloader : IFileDownloader
         {
             try
             {
-                //var content = await ExecuteDownloadAsync(url);
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 var content = await response.Content.ReadAsByteArrayAsync();
@@ -81,17 +80,5 @@ public class FileDownloader : IFileDownloader
         }
 
         throw new InvalidOperationException("リトライ回数を超えました");
-    }
-
-    /// <summary>
-    /// ダウンロードを実行します。
-    /// </summary>
-    /// <param name="url">URL</param>
-    /// <returns>ダウンロードしたファイルのバイト配列</returns>
-    private async Task<byte[]> ExecuteDownloadAsync(string url)
-    {
-        var response = await _httpClient.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsByteArrayAsync();
     }
 }

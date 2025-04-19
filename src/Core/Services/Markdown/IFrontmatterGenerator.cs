@@ -13,5 +13,5 @@ public interface IFrontmatterGenerator
     /// </summary>
     /// <param name="pageProperty"></param>
     /// <returns></returns>
-    StringBuilder GenerateFrontmatter(PageProperty pageProperty);
+    string GenerateFrontmatter(PageProperty pageProperty);
 }

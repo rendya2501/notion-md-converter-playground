@@ -19,7 +19,7 @@ public class FrontmatterGenerator : IFrontmatterGenerator
     /// </summary>
     /// <param name="pageData"></param>
     /// <returns></returns>
-    public StringBuilder GenerateFrontmatter(PageProperty pageData)
+    public string GenerateFrontmatter(PageProperty pageData)
     {
         var sb = new StringBuilder();
 
@@ -56,6 +56,6 @@ public class FrontmatterGenerator : IFrontmatterGenerator
         sb.AppendLine("---");
         sb.AppendLine();
 
-        return sb;
+        return sb.ToString();
     }
 }

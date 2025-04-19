@@ -35,7 +35,6 @@ services.Configure<AppConfiguration>(config =>
     config.NotionDatabaseId = args[1];
     config.OutputDirectoryPathTemplate = args[2];
 });
-
 // ダウンローダーのオプション設定
 services.Configure<DownloaderOptions>(options =>
 {
@@ -46,26 +45,16 @@ services.Configure<DownloaderOptions>(options =>
 });
 
 
-// NotionClientの登録
-services.AddSingleton<INotionClient>(provider =>
-{
-    var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
-    var config = options.Value;
-    return NotionClientFactory.Create(new ClientOptions
-    {
-        AuthToken = config.NotionAuthToken
-    });
-});
-// サービスの登録
-services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
-services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
-services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
+// アプリケーション層のサービスの登録
+services.AddSingleton<INotionExporter, NotionExporter>();
+
+
+// ドメイン層のサービスの登録
+services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
 services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
 services.AddSingleton<IContentGenerator, ContentGenerator>();
-services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
-services.AddSingleton<IFileDownloader, FileDownloader>();
 services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
-services.AddSingleton<INotionExporter, NotionExporter>();
+
 
 // ストラテジーの登録
 services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
@@ -94,6 +83,25 @@ services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
+services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
+
+
+// インフラ層のサービスの登録
+// NotionClientの登録
+services.AddSingleton<INotionClient>(provider =>
+{
+    var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
+    var config = options.Value;
+    return NotionClientFactory.Create(new ClientOptions
+    {
+        AuthToken = config.NotionAuthToken
+    });
+});
+services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
+services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
+services.AddScoped<IFileDownloader, FileDownloader>();
+
 
 // サービスプロバイダーの構築
 var serviceProvider = services.BuildServiceProvider();

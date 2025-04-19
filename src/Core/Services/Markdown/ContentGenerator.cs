@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
@@ -8,7 +9,10 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// <summary>
 /// コンテンツを生成するクラス
 /// </summary>
-public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) : IContentGenerator
+public class ContentGenerator(
+    IEnumerable<IBlockTransformStrategy> _strategies,
+    IDefaultBlockTransformStrategy _defaultStrategy,
+    ILogger<ContentGenerator> _logger) : IContentGenerator
 {
     /// <summary>
     /// コンテンツを生成します
@@ -17,12 +21,17 @@ public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) 
     /// <returns>変換されたマークダウン文字列</returns>
     public string GenerateContent(List<NotionBlock> blocks)
     {
+        if (blocks is null || blocks.Count == 0)
+        {
+            return string.Empty;
+        }
+
         // 変換コンテキストを作成
         var context = new NotionBlockTransformState
         {
             ExecuteTransformBlocks = GenerateContent,
             Blocks = blocks,
-            CurrentBlock = blocks.First(),
+            CurrentBlock = null!,
             CurrentBlockIndex = 0
         };
 
@@ -36,21 +45,29 @@ public class ContentGenerator(IEnumerable<IBlockTransformStrategy> _strategies) 
             context.CurrentBlockIndex = index;
 
             // ブロックタイプに応じた変換ストラテジーを選択
-            var strategy = _strategies.FirstOrDefault(s => s.BlockType == block.Type)
-                ?? new DefaultTransformStrategy();
+            var strategy = _strategies.FirstOrDefault(s => s.BlockType == block.Type) 
+                ?? (IBlockTransformStrategy)_defaultStrategy;
 
-            // ブロックを変換
-            var transformedBlock = strategy.Transform(context);
-
-            // 変換されたブロックが存在する場合
-            if (transformedBlock is not null)
+            try
             {
-                if (sb.Length > 0)
+                // ブロックを変換
+                var transformedBlock = strategy.Transform(context);
+
+                // 変換されたブロックが存在する場合
+                if (transformedBlock is not null)
                 {
-                    sb.Append('\n');
+                    if (sb.Length > 0)
+                    {
+                        sb.Append('\n');
+                    }
+
+                    sb.Append(transformedBlock);
                 }
-                
-                sb.Append(transformedBlock);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Error transforming block at index : {index}", index);
+                throw;
             }
         }
 

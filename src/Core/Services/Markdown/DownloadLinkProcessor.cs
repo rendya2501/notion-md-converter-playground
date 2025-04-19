@@ -1,25 +1,11 @@
 using NotionMarkdownConverter.Core.Constants;
+using NotionMarkdownConverter.Core.Services.Test;
 using NotionMarkdownConverter.Infrastructure.Http.Services;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NotionMarkdownConverter.Core.Services.Test;
-
-/// <summary>
-/// マークダウン内のダウンロードリンクを処理するサービス
-/// </summary>
-public interface IDownloadLinkProcessor
-{
-    /// <summary>
-    /// マークダウン内のダウンロードリンクを処理します
-    /// </summary>
-    /// <param name="markdown">マークダウン</param>
-    /// <param name="outputDirectory">出力ディレクトリ</param>
-    /// <returns>処理後のマークダウン</returns>
-    Task<string> ProcessLinkAsync(string markdown, string outputDirectory);
-}
-
+namespace NotionMarkdownConverter.Core.Services.Markdown;
 
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス
@@ -120,29 +106,3 @@ public class DownloadLinkProcessor(IFileDownloader _imageDownloader) : IDownload
         return result;
     }
 }
-//// 1. マークダウン文字列から固定文字列をregexする
-//var urls = ExtractDownloadLinks(markdown);
-
-//// 2. regexした結果からローカルリンクを生成しておく
-//var urlToLocalLinkPairs = urls.ToDictionary(
-//    url => url,
-//    url => GenerateFileName(SanitizeUrl(url))
-//);
-
-//// 3. マークダウン文字列からregexした結果とローカルリンクのペアを置換する
-//var updatedMarkdown = ReplaceUrls(markdown, urlToLocalLinkPairs);
-
-//// 4. サニタイジング文字列とローカルリンクのペアを元にダウンロードタスクを生成する
-//var downloadTasks = urlToLocalLinkPairs.Select(pair =>
-//{
-//    var sanitizedUrl = SanitizeUrl(pair.Key);
-//    var localFileName = pair.Value;
-//    return _imageDownloader.DownloadAsync(new UrlFilePair(sanitizedUrl, localFileName), outputDirectory);
-//});
-
-//// 5. タスクをawaitする
-//await Task.WhenAll(downloadTasks);
-
-//// 6. 結果を返す
-//return updatedMarkdown;
-

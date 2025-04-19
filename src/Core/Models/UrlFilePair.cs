@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Core.Services.Test;
+namespace NotionMarkdownConverter.Core.Models;
 
 /// <summary>
 /// URLとファイル名のペア

@@ -1,5 +1,4 @@
 // Program.cs - エントリポイント
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -7,7 +6,6 @@ using Notion.Client;
 using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Services.Markdown;
-using NotionMarkdownConverter.Core.Services.Test;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
 using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
 using NotionMarkdownConverter.Infrastructure.GitHub.Services;
@@ -24,6 +22,7 @@ services.AddLogging(builder =>
     builder.SetMinimumLevel(LogLevel.Information);
 });
 
+
 // コマンドライン引数から設定を取得
 services.Configure<AppConfiguration>(config =>
 {
@@ -37,6 +36,7 @@ services.Configure<AppConfiguration>(config =>
     config.OutputDirectoryPathTemplate = args[2];
 });
 
+// ダウンローダーのオプション設定
 services.Configure<DownloaderOptions>(options =>
 {
     options.MaxRetryCount = 3;
@@ -44,19 +44,6 @@ services.Configure<DownloaderOptions>(options =>
     options.TimeoutSeconds = 30;
     options.SkipExistingFiles = true;
 });
-
-//// MediatRの登録
-//services.AddMediatR(cfg =>
-//{
-//    cfg.RegisterServicesFromAssemblyContaining<FileDownloadNotification>();
-//    // cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-//});
-//// MediatRの通知ハンドラー用クラスを登録
-//services.AddSingleton<DownloadLinkCollector>();
-//// MediatRの通知ハンドラーを登録
-//services.AddSingleton<INotificationHandler<FileDownloadNotification>>(provider =>
-//    provider.GetRequiredService<DownloadLinkCollector>());
-// services.AddSingleton<INotificationHandler<FileDownloadNotification>, DownloadLinkCollector>();
 
 
 // NotionClientの登録
@@ -79,10 +66,6 @@ services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
 services.AddSingleton<IFileDownloader, FileDownloader>();
 services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
 services.AddSingleton<INotionExporter, NotionExporter>();
-
-//services.AddSingleton<EventBus>();
-//services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<EventBus>());
-
 
 // ストラテジーの登録
 services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
@@ -127,34 +110,8 @@ if (serviceProvider is IDisposable disposable)
 
 
 
-/// <summary>
-/// マークダウン内のファイルダウンロード通知
-/// </summary>
-/// <remarks>
-/// コンストラクタ
-/// </remarks>
-/// <param name="DownloadLink">ダウンロードリンク</param>
-public record FileDownloadNotification(string DownloadLink) : INotification;
-
-
-/// <summary>
-/// ダウンロードリンクコレクター
-/// </summary>
-public class DownloadLinkCollector : INotificationHandler<FileDownloadNotification>
-{
-    private readonly List<string> _downloadLinks = [];
-
-    public Task Handle(FileDownloadNotification notification, CancellationToken cancellationToken)
-    {
-        _downloadLinks.Add(notification.DownloadLink);
-        return Task.CompletedTask;
-    }
-
-    public IReadOnlyList<string> GetCollectedUrls() => _downloadLinks.AsReadOnly();
-
-    public void ClearCollectedUrls() => _downloadLinks.Clear();
-}
-
+//services.AddSingleton<EventBus>();
+//services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<EventBus>());
 
 //// --- OutputDirectoryChangedEvent.cs ---
 //public record OutputDirectoryChangedEvent(string OutputDirectory);

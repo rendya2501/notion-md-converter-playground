@@ -6,7 +6,7 @@ namespace NotionMarkdownConverter.Core.Transformer.Strategies;
 /// <summary>
 /// デフォルトの変換ストラテジー
 /// </summary>
-public class DefaultTransformStrategy : IBlockTransformStrategy, IDefaultBlockTransformStrategy
+public class DefaultTransformStrategy : IDefaultBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ

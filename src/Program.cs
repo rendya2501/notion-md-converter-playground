@@ -92,15 +92,6 @@ services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider 
     return strategies.ToDictionary(strategy => strategy.BlockType);
 });
 
-//services.AddSingleton<IDictionary<Type, IBlockTransformStrategy>>(provider =>
-//{
-//    return new Dictionary<Type, IBlockTransformStrategy>
-//    {
-//        {typeof(BookmarkTransformStrategy), provider.GetRequiredService<BookmarkTransformStrategy>()},
-//        {typeof(BreadcrumbBlock), provider.GetRequiredService<BreadcrumbTransformStrategy>()},
-//    };
-//});
-
 // インフラ層のサービスの登録
 // NotionClientの登録
 services.AddSingleton<INotionClient>(provider =>

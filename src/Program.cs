@@ -22,7 +22,6 @@ services.AddLogging(builder =>
     builder.SetMinimumLevel(LogLevel.Information);
 });
 
-
 // コマンドライン引数から設定を取得
 services.Configure<AppConfiguration>(config =>
 {
@@ -44,70 +43,10 @@ services.Configure<DownloaderOptions>(options =>
     options.SkipExistingFiles = true;
 });
 
-
-// アプリケーション層のサービスの登録
-services.AddSingleton<INotionExporter, NotionExporter>();
-
-
-// ドメイン層のサービスの登録
-services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
-services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
-services.AddSingleton<IContentGenerator, ContentGenerator>();
-services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
-
-
-// ストラテジーの登録
-services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, DefaultTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
-services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
-services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
-
-// ディクショナリを生成して DI コンテナに登録
-services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider =>
-{
-    var strategies = provider.GetServices<IBlockTransformStrategy>();
-    return strategies.ToDictionary(strategy => strategy.BlockType);
-});
-
-// インフラ層のサービスの登録
-// NotionClientの登録
-services.AddSingleton<INotionClient>(provider =>
-{
-    var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
-    var config = options.Value;
-    return NotionClientFactory.Create(new ClientOptions
-    {
-        AuthToken = config.NotionAuthToken
-    });
-});
-services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
-services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
-services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
-services.AddScoped<IFileDownloader, FileDownloader>();
-
+// 各層のサービスを登録
+RegisterApplicationServices(services);
+RegisterDomainServices(services);
+RegisterInfrastructureServices(services);
 
 // サービスプロバイダーの構築
 var serviceProvider = services.BuildServiceProvider();
@@ -120,6 +59,79 @@ await exporter.ExportPagesAsync();
 if (serviceProvider is IDisposable disposable)
 {
     disposable.Dispose();
+}
+
+
+
+
+// アプリケーション層のサービス登録
+void RegisterApplicationServices(IServiceCollection services)
+{
+    services.AddSingleton<INotionExporter, NotionExporter>();
+}
+
+// ドメイン層のサービス登録
+void RegisterDomainServices(IServiceCollection services)
+{
+    services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
+    services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
+    services.AddSingleton<IContentGenerator, ContentGenerator>();
+    services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
+
+    // ストラテジーの登録
+    services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, DefaultTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
+    services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
+    services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
+
+    // ディクショナリを生成して DI コンテナに登録
+    services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider =>
+    {
+        var strategies = provider.GetServices<IBlockTransformStrategy>();
+        return strategies.ToDictionary(strategy => strategy.BlockType);
+    });
+}
+
+// インフラストラクチャ層のサービス登録
+void RegisterInfrastructureServices(IServiceCollection services)
+{
+    // NotionClientの登録
+    services.AddSingleton<INotionClient>(provider =>
+    {
+        var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
+        var config = options.Value;
+        return NotionClientFactory.Create(new ClientOptions
+        {
+            AuthToken = config.NotionAuthToken
+        });
+    });
+    services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+    services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
+    services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
+    services.AddScoped<IFileDownloader, FileDownloader>();
 }
 
 

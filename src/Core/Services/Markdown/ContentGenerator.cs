@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Notion.Client;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
@@ -10,7 +11,8 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// コンテンツを生成するクラス
 /// </summary>
 public class ContentGenerator(
-    IEnumerable<IBlockTransformStrategy> _strategies,
+    // IEnumerable<IBlockTransformStrategy> _strategies,
+    IDictionary<BlockType, IBlockTransformStrategy> _strategyDictionary,
     IDefaultBlockTransformStrategy _defaultStrategy,
     ILogger<ContentGenerator> _logger) : IContentGenerator
 {
@@ -44,9 +46,16 @@ public class ContentGenerator(
             context.CurrentBlock = block;
             context.CurrentBlockIndex = index;
 
-            // ブロックタイプに応じた変換ストラテジーを選択
-            var strategy = _strategies.FirstOrDefault(s => s.BlockType == block.Type) 
-                ?? (IBlockTransformStrategy)_defaultStrategy;
+            //// ブロックタイプに応じた変換ストラテジーを選択
+            //var strategy = _strategies.FirstOrDefault(s => s.BlockType == block.Type)
+            //    ?? _defaultStrategy;
+
+            // ブロックタイプに応じた変換ストラテジーをディクショナリから取得
+            //var strategy = _strategyDictionary.TryGetValue(block.Type, out var foundStrategy)
+            //    ? foundStrategy
+            //    : (IBlockTransformStrategy)_defaultStrategy;
+
+            var strategy = _strategyDictionary.GetValueOrDefault(block.Type, _defaultStrategy);
 
             try
             {
@@ -72,5 +81,16 @@ public class ContentGenerator(
         }
 
         return sb.ToString();
+    }
+}
+
+public static class DictionaryExtensions
+{
+    public static TValue GetValueOrDefault<TKey, TValue>(
+        this IDictionary<TKey, TValue> dictionary,
+        TKey key,
+        TValue defaultValue = default!)
+    {
+        return dictionary.TryGetValue(key, out var value) ? value : defaultValue;
     }
 }

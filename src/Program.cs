@@ -85,6 +85,21 @@ services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
 services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
 services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
 
+// ディクショナリを生成して DI コンテナに登録
+services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider =>
+{
+    var strategies = provider.GetServices<IBlockTransformStrategy>();
+    return strategies.ToDictionary(strategy => strategy.BlockType);
+});
+
+//services.AddSingleton<IDictionary<Type, IBlockTransformStrategy>>(provider =>
+//{
+//    return new Dictionary<Type, IBlockTransformStrategy>
+//    {
+//        {typeof(BookmarkTransformStrategy), provider.GetRequiredService<BookmarkTransformStrategy>()},
+//        {typeof(BreadcrumbBlock), provider.GetRequiredService<BreadcrumbTransformStrategy>()},
+//    };
+//});
 
 // インフラ層のサービスの登録
 // NotionClientの登録
@@ -130,4 +145,3 @@ if (serviceProvider is IDisposable disposable)
 // 後始末処理
 
 // マークダウン変換処理をライブラリとして捉える
-

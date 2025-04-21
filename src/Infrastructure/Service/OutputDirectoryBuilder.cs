@@ -1,17 +1,18 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotionMarkdownConverter.Application.Interface;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Models;
 using Scriban;
 
-namespace NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+namespace NotionMarkdownConverter.Infrastructure.Service;
 
 /// <summary>
 /// 出力ディレクトリ構築サービス
 /// </summary>
 public class OutputDirectoryBuilder(
     IOptions<AppConfiguration> _config,
-    ILogger<OutputDirectoryBuilder> _logger) : IOutputDirectoryBuilder
+    ILogger<OutputDirectoryBuilder> _logger) : IDirectoryBuilder
 {
     /// <summary>
     /// 出力ディレクトリを構築します。
@@ -32,7 +33,7 @@ public class OutputDirectoryBuilder(
         {
             publish = pageProperty.PublishedDateTime!.Value,
             title = pageProperty.Title,
-            slug = slug
+            slug
         });
 
         // ディレクトリを作成

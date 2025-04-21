@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotionMarkdownConverter.Application.Interface;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.Http.Services;
+namespace NotionMarkdownConverter.Infrastructure.Service;
 
 /// <summary>
 /// ファイルダウンローダー
 /// </summary>
-public class FileDownloader : IFileDownloader
+public class FileDownloader : IHttpDownloader
 {
     private readonly ILogger<FileDownloader> _logger;
     private readonly HttpClient _httpClient;

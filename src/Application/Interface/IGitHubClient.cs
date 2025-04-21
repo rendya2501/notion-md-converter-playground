@@ -1,9 +1,9 @@
-namespace NotionMarkdownConverter.Infrastructure.GitHub.Services;
+namespace NotionMarkdownConverter.Application.Interface;
 
 /// <summary>
-/// GitHub環境変数の更新を行うサービスのインターフェース
+/// GitHub クライアントインターフェース
 /// </summary>
-public interface IGitHubEnvironmentUpdater
+public interface IGitHubClient
 {
     /// <summary>
     /// GitHub Actions の環境変数を更新します。

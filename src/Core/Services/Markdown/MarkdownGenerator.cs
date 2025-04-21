@@ -13,7 +13,7 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// <param name="_contentGenerator">コンテンツ生成器</param>
 /// <param name="_markdownLinkProcessor">リンク処理サービス</param>
 public class MarkdownGenerator(
-    INotionClientWrapper _notionClient,
+    INotionWrapperClient _notionClient,
     IFrontmatterGenerator _frontmatterGenerator,
     IContentGenerator _contentGenerator,
     IDownloadLinkProcessor _markdownLinkProcessor) : IMarkdownGenerator

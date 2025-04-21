@@ -4,9 +4,9 @@ using NotionMarkdownConverter.Core.Models;
 namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
 /// <summary>
-/// Notionのクライアントラッパーインターフェース
+/// Notionのクライアントラッパー
 /// </summary>
-public interface INotionClientWrapper
+public interface INotionWrapperClient
 {
     /// <summary>
     /// 公開用ページを取得します。

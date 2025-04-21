@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Logging;
+using NotionMarkdownConverter.Application.Interface;
 
-namespace NotionMarkdownConverter.Infrastructure.GitHub.Services;
+namespace NotionMarkdownConverter.Infrastructure.Services;
 
 /// <summary>
 /// GitHub環境変数の更新を行うサービス
 /// </summary>
-public class GitHubEnvironmentUpdater(ILogger<GitHubEnvironmentUpdater> _logger) : IGitHubEnvironmentUpdater
+public class GitHubEnvironmentUpdater(ILogger<GitHubEnvironmentUpdater> _logger) : IGitHubClient
 {
     /// <summary>
     /// GitHub Actions の環境変数を更新します。

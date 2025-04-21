@@ -1,11 +1,11 @@
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.Http.Services;
+namespace NotionMarkdownConverter.Application.Interface;
 
 /// <summary>
-/// ファイルダウンローダー
+/// ファイルダウンローダーのインターフェース
 /// </summary>
-public interface IFileDownloader
+public interface IHttpDownloader
 {
     /// <summary>
     /// 出力ディレクトリへファイルをダウンロードします。

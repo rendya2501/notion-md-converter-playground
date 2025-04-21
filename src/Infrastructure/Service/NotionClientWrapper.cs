@@ -2,13 +2,14 @@ using Notion.Client;
 using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 
-namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
+namespace NotionMarkdownConverter.Infrastructure.Service;
 
 /// <summary>
 /// Notionのクライアントラッパー
 /// </summary>
-public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
+public class NotionClientWrapper(INotionClient _client) : INotionWrapperClient
 {
     /// <summary>
     /// 公開用ページを取得します。

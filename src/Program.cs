@@ -3,14 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
-using NotionMarkdownConverter.Application.Services;
+using NotionMarkdownConverter.Application.Interface;
+using NotionMarkdownConverter.Application.UseCases;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Services.Markdown;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
-using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
-using NotionMarkdownConverter.Infrastructure.GitHub.Services;
-using NotionMarkdownConverter.Infrastructure.Http.Services;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
+using NotionMarkdownConverter.Infrastructure.Service;
+using NotionMarkdownConverter.Infrastructure.Services;
 
 // DIコンテナの設定
 var services = new ServiceCollection();
@@ -52,7 +52,7 @@ RegisterInfrastructureServices(services);
 var serviceProvider = services.BuildServiceProvider();
 
 // サービスの取得と実行
-var exporter = serviceProvider.GetRequiredService<INotionExporter>();
+var exporter = serviceProvider.GetRequiredService<ConvertNotionToMarkdownUseCase>();
 await exporter.ExportPagesAsync();
 
 // リソースの解放
@@ -67,7 +67,7 @@ if (serviceProvider is IDisposable disposable)
 // アプリケーション層のサービス登録
 void RegisterApplicationServices(IServiceCollection services)
 {
-    services.AddSingleton<INotionExporter, NotionExporter>();
+    services.AddSingleton<ConvertNotionToMarkdownUseCase>();
 }
 
 // ドメイン層のサービス登録
@@ -128,10 +128,10 @@ void RegisterInfrastructureServices(IServiceCollection services)
             AuthToken = config.NotionAuthToken
         });
     });
-    services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
-    services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
-    services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
-    services.AddScoped<IFileDownloader, FileDownloader>();
+    services.AddSingleton<INotionWrapperClient, NotionClientWrapper>();
+    services.AddSingleton<IGitHubClient, GitHubEnvironmentUpdater>();
+    services.AddSingleton<IDirectoryBuilder, OutputDirectoryBuilder>();
+    services.AddScoped<IHttpDownloader, FileDownloader>();
 }
 
 

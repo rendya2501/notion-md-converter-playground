@@ -1,11 +1,11 @@
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+namespace NotionMarkdownConverter.Application.Interface;
 
 /// <summary>
 /// 出力ディレクトリ構築サービスのインターフェース
 /// </summary>
-public interface IOutputDirectoryBuilder
+public interface IDirectoryBuilder
 {
     /// <summary>
     /// 出力ディレクトリを構築します。

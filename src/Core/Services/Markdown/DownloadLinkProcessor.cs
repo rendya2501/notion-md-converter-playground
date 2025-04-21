@@ -1,6 +1,6 @@
+using NotionMarkdownConverter.Application.Interface;
 using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Infrastructure.Http.Services;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,7 +10,7 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス
 /// </summary>
-public class DownloadLinkProcessor(IFileDownloader _imageDownloader) : IDownloadLinkProcessor
+public class DownloadLinkProcessor(IHttpDownloader _imageDownloader) : IDownloadLinkProcessor
 {
     /// <summary>
     /// マークダウン内のリンクを処理します

@@ -1,28 +1,33 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
+using NotionMarkdownConverter.Application.Interface;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Services.Markdown;
-using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
-using NotionMarkdownConverter.Infrastructure.GitHub.Services;
 using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using System.Text;
 
-namespace NotionMarkdownConverter.Application.Services;
+namespace NotionMarkdownConverter.Application.UseCases;
 
 /// <summary>
-/// Notionのページをエクスポートするサービス
+/// Notionのページをマークダウンに変換するユースケース
 /// </summary>
-public class NotionExporter(
+/// <param name="_config"></param>
+/// <param name="_notionClient"></param>
+/// <param name="_markdownGenerator"></param>
+/// <param name="_githubEnvironmentUpdater"></param>
+/// <param name="_outputDirectoryBuilder"></param>
+/// <param name="_logger"></param>
+public class ConvertNotionToMarkdownUseCase(
     IOptions<AppConfiguration> _config,
-    INotionClientWrapper _notionClient,
+    INotionWrapperClient _notionClient,
     IMarkdownGenerator _markdownGenerator,
-    IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
-    IOutputDirectoryBuilder _outputDirectoryBuilder,
-    ILogger<NotionExporter> _logger) : INotionExporter
+    IGitHubClient _githubEnvironmentUpdater,
+    IDirectoryBuilder _outputDirectoryBuilder,
+    ILogger<ConvertNotionToMarkdownUseCase> _logger)
 {
     /// <summary>
     /// Notionのページをエクスポートします。
@@ -146,3 +151,15 @@ public class NotionExporter(
         return true;
     }
 }
+
+
+//public class ConvertNotionToMarkdownUseCase(INotionService notionService)
+//{
+//    public async Task<UrlFilePair> ExecuteAsync(string pageId)
+//    {
+//        var properties = await notionService.GetPagePropertiesAsync(pageId);
+//        var block = await notionService.GetBlockAsync(pageId);
+//        return await notionService.ProcessBlockContentAsync(block);
+//    }
+//}
+

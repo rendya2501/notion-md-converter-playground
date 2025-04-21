@@ -1,6 +1,6 @@
 using Notion.Client;
 
-namespace NotionMarkdownConverter.Infrastructure.Notion.Parsers;
+namespace NotionMarkdownConverter.Infrastructure.Parsers;
 
 /// <summary>
 /// プロパティ値を変換するユーティリティクラス
@@ -133,7 +133,7 @@ public static class PropertyParser
         // スペースや特殊文字を除去して試みる
         var normalizedName = new string(
             [.. selectPropertyValue.Select.Name.Where(c => char.IsLetterOrDigit(c))]);        
-        if (Enum.TryParse<T>(normalizedName, true, out parsed))
+        if (Enum.TryParse(normalizedName, true, out parsed))
         {
             result = parsed;
             return true;

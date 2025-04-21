@@ -2,7 +2,7 @@ using Notion.Client;
 using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Infrastructure.Notion.Parsers;
+using NotionMarkdownConverter.Infrastructure.Parsers;
 
 namespace NotionMarkdownConverter.Core.Mappers;
 

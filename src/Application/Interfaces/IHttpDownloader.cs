@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Application.Interface;
+namespace NotionMarkdownConverter.Application.Interfaces;
 
 /// <summary>
 /// ファイルダウンローダーのインターフェース

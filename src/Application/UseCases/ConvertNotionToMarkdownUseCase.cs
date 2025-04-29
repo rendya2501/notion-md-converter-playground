@@ -1,13 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
-using NotionMarkdownConverter.Application.Interface;
+using NotionMarkdownConverter.Application.Interfaces;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Core.Services.Markdown;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
+using NotionMarkdownConverter.Core.Services;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.UseCases;
@@ -24,9 +23,10 @@ namespace NotionMarkdownConverter.Application.UseCases;
 public class ConvertNotionToMarkdownUseCase(
     IOptions<AppConfiguration> _config,
     INotionWrapperClient _notionClient,
-    IMarkdownGenerator _markdownGenerator,
+    MarkdownGenerator _markdownGenerator,
     IGitHubClient _githubEnvironmentUpdater,
     IDirectoryBuilder _outputDirectoryBuilder,
+    DownloadLinkProcessor _downloadLinkProcessor,
     ILogger<ConvertNotionToMarkdownUseCase> _logger)
 {
     /// <summary>
@@ -96,7 +96,7 @@ public class ConvertNotionToMarkdownUseCase(
             var outputDirectory = _outputDirectoryBuilder.Build(pageData);
 
             // マークダウンを生成
-            var markdown = await _markdownGenerator.GenerateMarkdownAsync(pageData, outputDirectory);
+            var markdown = await GenerateMarkdownAsync(pageData, outputDirectory);
 
             // マークダウンを出力
             await File.WriteAllTextAsync(
@@ -116,6 +116,19 @@ public class ConvertNotionToMarkdownUseCase(
         }
     }
 
+
+    private async Task<string> GenerateMarkdownAsync(PageProperty pageProperty, string outputDirectory)
+    {
+        // 1. ページ内容取得
+        var pageContent = await _notionClient.GetPageFullContentAsync(pageProperty.PageId);
+
+        // 2. マークダウン生成
+        var markdown = _markdownGenerator.GenerateMarkdown(pageContent, pageProperty);
+
+        // 3. リンク処理
+        return await _downloadLinkProcessor.ProcessLinkAsync(markdown, outputDirectory);
+    }
+    
     /// <summary>
     /// ページをエクスポートするかどうかを判定します。
     /// </summary>

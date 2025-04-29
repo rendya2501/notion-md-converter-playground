@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Application.Interface;
+using NotionMarkdownConverter.Application.Interfaces;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Models;
 using Scriban;

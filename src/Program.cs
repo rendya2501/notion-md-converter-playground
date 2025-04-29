@@ -3,12 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
-using NotionMarkdownConverter.Application.Interface;
+using NotionMarkdownConverter.Application.Interfaces;
 using NotionMarkdownConverter.Application.UseCases;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Core.Services.Markdown;
+using NotionMarkdownConverter.Core.Services;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using NotionMarkdownConverter.Infrastructure.Service;
 using NotionMarkdownConverter.Infrastructure.Services;
 
@@ -73,10 +72,10 @@ void RegisterApplicationServices(IServiceCollection services)
 // ドメイン層のサービス登録
 void RegisterDomainServices(IServiceCollection services)
 {
-    services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
-    services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
-    services.AddSingleton<IContentGenerator, ContentGenerator>();
-    services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
+    services.AddSingleton<MarkdownGenerator>();
+    services.AddSingleton<FrontmatterGenerator>();
+    services.AddSingleton<ContentGenerator>();
+    services.AddSingleton<DownloadLinkProcessor>();
 
     // ストラテジーの登録
     services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();

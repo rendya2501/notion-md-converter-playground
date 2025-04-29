@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Application.Interface;
+using NotionMarkdownConverter.Application.Interfaces;
 
 namespace NotionMarkdownConverter.Infrastructure.Services;
 

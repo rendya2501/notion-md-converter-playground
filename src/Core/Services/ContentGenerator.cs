@@ -6,7 +6,7 @@ using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
 using System.Text;
 
-namespace NotionMarkdownConverter.Core.Services.Markdown;
+namespace NotionMarkdownConverter.Core.Services;
 
 /// <summary>
 /// コンテンツを生成するクラス
@@ -14,7 +14,7 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 public class ContentGenerator(
     IDictionary<BlockType, IBlockTransformStrategy> _strategyDictionary,
     IDefaultBlockTransformStrategy _defaultStrategy,
-    ILogger<ContentGenerator> _logger) : IContentGenerator
+    ILogger<ContentGenerator> _logger)
 {
     /// <summary>
     /// コンテンツを生成します

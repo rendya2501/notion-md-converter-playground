@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Application.Interface;
+namespace NotionMarkdownConverter.Application.Interfaces;
 
 /// <summary>
 /// GitHub クライアントインターフェース

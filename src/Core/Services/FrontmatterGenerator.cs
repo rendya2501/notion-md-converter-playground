@@ -1,12 +1,12 @@
 using NotionMarkdownConverter.Core.Models;
 using System.Text;
 
-namespace NotionMarkdownConverter.Core.Services.Markdown;
+namespace NotionMarkdownConverter.Core.Services;
 
 /// <summary>
 /// フロントマターを生成するクラスです。
 /// </summary>
-public class FrontmatterGenerator : IFrontmatterGenerator
+public class FrontmatterGenerator
 {
     private const string TitleName = "title";
     private const string TypeName = "type";

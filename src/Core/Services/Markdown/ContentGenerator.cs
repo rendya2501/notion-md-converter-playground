@@ -1,9 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Notion.Client;
-using NotionMarkdownConverter.Core.Extensions;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Transformer.State;
-using NotionMarkdownConverter.Core.Transformer.Strategies;
 using System.Text;
 
 namespace NotionMarkdownConverter.Core.Services.Markdown;
@@ -12,8 +10,7 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// コンテンツを生成するクラス
 /// </summary>
 public class ContentGenerator(
-    IDictionary<BlockType, IBlockTransformStrategy> _strategyDictionary,
-    IDefaultBlockTransformStrategy _defaultStrategy,
+    IBlockTransformStrategyResolver _resolver,
     ILogger<ContentGenerator> _logger) : IContentGenerator
 {
     /// <summary>
@@ -47,7 +44,8 @@ public class ContentGenerator(
             context.CurrentBlockIndex = index;
 
             // ブロックタイプに応じた変換ストラテジーをディクショナリから取得
-            var strategy = _strategyDictionary.GetValueOrDefault(block.Type, _defaultStrategy);
+            var strategy = _resolver.Resolve(block.Type);
+            //var strategy = _resolver.Resolve(((IBlock)block.OriginalBlock).Type); // こっちでもいける
 
             try
             {

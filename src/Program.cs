@@ -79,40 +79,35 @@ void RegisterDomainServices(IServiceCollection services)
     services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
 
     // ストラテジーの登録
-    services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, DefaultTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
-    services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
+    services.AddKeyedSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>(BlockType.Bookmark);
+    services.AddKeyedSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>(BlockType.Breadcrumb);
+    services.AddKeyedSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>(BlockType.BulletedListItem);
+    services.AddKeyedSingleton<IBlockTransformStrategy, CalloutTransformStrategy>(BlockType.Callout);
+    services.AddKeyedSingleton<IBlockTransformStrategy, CodeTransformStrategy>(BlockType.Code);
+    services.AddKeyedSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>(BlockType.ColumnList);
+    services.AddKeyedSingleton<IBlockTransformStrategy, DividerTransformStrategy>(BlockType.Divider);
+    services.AddKeyedSingleton<IBlockTransformStrategy, DefaultTransformStrategy>(BlockType.Unsupported);
+    services.AddKeyedSingleton<IBlockTransformStrategy, EmbedTransformStrategy>(BlockType.Embed);
+    services.AddKeyedSingleton<IBlockTransformStrategy, EquationTransformStrategy>(BlockType.Equation);
+    services.AddKeyedSingleton<IBlockTransformStrategy, FileTransformStrategy>(BlockType.File);
+    services.AddKeyedSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>(BlockType.Heading_1);
+    services.AddKeyedSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>(BlockType.Heading_2);
+    services.AddKeyedSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>(BlockType.Heading_3);
+    services.AddKeyedSingleton<IBlockTransformStrategy, ImageTransformStrategy>(BlockType.Image);
+    services.AddKeyedSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>(BlockType.LinkPreview);
+    services.AddKeyedSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>(BlockType.NumberedListItem);
+    services.AddKeyedSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>(BlockType.Paragraph);
+    services.AddKeyedSingleton<IBlockTransformStrategy, PDFTransformStrategy>(BlockType.PDF);
+    services.AddKeyedSingleton<IBlockTransformStrategy, QuoteTransformStrategy>(BlockType.Quote);
+    services.AddKeyedSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>(BlockType.SyncedBlock);
+    services.AddKeyedSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>(BlockType.TableOfContents);
+    services.AddKeyedSingleton<IBlockTransformStrategy, TableTransformStrategy>(BlockType.Table);
+    services.AddKeyedSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>(BlockType.ToDo);
+    services.AddKeyedSingleton<IBlockTransformStrategy, ToggleTransformStrategy>(BlockType.Toggle);
+    services.AddKeyedSingleton<IBlockTransformStrategy, VideoTransformStrategy>(BlockType.Video);
 
-    // ディクショナリを生成して DI コンテナに登録
-    services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider =>
-    {
-        var strategies = provider.GetServices<IBlockTransformStrategy>();
-        return strategies.ToDictionary(strategy => strategy.BlockType);
-    });
+    // Strategyを解決するリゾルバを登録
+    services.AddSingleton<IBlockTransformStrategyResolver, BlockTransformStrategyResolver>();
 }
 
 // インフラストラクチャ層のサービス登録
@@ -148,3 +143,21 @@ void RegisterInfrastructureServices(IServiceCollection services)
 // 後始末処理
 
 // マークダウン変換処理をライブラリとして捉える
+
+
+// キー付き戦略を解決するリゾルバインターフェース
+public interface IBlockTransformStrategyResolver
+{
+    IBlockTransformStrategy Resolve(BlockType optionType);
+}
+
+// リゾルバ実装
+public class BlockTransformStrategyResolver(IServiceProvider serviceProvider) : IBlockTransformStrategyResolver
+{
+    public IBlockTransformStrategy Resolve(BlockType optionType)
+    {
+        return serviceProvider.GetRequiredKeyedService<IBlockTransformStrategy>(optionType)
+            ?? serviceProvider.GetRequiredKeyedService<IBlockTransformStrategy>(BlockType.Unsupported);
+    }
+}
+

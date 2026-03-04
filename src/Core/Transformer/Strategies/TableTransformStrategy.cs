@@ -22,6 +22,12 @@ public class TableTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
+        // 子ブロックが存在しない場合は空文字を返す
+        if (context.CurrentBlock.Children.Count == 0)
+        {
+            return string.Empty;
+        }
+
         // テーブルブロックに親ブロックの子ブロックとして存在するため、親ブロックは取得しても意味がないので取得しない。
         // var tableBlock = BlockConverter.GetOriginalBlock<TableBlock>(context.CurrentBlock);
 
@@ -31,11 +37,16 @@ public class TableTransformStrategy : IBlockTransformStrategy
         var rows = context.CurrentBlock.Children.Skip(1);
 
         // ヘッダー行のセルを取得
-        var headerCells = headers.TableRow.Cells.Select(cell => MarkdownUtils.RichTextsToMarkdown(cell)).ToList();
+        var headerCells = headers.TableRow.Cells
+            .Select(cell => MarkdownUtils.RichTextsToMarkdown(cell))
+            .ToList();
+
         // データ行のセルを取得
         var rowsCells = rows
             .Select(s => BlockConverter.GetOriginalBlock<TableRowBlock>(s).
-                TableRow.Cells.Select(cell => MarkdownUtils.RichTextsToMarkdown(cell)).ToList())
+                TableRow.Cells
+                .Select(cell => MarkdownUtils.RichTextsToMarkdown(cell))
+                .ToList())
             .ToList();
 
         // テーブルを生成

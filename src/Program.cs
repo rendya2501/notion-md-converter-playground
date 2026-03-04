@@ -34,6 +34,7 @@ services.Configure<AppConfiguration>(config =>
     config.NotionDatabaseId = args[1];
     config.OutputDirectoryPathTemplate = args[2];
 });
+
 // ダウンローダーのオプション設定
 services.Configure<DownloaderOptions>(options =>
 {
@@ -118,6 +119,8 @@ void RegisterDomainServices(IServiceCollection services)
 // インフラストラクチャ層のサービス登録
 void RegisterInfrastructureServices(IServiceCollection services)
 {
+    services.AddHttpClient();
+
     // NotionClientの登録
     services.AddSingleton<INotionClient>(provider =>
     {

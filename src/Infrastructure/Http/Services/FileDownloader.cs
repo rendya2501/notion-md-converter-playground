@@ -21,14 +21,13 @@ public class FileDownloader : IFileDownloader
     /// <param name="options">オプション</param>
     public FileDownloader(
         ILogger<FileDownloader> logger,
-        IOptions<DownloaderOptions> options)
+        IOptions<DownloaderOptions> options,
+        IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _options = options.Value;
-        _httpClient = new HttpClient
-        {
-            Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds)
-        };
+        _httpClient = httpClientFactory.CreateClient();
+        _httpClient.Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds);
     }
 
     /// <summary>

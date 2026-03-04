@@ -131,7 +131,7 @@ void RegisterInfrastructureServices(IServiceCollection services)
     services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
     services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
     services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
-    services.AddScoped<IFileDownloader, FileDownloader>();
+    services.AddSingleton<IFileDownloader, FileDownloader>();
 }
 
 

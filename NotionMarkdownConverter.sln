@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionMarkdownConverter", "src\NotionMarkdownConverter.csproj", "{3407C33C-9031-FB89-D202-CF7BFC5F91E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionMarkdownConverter.Tests", "tests\NotionMarkdownConverter.Tests.csproj", "{FBDEC553-77CF-0C35-FDE4-4BE5205A0F3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CB545D80-3AC2-4BA0-A557-A47DB05A8258}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B9E56941-B1AD-4A16-ADAB-DEE307C5F6C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3407C33C-9031-FB89-D202-CF7BFC5F91E7} = {CB545D80-3AC2-4BA0-A557-A47DB05A8258}
+		{FBDEC553-77CF-0C35-FDE4-4BE5205A0F3F} = {B9E56941-B1AD-4A16-ADAB-DEE307C5F6C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {53D6BEFF-60E2-4079-B6F0-FF37BC1A7808}

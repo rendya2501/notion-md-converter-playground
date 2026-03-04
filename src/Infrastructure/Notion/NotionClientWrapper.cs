@@ -1,9 +1,10 @@
 using Notion.Client;
+using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
+namespace NotionMarkdownConverter.Infrastructure.Notion;
 
 /// <summary>
 /// Notionのクライアントラッパー

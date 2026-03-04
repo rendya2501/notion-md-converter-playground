@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
+using NotionMarkdownConverter.Application.Abstractions;
 
-namespace NotionMarkdownConverter.Infrastructure.GitHub.Services;
+namespace NotionMarkdownConverter.Infrastructure.GitHub;
 
 /// <summary>
 /// GitHub環境変数の更新を行うサービス

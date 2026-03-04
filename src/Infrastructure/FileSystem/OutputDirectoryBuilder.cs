@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Models;
 using Scriban;
 
-namespace NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+namespace NotionMarkdownConverter.Infrastructure.FileSystem;
 
 /// <summary>
 /// 出力ディレクトリ構築サービス

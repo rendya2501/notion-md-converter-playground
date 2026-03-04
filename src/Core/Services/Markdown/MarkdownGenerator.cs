@@ -1,5 +1,5 @@
+using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using System.Text;
 
 namespace NotionMarkdownConverter.Core.Services.Markdown;

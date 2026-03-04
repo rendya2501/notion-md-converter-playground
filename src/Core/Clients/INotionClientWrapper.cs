@@ -1,7 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.Notion.Clients;
+namespace NotionMarkdownConverter.Core.Clients;
 
 /// <summary>
 /// Notionのクライアントラッパーインターフェース

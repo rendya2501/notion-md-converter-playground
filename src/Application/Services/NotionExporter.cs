@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;
 using NotionMarkdownConverter.Core.Models;
 using NotionMarkdownConverter.Core.Services.Markdown;
-using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
-using NotionMarkdownConverter.Infrastructure.GitHub.Services;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.Services;

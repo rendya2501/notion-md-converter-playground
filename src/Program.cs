@@ -3,14 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Core.Clients;
+using NotionMarkdownConverter.Core.Http;
 using NotionMarkdownConverter.Core.Services.Markdown;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
-using NotionMarkdownConverter.Infrastructure.FileSystem.Services;
-using NotionMarkdownConverter.Infrastructure.GitHub.Services;
-using NotionMarkdownConverter.Infrastructure.Http.Services;
-using NotionMarkdownConverter.Infrastructure.Notion.Clients;
+using NotionMarkdownConverter.Infrastructure.FileSystem;
+using NotionMarkdownConverter.Infrastructure.GitHub;
+using NotionMarkdownConverter.Infrastructure.Http;
+using NotionMarkdownConverter.Infrastructure.Notion;
+
 
 // DIコンテナの設定
 var services = new ServiceCollection();

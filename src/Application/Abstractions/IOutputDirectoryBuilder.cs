@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Infrastructure.FileSystem.Services;
+namespace NotionMarkdownConverter.Application.Abstractions;
 
 /// <summary>
 /// 出力ディレクトリ構築サービスのインターフェース

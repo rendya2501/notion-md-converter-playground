@@ -13,6 +13,7 @@ public class UnitTest1
         Assert.Equal("+ test", bulletText);
     }
 
+    [Fact]
     public void Test2()
     {
         var processors = new Dictionary<Type, Func<CustomType, string>>()

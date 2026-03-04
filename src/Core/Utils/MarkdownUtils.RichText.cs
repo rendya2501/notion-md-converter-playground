@@ -32,14 +32,19 @@ public static partial class MarkdownUtils
                 markdown = InlineEquation(markdown);
             }
 
-            // 太字の場合
-            if (text.Annotations.IsBold && enableAnnotations.Bold)
+            // 太字かつ斜体の場合
+            if (text.Annotations.IsBold && text.Annotations.IsItalic
+                && enableAnnotations.Bold && enableAnnotations.Italic)
+            {
+                markdown = BoldItalic(markdown);
+            }
+            // 太字のみの場合
+            else if (text.Annotations.IsBold && enableAnnotations.Bold)
             {
                 markdown = Bold(markdown);
             }
-
-            // 斜体の場合
-            if (text.Annotations.IsItalic && enableAnnotations.Italic)
+            // 斜体のみの場合
+            else if (text.Annotations.IsItalic && enableAnnotations.Italic)
             {
                 markdown = Italic(markdown);
             }

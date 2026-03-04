@@ -46,6 +46,14 @@ public static partial class MarkdownUtils
     {
         return Decoration(text, "*");
     }
+    
+    /// <summary>
+    /// 太字イタリック変換
+    /// </summary>
+    public static string BoldItalic(string text)
+    {
+        return Decoration(text, "***");
+    }
 
     /// <summary>
     /// 取り消し線変換

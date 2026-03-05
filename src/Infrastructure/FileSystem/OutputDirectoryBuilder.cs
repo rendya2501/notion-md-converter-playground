@@ -23,6 +23,7 @@ public class OutputDirectoryBuilder(
     {
         // 出力ディレクトリのパスをテンプレートから生成
         var template = Template.Parse(_config.Value.OutputDirectoryPathTemplate);
+
         // スラグが設定されていない場合はタイトルを使用
         var slug = !string.IsNullOrEmpty(pageProperty.Slug)
             ? pageProperty.Slug

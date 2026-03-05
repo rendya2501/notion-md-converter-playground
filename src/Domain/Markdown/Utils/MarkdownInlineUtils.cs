@@ -1,6 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Markdown.Types;
 using NotionMarkdownConverter.Domain.Utils;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NotionMarkdownConverter.Domain.Markdown.Utils;
@@ -142,10 +143,31 @@ public static class MarkdownInlineUtils
 
         if (spanProps.Count > 0)
         {
-            var propsStr = HTMLUtils.ObjectToPropertiesStr(spanProps);
+            var propsStr = ObjectToPropertiesStr(spanProps);
             return $"<span {propsStr}>{text}</span>";
         }
 
         return text;
+    }
+
+    /// <summary>
+    /// オブジェクトをプロパティ文字列に変換します。
+    /// </summary>
+    /// <param name="props">プロパティの辞書</param>
+    /// <returns></returns>
+    private static string ObjectToPropertiesStr(Dictionary<string, string> props)
+    {
+        if (props == null || props.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+        foreach (var prop in props)
+        {
+            if (!string.IsNullOrEmpty(prop.Value))
+            {
+                sb.Append($"{prop.Key}=\"{prop.Value}\" ");
+            }
+        }
+        return sb.ToString().TrimEnd();
     }
 }

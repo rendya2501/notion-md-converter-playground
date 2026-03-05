@@ -32,18 +32,13 @@ RegisterDomainServices(services);
 RegisterInfrastructureServices(services);
 
 // サービスプロバイダーの構築
-var serviceProvider = services.BuildServiceProvider();
+await using var serviceProvider = services.BuildServiceProvider();
 
-// サービスの取得と実行
+// NotionExporterの取得
 var exporter = serviceProvider.GetRequiredService<INotionExporter>();
+
+// Notionのページのエクスポートを実行
 await exporter.ExportPagesAsync();
-
-// リソースの解放
-if (serviceProvider is IDisposable disposable)
-{
-    disposable.Dispose();
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 

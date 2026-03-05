@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Clients;
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Core.Constants;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Models;

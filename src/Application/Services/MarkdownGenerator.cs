@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Core.Clients;
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Core.Markdown.Converters;
 using NotionMarkdownConverter.Core.Models;
 using System.Text;

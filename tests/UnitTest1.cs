@@ -10,7 +10,7 @@ public class UnitTest1
     [Fact]
     public void Test1()
     {
-        var bulletText = MarkdownUtils.BulletList("test", BulletStyle.Plus);
+        var bulletText = MarkdownListUtils.BulletList("test", BulletStyle.Plus);
         Assert.Equal("+ test", bulletText);
     }
 

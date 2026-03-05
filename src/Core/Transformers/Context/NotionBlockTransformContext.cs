@@ -5,7 +5,7 @@ namespace NotionMarkdownConverter.Core.Transformers.States;
 /// <summary>
 /// ブロック変換の状態
 /// </summary>
-public class NotionBlockTransformState
+public class NotionBlockTransformContext
 {
     /// <summary>
     /// ブロックを変換する

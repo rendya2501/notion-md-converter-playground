@@ -19,7 +19,7 @@ public class ColumnListTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public string Transform(NotionBlockTransformContext context)
     {
         // カラムリストの子ブロックを取得
         var columns = context.CurrentBlock.Children;

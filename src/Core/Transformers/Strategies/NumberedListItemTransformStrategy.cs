@@ -20,7 +20,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public string Transform(NotionBlockTransformContext context)
     {
         // 番号付きリストのリスト数を取得
         var listCount = context.Blocks

@@ -21,7 +21,7 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string Transform(NotionBlockTransformState context)
+    public string Transform(NotionBlockTransformContext context)
     {
         // 子ブロックを変換
         var children = context.ExecuteTransformBlocks(context.CurrentBlock.Children);

@@ -104,7 +104,7 @@ void RegisterDomainServices(IServiceCollection services)
     services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
 
     // ブロック変換ストラテジーコンテキストを登録
-    services.AddSingleton<BlockTransformStrategyContext>();
+    services.AddSingleton<BlockTransformDispatcher>();
 }
 
 // インフラストラクチャ層のサービス登録

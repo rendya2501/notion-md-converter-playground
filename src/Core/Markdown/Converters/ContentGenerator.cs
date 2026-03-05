@@ -10,7 +10,7 @@ namespace NotionMarkdownConverter.Core.Markdown.Converters;
 /// コンテンツを生成するクラス
 /// </summary>
 public class ContentGenerator(
-    BlockTransformStrategyContext strategyContext,
+    BlockTransformDispatcher strategyContext,
     ILogger<ContentGenerator> logger)
 {
     /// <summary>
@@ -26,7 +26,7 @@ public class ContentGenerator(
         }
 
         // 変換コンテキストを作成
-        var context = new NotionBlockTransformState
+        var context = new NotionBlockTransformContext
         {
             ExecuteTransformBlocks = GenerateContent,
             Blocks = blocks,

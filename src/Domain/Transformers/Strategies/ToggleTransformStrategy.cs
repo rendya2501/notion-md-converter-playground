@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Domain.Markdown.Enums;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -29,10 +29,10 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
         // トグルブロックを取得
         var toggleBlock = BlockConverter.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
         // タイトルを取得して改行を追加
-        var title = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText), LineBreakStyle.BR);
+        var title = MarkdownBlockUtils.LineBreak(
+            MarkdownRichTextUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText), LineBreakStyle.BR);
 
         // 詳細を生成
-        return MarkdownUtils.Details(title, children);
+        return MarkdownBlockUtils.Details(title, children);
     }
 }

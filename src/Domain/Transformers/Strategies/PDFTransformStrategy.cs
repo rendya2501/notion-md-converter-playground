@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Domain.Constants;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -28,7 +28,7 @@ public class PDFTransformStrategy : IBlockTransformStrategy
 
         // キャプションがあればキャプションを、なければファイル名 or URLを表示テキストとして使用
         var caption = block.PDF.Caption.Any()
-            ? MarkdownUtils.RichTextsToMarkdown(block.PDF.Caption)
+            ? MarkdownRichTextUtils.RichTextsToMarkdown(block.PDF.Caption)
             : null;
 
         var url = block.PDF switch
@@ -44,7 +44,7 @@ public class PDFTransformStrategy : IBlockTransformStrategy
                 ? Path.GetFileName(new Uri(uploaded.File.Url).LocalPath)
                 : url);
 
-        return MarkdownUtils.LineBreak(
-            MarkdownUtils.Link(displayText, url));
+        return MarkdownBlockUtils.LineBreak(
+            MarkdownInlineUtils.Link(displayText, url));
     }
 }

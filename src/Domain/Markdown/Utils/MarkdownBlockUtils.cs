@@ -1,8 +1,8 @@
 using NotionMarkdownConverter.Domain.Markdown.Enums;
 
-namespace NotionMarkdownConverter.Core.Utils;
+namespace NotionMarkdownConverter.Domain.Markdown.Utils;
 
-public static partial class MarkdownUtils
+public static class MarkdownBlockUtils
 {
     /// <summary>
     /// 見出しを作成
@@ -84,7 +84,7 @@ public static partial class MarkdownUtils
         var indentedLines = lines.Select(line =>
             string.IsNullOrWhiteSpace(line)
                 ? line
-                : WithLineBreak(line));
+                : MarkdownInlineUtils.WithLineBreak(line));
         return string.Join(lineBreak, indentedLines);
     }
 

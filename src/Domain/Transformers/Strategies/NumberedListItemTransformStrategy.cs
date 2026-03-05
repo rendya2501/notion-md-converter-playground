@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -33,14 +33,14 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
         // 番号付きリストのブロックを取得   
         var block = BlockConverter.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
         // 番号付きリストのテキストを取得して改行を追加
-        var text = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(
+        var text = MarkdownBlockUtils.LineBreak(
+            MarkdownRichTextUtils.RichTextsToMarkdown(
                 block.NumberedListItem.RichText));
 
         // テキストに改行が含まれている場合、2行目以降にインデントを適用
         var lines = text.Split('\n');
         var formattedText = lines.Length > 1
-            ? $"{lines[0]}\n{string.Join("\n", lines.Skip(1).Select(line => MarkdownUtils.Indent(line, 3)))}"
+            ? $"{lines[0]}\n{string.Join("\n", lines.Skip(1).Select(line => MarkdownBlockUtils.Indent(line, 3)))}"
             : text;
 
         // 子ブロックが存在する場合、子ブロックを変換
@@ -50,7 +50,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
 
         // 子ブロックが存在しない場合、番号付きリストを返す
         return string.IsNullOrEmpty(children)
-            ? MarkdownUtils.NumberedList(formattedText, listCount)
-            : $"{MarkdownUtils.NumberedList(formattedText, listCount)}\n{MarkdownUtils.Indent(children, 3)}";
+            ? MarkdownListUtils.NumberedList(formattedText, listCount)
+            : $"{MarkdownListUtils.NumberedList(formattedText, listCount)}\n{MarkdownBlockUtils.Indent(children, 3)}";
     }
 } 

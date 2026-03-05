@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -29,12 +29,12 @@ public class QuoteTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // 引用のテキストを取得して改行を追加
-        var text = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(
+        var text = MarkdownBlockUtils.LineBreak(
+            MarkdownRichTextUtils.RichTextsToMarkdown(
                 BlockConverter.GetOriginalBlock<QuoteBlock>(context.CurrentBlock).Quote.RichText));
 
         // 子ブロックが存在しない場合、引用のテキストを返す
-        return MarkdownUtils.Blockquote(
+        return MarkdownBlockUtils.Blockquote(
             string.IsNullOrEmpty(children) 
                 ? text 
                 : $"{text}\n{children}");

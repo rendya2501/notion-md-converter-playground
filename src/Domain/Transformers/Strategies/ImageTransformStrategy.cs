@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Domain.Constants;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -26,7 +26,7 @@ public class ImageTransformStrategy() : IBlockTransformStrategy
         // 画像ブロックを取得
         var block = BlockConverter.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
         // 画像のタイトルを取得
-        var title = MarkdownUtils.RichTextsToMarkdown(block.Image.Caption);
+        var title = MarkdownRichTextUtils.RichTextsToMarkdown(block.Image.Caption);
         // 画像のURLを取得
         var url = block.Image switch
         {
@@ -36,7 +36,7 @@ public class ImageTransformStrategy() : IBlockTransformStrategy
         };
 
         // 画像シグネチャを生成して改行を追加
-        return MarkdownUtils.LineBreak(
-            MarkdownUtils.Image(title, url));
+        return MarkdownBlockUtils.LineBreak(
+            MarkdownInlineUtils.Image(title, url));
     }
 }

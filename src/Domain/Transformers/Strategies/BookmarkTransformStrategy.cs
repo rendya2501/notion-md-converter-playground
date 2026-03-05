@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -28,12 +28,12 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
         // ブックマークのURLを取得
         var url = originalBlock.Bookmark.Url;
         // ブックマークのキャプションをMarkdown形式に変換
-        var caption = MarkdownUtils.RichTextsToMarkdown(originalBlock.Bookmark.Caption);
+        var caption = MarkdownRichTextUtils.RichTextsToMarkdown(originalBlock.Bookmark.Caption);
         // ブックマークのキャプションが空の場合はURLを表示する
         var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
     
         // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownUtils.WithLineBreak(
-            MarkdownUtils.Link(displayText, url));
+        return MarkdownInlineUtils.WithLineBreak(
+            MarkdownInlineUtils.Link(displayText, url));
     }
 }

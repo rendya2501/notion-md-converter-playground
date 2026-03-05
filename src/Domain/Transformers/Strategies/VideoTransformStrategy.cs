@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -34,6 +34,6 @@ public class VideoTransformStrategy : IBlockTransformStrategy
         };
 
         // ビデオのURLをMarkdown形式に変換
-        return MarkdownUtils.Video(url);
+        return MarkdownInlineUtils.Video(url);
     }
 }

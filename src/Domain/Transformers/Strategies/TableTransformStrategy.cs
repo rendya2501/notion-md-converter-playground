@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Domain.Markdown.Enums;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -40,14 +40,14 @@ public class TableTransformStrategy : IBlockTransformStrategy
 
         // ヘッダー行のセルを取得
         var headerCells = headers.TableRow.Cells
-            .Select(cell => MarkdownUtils.RichTextsToMarkdown(cell))
+            .Select(cell => MarkdownRichTextUtils.RichTextsToMarkdown(cell))
             .ToList();
 
         // データ行のセルを取得
         var rowsCells = rows
             .Select(s => BlockConverter.GetOriginalBlock<TableRowBlock>(s).
                 TableRow.Cells
-                .Select(cell => MarkdownUtils.RichTextsToMarkdown(cell))
+                .Select(cell => MarkdownRichTextUtils.RichTextsToMarkdown(cell))
                 .ToList())
             .ToList();
 
@@ -86,7 +86,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
 
         // データ行を生成（パディングを追加）
         var dataRows = rows.Select(row => 
-            "| " + string.Join(" | ", row.Select((cell, i) => MarkdownUtils.LineBreak(cell, LineBreakStyle.BR).PadRight(columnWidths[i]))) + " |");
+            "| " + string.Join(" | ", row.Select((cell, i) => MarkdownBlockUtils.LineBreak(cell, LineBreakStyle.BR).PadRight(columnWidths[i]))) + " |");
 
         return $"{headerRow}\n{alignmentRow}\n{string.Join("\n", dataRows)}";
     }

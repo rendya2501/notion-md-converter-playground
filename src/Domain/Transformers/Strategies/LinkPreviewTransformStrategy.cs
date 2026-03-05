@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -26,6 +26,6 @@ public class LinkPreviewTransformStrategy : IBlockTransformStrategy
         var linkPreview = BlockConverter.GetOriginalBlock<LinkPreviewBlock>(context.CurrentBlock);
         var url = linkPreview.LinkPreview.Url;
         
-        return MarkdownUtils.Link(url,url);
+        return MarkdownInlineUtils.Link(url,url);
     }
 }

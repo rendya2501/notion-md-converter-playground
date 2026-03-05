@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -25,8 +25,8 @@ public class CodeTransformStrategy : IBlockTransformStrategy
     {
         var codeBlock = BlockConverter.GetOriginalBlock<CodeBlock>(context.CurrentBlock);
         var language = codeBlock.Code.Language;
-        var text = MarkdownUtils.RichTextsToMarkdown(codeBlock.Code.RichText);
+        var text = MarkdownRichTextUtils.RichTextsToMarkdown(codeBlock.Code.RichText);
 
-        return MarkdownUtils.CodeBlock(text, language);
+        return MarkdownBlockUtils.CodeBlock(text, language);
     }
 } 

@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -29,14 +29,14 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // コールアウトのテキストをMarkdown形式に変換
-        var text = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(
+        var text = MarkdownBlockUtils.LineBreak(
+            MarkdownRichTextUtils.RichTextsToMarkdown(
                 BlockConverter.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
 
         // 子ブロックが存在しない場合、コールアウトのテキストを返す
         var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";
 
         // コールアウトをブロック引用に変換
-        return MarkdownUtils.Blockquote(result);
+        return MarkdownBlockUtils.Blockquote(result);
     }
 }

@@ -1,8 +1,11 @@
 using NotionMarkdownConverter.Domain.Markdown.Enums;
 
-namespace NotionMarkdownConverter.Core.Utils;
+namespace NotionMarkdownConverter.Domain.Markdown.Utils;
 
-public static partial class MarkdownUtils
+/// <summary>
+/// Markdownリスト変換ユーティリティ
+/// </summary>
+public static class MarkdownListUtils
 {
     /// <summary>
     /// 箇条書きリスト変換

@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -26,13 +26,13 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
         // タスクリストのブロックを取得 
         var block = BlockConverter.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
         // タスクリストのテキストを取得して改行を追加
-        var text = MarkdownUtils.LineBreak(
-            MarkdownUtils.RichTextsToMarkdown(block.ToDo.RichText));
+        var text = MarkdownBlockUtils.LineBreak(
+            MarkdownRichTextUtils.RichTextsToMarkdown(block.ToDo.RichText));
 
         // テキストに改行が含まれている場合、2行目以降にインデントを適用
         var lines = text.Split('\n');
         var formattedText = lines.Length > 1
-            ? $"{lines[0]}\n{string.Join("\n", lines.Skip(1).Select(line => MarkdownUtils.Indent(line)))}"
+            ? $"{lines[0]}\n{string.Join("\n", lines.Skip(1).Select(line => MarkdownBlockUtils.Indent(line)))}"
             : text;
 
         // 子ブロックが存在する場合、子ブロックを変換
@@ -41,11 +41,11 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // チェックボックスを生成
-        var checkbox = MarkdownUtils.CheckList(formattedText, block.ToDo.IsChecked);
+        var checkbox = MarkdownListUtils.CheckList(formattedText, block.ToDo.IsChecked);
 
         // 子ブロックが存在しない場合、タスクリストを返す
         return string.IsNullOrEmpty(children)
             ? $"{checkbox}"
-            : $"{checkbox}\n{MarkdownUtils.Indent(children)}";
+            : $"{checkbox}\n{MarkdownBlockUtils.Indent(children)}";
     }
 } 

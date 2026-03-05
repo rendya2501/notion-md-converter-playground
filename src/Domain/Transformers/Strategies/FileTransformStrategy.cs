@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
 using NotionMarkdownConverter.Domain.Constants;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -28,7 +28,7 @@ public class FileTransformStrategy() : IBlockTransformStrategy
         var block = BlockConverter.GetOriginalBlock<FileBlock>(context.CurrentBlock);
         // キャプションを取得
         var caption = block.File.Caption.Any()
-            ? MarkdownUtils.RichTextsToMarkdown(block.File.Caption)
+            ? MarkdownRichTextUtils.RichTextsToMarkdown(block.File.Caption)
             : block.File.Name;
         // ファイルのURLを取得
         var url = block.File switch
@@ -39,7 +39,7 @@ public class FileTransformStrategy() : IBlockTransformStrategy
         };
 
         // リンクを生成して改行を追加
-        return MarkdownUtils.LineBreak(
-            MarkdownUtils.Link(caption, url));
+        return MarkdownBlockUtils.LineBreak(
+            MarkdownInlineUtils.Link(caption, url));
     }
 }

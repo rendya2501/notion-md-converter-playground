@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -26,9 +26,9 @@ public class HeadingThreeTransformStrategy : IBlockTransformStrategy
         // ブロックを取得
         var block = BlockConverter.GetOriginalBlock<HeadingThreeBlock>(context.CurrentBlock);
         // テキストを取得
-        var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_3.RichText);
+        var text = MarkdownRichTextUtils.RichTextsToMarkdown(block.Heading_3.RichText);
 
         // 見出しを生成
-        return MarkdownUtils.Heading(text, 3);
+        return MarkdownBlockUtils.Heading(text, 3);
     }
 }

@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
@@ -23,6 +23,6 @@ public class DividerTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // 水平線を生成
-        return MarkdownUtils.HorizontalRule();
+        return MarkdownBlockUtils.HorizontalRule();
     }
 }

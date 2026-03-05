@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -28,12 +28,12 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
         // 埋め込みのURLを取得
         var url = originalBlock.Embed.Url;
         // 埋め込みのキャプションをMarkdown形式に変換
-        var caption = MarkdownUtils.RichTextsToMarkdown(originalBlock.Embed.Caption);
+        var caption = MarkdownRichTextUtils.RichTextsToMarkdown(originalBlock.Embed.Caption);
         // 表示テキストの決定（キャプションが空の場合はURLを使用）
         var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
 
         // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownUtils.WithLineBreak(
-            MarkdownUtils.Link(displayText, url));
+        return MarkdownInlineUtils.WithLineBreak(
+            MarkdownInlineUtils.Link(displayText, url));
     }
 }

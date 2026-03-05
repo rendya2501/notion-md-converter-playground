@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Utils;
 
@@ -29,8 +29,8 @@ public class EquationTransformStrategy : IBlockTransformStrategy
         var text = block.Equation.Expression;
         // 方程式の式をMarkdown形式に変換
         var result = block.Type == BlockType.Code
-            ? MarkdownUtils.CodeBlock(text, "txt")
-            : MarkdownUtils.BlockEquation(text);
+            ? MarkdownBlockUtils.CodeBlock(text, "txt")
+            : MarkdownBlockUtils.BlockEquation(text);
 
         return result;
     }

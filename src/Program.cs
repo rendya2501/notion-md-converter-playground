@@ -26,28 +26,6 @@ services.AddLogging(builder =>
     builder.SetMinimumLevel(LogLevel.Information);
 });
 
-// コマンドライン引数から設定を取得
-services.Configure<AppConfiguration>(config =>
-{
-    if (args.Length != 3)
-    {
-        throw new ArgumentException("Required arguments: [NotionAuthToken] [DatabaseId] [OutputPathTemplate]");
-    }
-
-    config.NotionAuthToken = args[0];
-    config.NotionDatabaseId = args[1];
-    config.OutputDirectoryPathTemplate = args[2];
-});
-
-// ダウンローダーのオプション設定
-services.Configure<DownloaderOptions>(options =>
-{
-    options.MaxRetryCount = 3;
-    options.RetryDelayMilliseconds = 1000;
-    options.TimeoutSeconds = 30;
-    options.SkipExistingFiles = true;
-});
-
 // 各層のサービスを登録
 RegisterApplicationServices(services);
 RegisterDomainServices(services);
@@ -67,11 +45,24 @@ if (serviceProvider is IDisposable disposable)
 }
 
 
-
+/////////////////////////////////////////////////////////////////////////////////////
 
 // アプリケーション層のサービス登録
 void RegisterApplicationServices(IServiceCollection services)
 {
+    // コマンドライン引数から設定を取得
+    services.Configure<AppConfiguration>(config =>
+    {
+        if (args.Length != 3)
+        {
+            throw new ArgumentException("Required arguments: [NotionAuthToken] [DatabaseId] [OutputPathTemplate]");
+        }
+
+        config.NotionAuthToken = args[0];
+        config.NotionDatabaseId = args[1];
+        config.OutputDirectoryPathTemplate = args[2];
+    });
+
     services.AddSingleton<INotionExporter, NotionExporter>();
 }
 
@@ -123,6 +114,16 @@ void RegisterDomainServices(IServiceCollection services)
 // インフラストラクチャ層のサービス登録
 void RegisterInfrastructureServices(IServiceCollection services)
 {
+    // ダウンローダーのオプション設定
+    services.Configure<DownloaderOptions>(options =>
+    {
+        options.MaxRetryCount = 3;
+        options.RetryDelayMilliseconds = 1000;
+        options.TimeoutSeconds = 30;
+        options.SkipExistingFiles = true;
+    });
+
+    // HttpClientの登録
     services.AddHttpClient();
 
     // NotionClientの登録
@@ -135,6 +136,7 @@ void RegisterInfrastructureServices(IServiceCollection services)
             AuthToken = config.NotionAuthToken
         });
     });
+
     services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
     services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
     services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();

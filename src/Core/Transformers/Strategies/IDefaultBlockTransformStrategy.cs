@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
 /// デフォルトのブロック変換ストラテジーのインターフェース

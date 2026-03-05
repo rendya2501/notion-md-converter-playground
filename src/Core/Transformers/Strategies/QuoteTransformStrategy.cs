@@ -1,19 +1,19 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Core.Transformers.States;
 using NotionMarkdownConverter.Core.Utils;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
-/// コールアウト変換ストラテジー
+/// 引用変換ストラテジー
 /// </summary>
-public class CalloutTransformStrategy : IBlockTransformStrategy
+public class QuoteTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Callout;
+    public BlockType BlockType => BlockType.Quote;
 
     /// <summary>
     /// ブロックを変換します
@@ -27,15 +27,15 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
             ? context.ExecuteTransformBlocks(context.CurrentBlock.Children)
             : string.Empty;
 
-        // コールアウトのテキストをMarkdown形式に変換
+        // 引用のテキストを取得して改行を追加
         var text = MarkdownUtils.LineBreak(
             MarkdownUtils.RichTextsToMarkdown(
-                BlockConverter.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
+                BlockConverter.GetOriginalBlock<QuoteBlock>(context.CurrentBlock).Quote.RichText));
 
-        // 子ブロックが存在しない場合、コールアウトのテキストを返す
-        var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";
-
-        // コールアウトをブロック引用に変換
-        return MarkdownUtils.Blockquote(result);
+        // 子ブロックが存在しない場合、引用のテキストを返す
+        return MarkdownUtils.Blockquote(
+            string.IsNullOrEmpty(children) 
+                ? text 
+                : $"{text}\n{children}");
     }
-}
+} 

@@ -1,18 +1,18 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Core.Transformers.States;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
-/// ブラウザパス変換ストラテジー
+/// 目次変換ストラテジー
 /// </summary>
-public class BreadcrumbTransformStrategy : IBlockTransformStrategy
+public class TableOfContentsTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Breadcrumb;
+    public BlockType BlockType => BlockType.TableOfContents;
 
     /// <summary>
     /// ブロックを変換します。

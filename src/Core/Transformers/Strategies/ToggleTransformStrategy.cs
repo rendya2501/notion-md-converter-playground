@@ -1,9 +1,9 @@
 using Notion.Client;
 using NotionMarkdownConverter.Core.Markdown.Enums;
-using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Core.Transformers.States;
 using NotionMarkdownConverter.Core.Utils;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
 /// トグル変換ストラテジー

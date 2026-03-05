@@ -1,19 +1,19 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Core.Transformers.States;
 using NotionMarkdownConverter.Core.Utils;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
 /// 見出し変換ストラテジー
 /// </summary>
-public class HeadingThreeTransformStrategy : IBlockTransformStrategy
+public class HeadingOneTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Heading_3;
+    public BlockType BlockType => BlockType.Heading_1;
 
     /// <summary>
     /// ブロックを変換します
@@ -23,11 +23,11 @@ public class HeadingThreeTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformState context)
     {
         // ブロックを取得
-        var block = BlockConverter.GetOriginalBlock<HeadingThreeBlock>(context.CurrentBlock);
+        var block = BlockConverter.GetOriginalBlock<HeadingOneBlock>(context.CurrentBlock);
         // テキストを取得
-        var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_3.RichText);
+        var text = MarkdownUtils.RichTextsToMarkdown(block.Heading_1.RichText);
 
         // 見出しを生成
-        return MarkdownUtils.Heading(text, 3);
+        return MarkdownUtils.Heading(text, 1);
     }
-}
+} 

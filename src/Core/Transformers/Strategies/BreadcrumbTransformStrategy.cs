@@ -1,19 +1,18 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Transformer.State;
-using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Core.Transformers.States;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
-/// 区切り線変換ストラテジー
+/// ブラウザパス変換ストラテジー
 /// </summary>
-public class DividerTransformStrategy : IBlockTransformStrategy
+public class BreadcrumbTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.Divider;
+    public BlockType BlockType => BlockType.Breadcrumb;
 
     /// <summary>
     /// ブロックを変換します。
@@ -22,7 +21,6 @@ public class DividerTransformStrategy : IBlockTransformStrategy
     /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformState context)
     {
-        // 水平線を生成
-        return MarkdownUtils.HorizontalRule();
+        return string.Empty;
     }
 }

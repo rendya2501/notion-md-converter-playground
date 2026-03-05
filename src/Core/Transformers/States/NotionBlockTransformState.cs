@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Core.Models;
 
-namespace NotionMarkdownConverter.Core.Transformer.State;
+namespace NotionMarkdownConverter.Core.Transformers.States;
 
 /// <summary>
 /// ブロック変換の状態

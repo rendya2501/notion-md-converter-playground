@@ -9,7 +9,8 @@ using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Http;
 using NotionMarkdownConverter.Core.Markdown.Converters;
-using NotionMarkdownConverter.Core.Transformer.Strategies;
+using NotionMarkdownConverter.Core.Transformers;
+using NotionMarkdownConverter.Core.Transformers.Strategies;
 using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Http;
@@ -64,9 +65,13 @@ void RegisterApplicationServices(IServiceCollection services)
 // ドメイン層のサービス登録
 void RegisterDomainServices(IServiceCollection services)
 {
+    // マークダウン生成サービスを登録   
     services.AddSingleton<MarkdownGenerator>();
+    // フロントマター生成サービスを登録
     services.AddSingleton<FrontmatterGenerator>();
+    // コンテンツ生成サービスを登録
     services.AddSingleton<ContentGenerator>();
+    // ダウンロードリンク処理サービスを登録
     services.AddSingleton<DownloadLinkProcessor>();
 
     // ストラテジーの登録
@@ -98,12 +103,8 @@ void RegisterDomainServices(IServiceCollection services)
     services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
     services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
 
-    // ディクショナリを生成して DI コンテナに登録
-    services.AddSingleton<IDictionary<BlockType, IBlockTransformStrategy>>(provider =>
-    {
-        var strategies = provider.GetServices<IBlockTransformStrategy>();
-        return strategies.ToDictionary(strategy => strategy.BlockType);
-    });
+    // ブロック変換ストラテジーコンテキストを登録
+    services.AddSingleton<BlockTransformStrategyContext>();
 }
 
 // インフラストラクチャ層のサービス登録

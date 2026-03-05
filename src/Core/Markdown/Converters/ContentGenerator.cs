@@ -1,9 +1,7 @@
 using Microsoft.Extensions.Logging;
-using Notion.Client;
-using NotionMarkdownConverter.Core.Extensions;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Core.Transformer.State;
-using NotionMarkdownConverter.Core.Transformer.Strategies;
+using NotionMarkdownConverter.Core.Transformers;
+using NotionMarkdownConverter.Core.Transformers.States;
 using System.Text;
 
 namespace NotionMarkdownConverter.Core.Markdown.Converters;
@@ -12,9 +10,8 @@ namespace NotionMarkdownConverter.Core.Markdown.Converters;
 /// コンテンツを生成するクラス
 /// </summary>
 public class ContentGenerator(
-    IDictionary<BlockType, IBlockTransformStrategy> _strategyDictionary,
-    IDefaultBlockTransformStrategy _defaultStrategy,
-    ILogger<ContentGenerator> _logger)
+    BlockTransformStrategyContext strategyContext,
+    ILogger<ContentGenerator> logger)
 {
     /// <summary>
     /// コンテンツを生成します
@@ -46,13 +43,10 @@ public class ContentGenerator(
             context.CurrentBlock = block;
             context.CurrentBlockIndex = index;
 
-            // ブロックタイプに応じた変換ストラテジーをディクショナリから取得
-            var strategy = _strategyDictionary.GetValueOrDefault(block.Type, _defaultStrategy);
-
             try
             {
                 // ブロックを変換
-                var transformedBlock = strategy.Transform(context);
+                var transformedBlock = strategyContext.Transform(context);
 
                 // 変換されたブロックが存在する場合
                 if (transformedBlock is not null)
@@ -67,7 +61,7 @@ public class ContentGenerator(
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Error transforming block at index : {index}", index);
+                logger.LogWarning(ex, "Error transforming block at index : {index}", index);
                 throw;
             }
         }

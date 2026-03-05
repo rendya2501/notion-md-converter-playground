@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 *.swp
 
 launchSettings.json
+
+# Cursor rules
+.cursorrules

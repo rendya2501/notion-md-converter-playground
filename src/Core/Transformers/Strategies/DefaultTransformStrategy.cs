@@ -1,21 +1,21 @@
 using Notion.Client;
-using NotionMarkdownConverter.Core.Transformer.State;
+using NotionMarkdownConverter.Core.Transformers.States;
 
-namespace NotionMarkdownConverter.Core.Transformer.Strategies;
+namespace NotionMarkdownConverter.Core.Transformers.Strategies;
 
 /// <summary>
-/// 目次変換ストラテジー
+/// デフォルトの変換ストラテジー
 /// </summary>
-public class TableOfContentsTransformStrategy : IBlockTransformStrategy
+public class DefaultTransformStrategy : IDefaultBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ
     /// </summary>
     /// <value></value>
-    public BlockType BlockType => BlockType.TableOfContents;
+    public BlockType BlockType => BlockType.Unsupported;
 
     /// <summary>
-    /// ブロックを変換します。
+    /// ブロックを変換します
     /// </summary>
     /// <param name="context">変換コンテキスト</param>
     /// <returns>変換されたマークダウン文字列</returns>

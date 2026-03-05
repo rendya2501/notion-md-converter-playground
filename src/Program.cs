@@ -6,7 +6,6 @@ using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Core.Http;
 using NotionMarkdownConverter.Core.Markdown.Converters;
 using NotionMarkdownConverter.Core.Transformers;
 using NotionMarkdownConverter.Core.Transformers.Strategies;

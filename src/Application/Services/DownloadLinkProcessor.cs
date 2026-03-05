@@ -1,11 +1,11 @@
+using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Core.Constants;
-using NotionMarkdownConverter.Core.Http;
 using NotionMarkdownConverter.Core.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NotionMarkdownConverter.Core.Markdown.Converters;
+namespace NotionMarkdownConverter.Application.Services;
 
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス

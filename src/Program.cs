@@ -58,19 +58,19 @@ void RegisterApplicationServices(IServiceCollection services)
     });
 
     services.AddSingleton<INotionExporter, NotionExporter>();
+    // マークダウン生成サービスを登録   
+    services.AddSingleton<MarkdownGenerator>();
+    // ダウンロードリンク処理サービスを登録
+    services.AddSingleton<DownloadLinkProcessor>();
 }
 
 // ドメイン層のサービス登録
 void RegisterDomainServices(IServiceCollection services)
-{
-    // マークダウン生成サービスを登録   
-    services.AddSingleton<MarkdownGenerator>();
+{   
     // フロントマター生成サービスを登録
     services.AddSingleton<FrontmatterGenerator>();
     // コンテンツ生成サービスを登録
     services.AddSingleton<ContentGenerator>();
-    // ダウンロードリンク処理サービスを登録
-    services.AddSingleton<DownloadLinkProcessor>();
 
     // ストラテジーの登録
     services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
@@ -80,7 +80,6 @@ void RegisterDomainServices(IServiceCollection services)
     services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
     services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
     services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
-    services.AddSingleton<IBlockTransformStrategy, DefaultTransformStrategy>();
     services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
     services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
     services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();

@@ -11,7 +11,7 @@ namespace NotionMarkdownConverter.Infrastructure.FileSystem;
 /// 出力ディレクトリ構築サービス
 /// </summary>
 public class OutputDirectoryBuilder(
-    IOptions<AppConfiguration> _config,
+    IOptions<NotionExportOptions> _config,
     ILogger<OutputDirectoryBuilder> _logger) : IOutputDirectoryBuilder
 {
     /// <summary>

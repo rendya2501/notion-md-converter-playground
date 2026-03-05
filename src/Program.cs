@@ -51,7 +51,7 @@ if (serviceProvider is IDisposable disposable)
 void RegisterApplicationServices(IServiceCollection services)
 {
     // コマンドライン引数から設定を取得
-    services.Configure<AppConfiguration>(config =>
+    services.Configure<NotionExportOptions>(config =>
     {
         if (args.Length != 3)
         {
@@ -129,7 +129,7 @@ void RegisterInfrastructureServices(IServiceCollection services)
     // NotionClientの登録
     services.AddSingleton<INotionClient>(provider =>
     {
-        var options = provider.GetRequiredService<IOptions<AppConfiguration>>();
+        var options = provider.GetRequiredService<IOptions<NotionExportOptions>>();
         var config = options.Value;
         return NotionClientFactory.Create(new ClientOptions
         {

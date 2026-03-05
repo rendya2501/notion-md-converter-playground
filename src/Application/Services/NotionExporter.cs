@@ -16,7 +16,7 @@ namespace NotionMarkdownConverter.Application.Services;
 /// Notionのページをエクスポートするサービス
 /// </summary>
 public class NotionExporter(
-    IOptions<AppConfiguration> _config,
+    IOptions<NotionExportOptions> _config,
     INotionClientWrapper _notionClient,
     IMarkdownGenerator _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,

@@ -1,3 +1,4 @@
+using NotionMarkdownConverter.Core.Markdown.Enums;
 using NotionMarkdownConverter.Core.Utils;
 using System.ComponentModel;
 using System.Reflection;

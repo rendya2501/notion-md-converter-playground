@@ -1,3 +1,5 @@
+using NotionMarkdownConverter.Core.Markdown.Enums;
+
 namespace NotionMarkdownConverter.Core.Utils;
 
 public static partial class MarkdownUtils

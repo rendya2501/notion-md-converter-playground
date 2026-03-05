@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Core.Markdown.Enums;
 using NotionMarkdownConverter.Core.Transformer.State;
 using NotionMarkdownConverter.Core.Utils;
 

@@ -67,10 +67,10 @@ void RegisterApplicationServices(IServiceCollection services)
 // ドメイン層のサービス登録
 void RegisterDomainServices(IServiceCollection services)
 {   
-    // フロントマター生成サービスを登録
-    services.AddSingleton<FrontmatterGenerator>();
-    // コンテンツ生成サービスを登録
-    services.AddSingleton<ContentGenerator>();
+    // フロントマター変換サービスを登録
+    services.AddSingleton<FrontmatterConverter>();
+    // コンテンツ変換サービスを登録
+    services.AddSingleton<ContentConverter>();
 
     // ストラテジーの登録
     services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();

@@ -4,9 +4,9 @@ using System.Text;
 namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 
 /// <summary>
-/// フロントマターを生成するクラスです。
+/// Notionページのプロパティ情報をMarkdownのフロントマターに変換します。
 /// </summary>
-public class FrontmatterGenerator 
+public class FrontmatterConverter 
 {
     private const string TitleName = "title";
     private const string TypeName = "type";
@@ -15,11 +15,11 @@ public class FrontmatterGenerator
     private const string TagsName = "tags";
 
     /// <summary>
-    /// フロントマターを生成します。
+    /// フロントマターに変換します。
     /// </summary>
     /// <param name="pageData"></param>
     /// <returns></returns>
-    public string GenerateFrontmatter(PageProperty pageData)
+    public string Convert(PageProperty pageData)
     {
         var sb = new StringBuilder();
 

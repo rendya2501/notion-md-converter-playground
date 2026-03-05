@@ -9,13 +9,13 @@ namespace NotionMarkdownConverter.Application.Services;
 /// マークダウン生成サービス
 /// </summary>
 /// <param name="_notionClient">Notionクライアント</param>
-/// <param name="_frontmatterGenerator">フロントマター生成器</param>
-/// <param name="_contentGenerator">コンテンツ生成器</param>
+/// <param name="_frontmatterConverter">フロントマター変換サービス</param>
+/// <param name="_contentConverter">コンテンツ変換サービス</param>
 /// <param name="_markdownLinkProcessor">リンク処理サービス</param>
 public class MarkdownGenerator(
     INotionClientWrapper _notionClient,
-    FrontmatterGenerator _frontmatterGenerator,
-    ContentGenerator _contentGenerator,
+    FrontmatterConverter _frontmatterConverter,
+    ContentConverter _contentConverter,
     DownloadLinkProcessor _markdownLinkProcessor)
 {
     /// <summary>
@@ -30,10 +30,10 @@ public class MarkdownGenerator(
         var pageFullContent = _notionClient.GetPageFullContentAsync(pageProperty.PageId);
 
         // フロントマターを作成
-        var frontmatter = _frontmatterGenerator.GenerateFrontmatter(pageProperty);
+        var frontmatter = _frontmatterConverter.Convert(pageProperty);
 
         // ページの全内容をマークダウンに変換
-        var content = _contentGenerator.GenerateContent(await pageFullContent);
+        var content = _contentConverter.Convert(await pageFullContent);
 
         // ファイルのダウンロードとリンクの変換処理 
         var processedContent = await _markdownLinkProcessor.ProcessLinkAsync(content, outputDirectory);

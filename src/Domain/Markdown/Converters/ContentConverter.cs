@@ -7,18 +7,18 @@ using System.Text;
 namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 
 /// <summary>
-/// コンテンツを生成するクラス
+/// Notionページのブロック列をMarkdown本文に変換します。
 /// </summary>
-public class ContentGenerator(
+public class ContentConverter(
     BlockTransformDispatcher strategyContext,
-    ILogger<ContentGenerator> logger)
+    ILogger<ContentConverter> logger)
 {
     /// <summary>
-    /// コンテンツを生成します
+    /// Markdown本文に変換します。
     /// </summary>
     /// <param name="blocks">変換するブロック</param>
     /// <returns>変換されたマークダウン文字列</returns>
-    public string GenerateContent(List<NotionBlock> blocks)
+    public string Convert(List<NotionBlock> blocks)
     {
         if (blocks is null || blocks.Count == 0)
         {
@@ -28,7 +28,7 @@ public class ContentGenerator(
         // 変換コンテキストを作成
         var context = new NotionBlockTransformContext
         {
-            ExecuteTransformBlocks = GenerateContent,
+            ExecuteTransformBlocks = Convert,
             Blocks = blocks,
             CurrentBlock = null!,
             CurrentBlockIndex = 0

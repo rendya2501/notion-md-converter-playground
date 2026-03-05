@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Configuration;
+namespace NotionMarkdownConverter.Infrastructure.Http;
 
 /// <summary>
 /// ダウンローダーのオプション

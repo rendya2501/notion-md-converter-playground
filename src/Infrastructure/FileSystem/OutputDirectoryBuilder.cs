@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Core.Models;
 using Scriban;
 

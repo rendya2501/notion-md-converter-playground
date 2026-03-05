@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Configuration;
+namespace NotionMarkdownConverter.Application.Configuration;
 
 /// <summary>
 /// アプリケーションの設定

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;

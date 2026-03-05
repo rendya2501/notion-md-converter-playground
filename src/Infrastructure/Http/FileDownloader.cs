@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Core.Http;
 using NotionMarkdownConverter.Core.Models;
 

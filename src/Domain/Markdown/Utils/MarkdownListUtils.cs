@@ -10,24 +10,16 @@ public static class MarkdownListUtils
     /// <summary>
     /// 箇条書きリスト変換
     /// </summary>
-    public static string BulletList(string text, BulletStyle style = BulletStyle.Hyphen)
-    {
-        return $"{(char)style} {text}";
-    }
+    public static string BulletList(string text, BulletStyle style = BulletStyle.Hyphen) => $"{(char)style} {text}";
 
     /// <summary>
     /// 番号付きリスト変換
     /// </summary>
-    public static string NumberedList(string text, int number)
-    {
-        return $"{number}. {text}";
-    }
+    public static string NumberedList(string text, int number) => $"{number}. {text}";
 
     /// <summary>
     /// チェックリスト変換
     /// </summary>
-    public static string CheckList(string text, bool isChecked)
-    {
-        return $"- [{(isChecked ? "x" : " ")}] {text}";
-    }
-} 
+    public static string CheckList(string text, bool isChecked) => $"- [{(isChecked ? "x" : " ")}] {text}";
+
+}

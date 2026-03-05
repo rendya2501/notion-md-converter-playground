@@ -117,7 +117,7 @@ public static class PropertyParser
     {
         result = default;
         // セレクトプロパティでない場合、または名前がnullの場合はfalse
-        if (value is not SelectPropertyValue selectPropertyValue || 
+        if (value is not SelectPropertyValue selectPropertyValue ||
             selectPropertyValue.Select?.Name == null)
         {
             return false;
@@ -132,8 +132,8 @@ public static class PropertyParser
 
         // スペースや特殊文字を除去して試みる
         var normalizedName = new string(
-            [.. selectPropertyValue.Select.Name.Where(c => char.IsLetterOrDigit(c))]);        
-        if (Enum.TryParse<T>(normalizedName, true, out parsed))
+            selectPropertyValue.Select.Name.Where(char.IsLetterOrDigit).ToArray());
+        if (Enum.TryParse(normalizedName, true, out parsed))
         {
             result = parsed;
             return true;
@@ -141,4 +141,4 @@ public static class PropertyParser
 
         return false;
     }
-} 
+}

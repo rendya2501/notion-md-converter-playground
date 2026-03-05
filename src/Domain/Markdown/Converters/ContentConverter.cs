@@ -9,9 +9,7 @@ namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 /// <summary>
 /// Notionページのブロック列をMarkdown本文に変換します。
 /// </summary>
-public class ContentConverter(
-    BlockTransformDispatcher strategyContext,
-    ILogger<ContentConverter> logger)
+public class ContentConverter(BlockTransformDispatcher strategyContext)
 {
     /// <summary>
     /// Markdown本文に変換します。
@@ -36,15 +34,15 @@ public class ContentConverter(
 
         var sb = new StringBuilder();
 
-        // ブロックを変換
-        foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
+        try
         {
-            // 変換コンテキストを更新
-            context.CurrentBlock = block;
-            context.CurrentBlockIndex = index;
-
-            try
+            // ブロックを変換
+            foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
             {
+                // 変換コンテキストを更新
+                context.CurrentBlock = block;
+                context.CurrentBlockIndex = index;
+
                 // ブロックを変換
                 var transformedBlock = strategyContext.Transform(context);
 
@@ -59,11 +57,10 @@ public class ContentConverter(
                     sb.Append(transformedBlock);
                 }
             }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Error transforming block at index : {index}", index);
-                throw;
-            }
+        }
+        catch (Exception ex)
+        {
+            throw;
         }
 
         return sb.ToString();

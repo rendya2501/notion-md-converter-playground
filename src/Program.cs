@@ -135,18 +135,3 @@ void RegisterInfrastructureServices(IServiceCollection services)
     services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
     services.AddSingleton<IFileDownloader, FileDownloader>();
 }
-
-
-//// コマンドライン引数から設定を取得
-//var config = AppConfiguration.FromCommandLine(args);
-//var exporter = new NotionExporter(config);
-//await exporter.ExportPagesAsync();
-
-
-// NotionClientの作成
-// プロパティの取得
-// ページの取得
-// プロパティとページの情報からマークダウンの作成
-// 後始末処理
-
-// マークダウン変換処理をライブラリとして捉える

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Models;
 
 namespace NotionMarkdownConverter.Infrastructure.Http;
 

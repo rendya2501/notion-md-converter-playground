@@ -3,9 +3,9 @@ using Microsoft.Extensions.Options;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Core.Enums;
-using NotionMarkdownConverter.Core.Mappers;
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Enums;
+using NotionMarkdownConverter.Domain.Mappers;
+using NotionMarkdownConverter.Domain.Models;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.Services;

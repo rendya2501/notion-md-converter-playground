@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Models;
 
 namespace NotionMarkdownConverter.Application.Abstractions;
 

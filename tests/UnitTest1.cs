@@ -1,5 +1,5 @@
-using NotionMarkdownConverter.Core.Markdown.Enums;
 using NotionMarkdownConverter.Core.Utils;
+using NotionMarkdownConverter.Domain.Markdown.Enums;
 using System.ComponentModel;
 using System.Reflection;
 

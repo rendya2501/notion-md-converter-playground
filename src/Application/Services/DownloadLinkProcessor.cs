@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Core.Constants;
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Constants;
+using NotionMarkdownConverter.Domain.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;

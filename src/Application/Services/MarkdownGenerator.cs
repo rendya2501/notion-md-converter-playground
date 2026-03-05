@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Core.Markdown.Converters;
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Markdown.Converters;
+using NotionMarkdownConverter.Domain.Models;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.Services;

@@ -1,8 +1,8 @@
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Core.Constants;
-using NotionMarkdownConverter.Core.Enums;
-using NotionMarkdownConverter.Core.Models;
+using NotionMarkdownConverter.Domain.Constants;
+using NotionMarkdownConverter.Domain.Enums;
+using NotionMarkdownConverter.Domain.Models;
 
 namespace NotionMarkdownConverter.Infrastructure.Notion;
 

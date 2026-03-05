@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Application.Services;
+namespace NotionMarkdownConverter.Application.Abstractions;
 
 /// <summary>
 /// Notionのページをエクスポートするサービス

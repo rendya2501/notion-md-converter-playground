@@ -8,7 +8,7 @@ using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Http;
-using NotionMarkdownConverter.Core.Services.Markdown;
+using NotionMarkdownConverter.Core.Markdown.Converters;
 using NotionMarkdownConverter.Core.Transformer.Strategies;
 using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
@@ -64,10 +64,10 @@ void RegisterApplicationServices(IServiceCollection services)
 // ドメイン層のサービス登録
 void RegisterDomainServices(IServiceCollection services)
 {
-    services.AddSingleton<IMarkdownGenerator, MarkdownGenerator>();
-    services.AddSingleton<IFrontmatterGenerator, FrontmatterGenerator>();
-    services.AddSingleton<IContentGenerator, ContentGenerator>();
-    services.AddSingleton<IDownloadLinkProcessor, DownloadLinkProcessor>();
+    services.AddSingleton<MarkdownGenerator>();
+    services.AddSingleton<FrontmatterGenerator>();
+    services.AddSingleton<ContentGenerator>();
+    services.AddSingleton<DownloadLinkProcessor>();
 
     // ストラテジーの登録
     services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();

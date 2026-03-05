@@ -1,9 +1,9 @@
 using NotionMarkdownConverter.Core.Clients;
+using NotionMarkdownConverter.Core.Markdown.Converters;
 using NotionMarkdownConverter.Core.Models;
 using System.Text;
 
-namespace NotionMarkdownConverter.Core.Services.Markdown;
-
+namespace NotionMarkdownConverter.Application.Services;
 
 /// <summary>
 /// マークダウン生成サービス
@@ -14,9 +14,9 @@ namespace NotionMarkdownConverter.Core.Services.Markdown;
 /// <param name="_markdownLinkProcessor">リンク処理サービス</param>
 public class MarkdownGenerator(
     INotionClientWrapper _notionClient,
-    IFrontmatterGenerator _frontmatterGenerator,
-    IContentGenerator _contentGenerator,
-    IDownloadLinkProcessor _markdownLinkProcessor) : IMarkdownGenerator
+    FrontmatterGenerator _frontmatterGenerator,
+    ContentGenerator _contentGenerator,
+    DownloadLinkProcessor _markdownLinkProcessor)
 {
     /// <summary>
     /// マークダウンを生成します。

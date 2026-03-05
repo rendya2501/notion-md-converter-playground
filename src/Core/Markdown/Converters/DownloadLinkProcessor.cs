@@ -5,12 +5,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NotionMarkdownConverter.Core.Services.Markdown;
+namespace NotionMarkdownConverter.Core.Markdown.Converters;
 
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス
 /// </summary>
-public class DownloadLinkProcessor(IFileDownloader _imageDownloader) : IDownloadLinkProcessor
+public class DownloadLinkProcessor(IFileDownloader _imageDownloader)
 {
     /// <summary>
     /// マークダウン内のリンクを処理します

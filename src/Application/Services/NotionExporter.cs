@@ -7,7 +7,6 @@ using NotionMarkdownConverter.Core.Clients;
 using NotionMarkdownConverter.Core.Enums;
 using NotionMarkdownConverter.Core.Mappers;
 using NotionMarkdownConverter.Core.Models;
-using NotionMarkdownConverter.Core.Services.Markdown;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.Services;
@@ -18,7 +17,7 @@ namespace NotionMarkdownConverter.Application.Services;
 public class NotionExporter(
     IOptions<NotionExportOptions> _config,
     INotionClientWrapper _notionClient,
-    IMarkdownGenerator _markdownGenerator,
+    MarkdownGenerator _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryBuilder _outputDirectoryBuilder,
     ILogger<NotionExporter> _logger) : INotionExporter

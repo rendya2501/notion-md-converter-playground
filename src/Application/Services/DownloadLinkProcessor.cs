@@ -10,7 +10,7 @@ namespace NotionMarkdownConverter.Application.Services;
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス
 /// </summary>
-public class DownloadLinkProcessor(IFileDownloader _imageDownloader)
+public class DownloadLinkProcessor(IFileDownloader fileDownloader)
 {
     /// <summary>
     /// マークダウン内のリンクを処理します
@@ -37,7 +37,7 @@ public class DownloadLinkProcessor(IFileDownloader _imageDownloader)
         {
             var sanitizedUrl = SanitizeUrl(pair.Key);
             var localFileName = pair.Value;
-            return _imageDownloader.DownloadAsync(new UrlFilePair(sanitizedUrl, localFileName), outputDirectory);
+            return fileDownloader.DownloadAsync(new UrlFilePair(sanitizedUrl, localFileName), outputDirectory);
         });
 
         // 5. タスクをawaitする(3番と4番を並列実行)

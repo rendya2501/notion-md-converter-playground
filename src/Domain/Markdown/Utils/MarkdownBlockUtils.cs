@@ -9,8 +9,15 @@ public static class MarkdownBlockUtils
     /// </summary>
     public static string Heading(string text, int level)
     {
-        if (level < 1) level = 1;
-        if (level > 6) level = 6;
+        if (level < 1)
+        {
+            level = 1;
+        }
+        if (level > 6)
+        {
+            level = 6;
+        }
+
         return $"{new string('#', level)} {text}";
     }
 

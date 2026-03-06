@@ -1,6 +1,7 @@
 // tests/Integration/NotionExportIntegrationTests.cs
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Services;
+using NotionMarkdownConverter.Domain.Mappers;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
@@ -61,7 +62,8 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         var firstPage = pages[0];
 
         // PagePropertyMapperで変換
-        var pageProperty = Domain.Mappers.PagePropertyMapper.CopyPageProperties(firstPage);
+        var pagePropertyMapper = GetService<IPagePropertyMapper>();
+        var pageProperty = pagePropertyMapper.CopyPageProperties(firstPage);
 
         // 出力ディレクトリを作成
         var outputDir = Path.Combine(Secrets.OutputDirectory, "test-output");

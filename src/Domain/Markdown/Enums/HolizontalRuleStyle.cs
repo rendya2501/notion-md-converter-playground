@@ -7,5 +7,5 @@ public enum HolizontalRuleStyle
 {
     Hyphen,
     Asterisk,
-    Underscor
+    Underscore
 }

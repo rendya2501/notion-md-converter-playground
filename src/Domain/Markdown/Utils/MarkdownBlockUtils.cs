@@ -69,7 +69,7 @@ public static class MarkdownBlockUtils
         {
             HolizontalRuleStyle.Hyphen => "---",
             HolizontalRuleStyle.Asterisk => "***",
-            HolizontalRuleStyle.Underscor => "___",
+            HolizontalRuleStyle.Underscore => "___",
             _ => "---"
         };
     }

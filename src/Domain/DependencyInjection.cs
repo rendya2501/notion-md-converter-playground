@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using NotionMarkdownConverter.Domain.Mappers;
 using NotionMarkdownConverter.Domain.Markdown.Converters;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
@@ -50,7 +51,9 @@ public static class DependencyInjection
         services.AddSingleton<ContentConverter>();
         // フロントマター変換サービスを登録
         services.AddSingleton<FrontmatterConverter>();
-        
+        // ページプロパティマッパーを登録
+        services.AddSingleton<IPagePropertyMapper, PagePropertyMapper>();
+
         return services;
     }
 }

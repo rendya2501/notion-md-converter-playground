@@ -6,14 +6,17 @@ using NotionMarkdownConverter.Domain.Utils;
 
 namespace NotionMarkdownConverter.Domain.Mappers;
 
-public class PagePropertyMapper
+/// <summary>
+/// NotionページのプロパティをPagePropertyモデルに変換するマッパー
+/// </summary>
+public class PagePropertyMapper : IPagePropertyMapper
 {
     /// <summary>
-    /// ページのプロパティをコピーします。
+    /// Notionページのプロパティをコピーし、<see cref="PageProperty"/>に変換します。
     /// </summary>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    public static PageProperty CopyPageProperties(Page page)
+    /// <param name="page">変換元のNotionページ</param>
+    /// <returns>変換された<see cref="PageProperty"/></returns>
+    public PageProperty CopyPageProperties(Page page)
     {
         var pageProperty = new PageProperty { PageId = page.Id };
 

@@ -19,6 +19,7 @@ public class NotionExporter(
     MarkdownGenerator _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryBuilder _outputDirectoryBuilder,
+    IPagePropertyMapper _pagePropertyMapper,
     ILogger<NotionExporter> _logger) : INotionExporter
 {
     /// <summary>
@@ -76,7 +77,7 @@ public class NotionExporter(
         try
         {
             // ページのプロパティをコピー
-            var pageData = PagePropertyMapper.CopyPageProperties(page);
+            var pageData = _pagePropertyMapper.CopyPageProperties(page);
 
             // ページをエクスポートするかどうかを判定
             if (!ShouldExportPage(pageData, now))

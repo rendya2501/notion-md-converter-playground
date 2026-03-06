@@ -1,6 +1,5 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Markdown.Types;
-using NotionMarkdownConverter.Domain.Utils;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,7 +10,7 @@ namespace NotionMarkdownConverter.Domain.Markdown.Utils;
 /// </summary>
 public static class MarkdownInlineUtils
 {
-    private static readonly ColorMap COLOR_MAP = new()
+    private static readonly ColorMap ColorMap = new()
     {
         { Notion.Client.Color.Default, string.Empty },
         { Notion.Client.Color.Red, "#A83232" },
@@ -34,7 +33,7 @@ public static class MarkdownInlineUtils
         { Notion.Client.Color.GrayBackground, "#D0D0D0" }
     };
 
-    private static readonly Color[] BACKGROUND_COLOR_KEY =
+    private static readonly Color[] BackgroundColorKeys =
     [
         Notion.Client.Color.RedBackground,
         Notion.Client.Color.OrangeBackground,
@@ -47,7 +46,7 @@ public static class MarkdownInlineUtils
         Notion.Client.Color.BrownBackground
     ];
 
-    private static readonly Color[] TEXT_COLOR_KEY =
+    private static readonly Color[] TextColorKeys =
     [
         Notion.Client.Color.Red,
         Notion.Client.Color.Orange,
@@ -65,10 +64,16 @@ public static class MarkdownInlineUtils
     /// <summary>装飾の共通処理（前後の空白を保持）</summary>
     public static string Decoration(string text, string decoration)
     {
-        if (string.IsNullOrWhiteSpace(text)) return text;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text;
+        }
 
         var match = Regex.Match(text, @"^(\s*)(.+?)(\s*)$");
-        if (!match.Success) return text;
+        if (!match.Success)
+        {
+            return text;
+        }
 
         var leading = match.Groups[1].Value;
         var content = match.Groups[2].Value;
@@ -118,12 +123,12 @@ public static class MarkdownInlineUtils
             return text;
         }
 
-        colorMap ??= COLOR_MAP;
+        colorMap ??= ColorMap;
         color ??= Notion.Client.Color.Default;
 
         var spanProps = new Dictionary<string, string>();
 
-        if (BACKGROUND_COLOR_KEY.Any(w => w == color))
+        if (BackgroundColorKeys.Any(w => w == color))
         {
             var bgColor = colorMap.TryGetValue((Color)color, out string? value) ? value : null;
             if (!string.IsNullOrEmpty(bgColor))
@@ -132,7 +137,7 @@ public static class MarkdownInlineUtils
             }
         }
 
-        if (TEXT_COLOR_KEY.Any(w => w == color))
+        if (TextColorKeys.Any(w => w == color))
         {
             var textColor = colorMap.TryGetValue((Color)color, out string? value) ? value : null;
             if (!string.IsNullOrEmpty(textColor))
@@ -158,7 +163,9 @@ public static class MarkdownInlineUtils
     private static string ObjectToPropertiesStr(Dictionary<string, string> props)
     {
         if (props == null || props.Count == 0)
+        {
             return string.Empty;
+        }
 
         var sb = new StringBuilder();
         foreach (var prop in props)

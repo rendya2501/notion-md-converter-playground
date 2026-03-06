@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Context;
@@ -34,33 +33,26 @@ public class ContentConverter(BlockTransformDispatcher strategyContext)
 
         var sb = new StringBuilder();
 
-        try
+        // ブロックを変換
+        foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
         {
+            // 変換コンテキストを更新
+            context.CurrentBlock = block;
+            context.CurrentBlockIndex = index;
+
             // ブロックを変換
-            foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
+            var transformedBlock = strategyContext.Transform(context);
+
+            // 変換されたブロックが存在する場合
+            if (transformedBlock is not null)
             {
-                // 変換コンテキストを更新
-                context.CurrentBlock = block;
-                context.CurrentBlockIndex = index;
-
-                // ブロックを変換
-                var transformedBlock = strategyContext.Transform(context);
-
-                // 変換されたブロックが存在する場合
-                if (transformedBlock is not null)
+                if (sb.Length > 0)
                 {
-                    if (sb.Length > 0)
-                    {
-                        sb.Append('\n');
-                    }
-
-                    sb.Append(transformedBlock);
+                    sb.Append('\n');
                 }
+
+                sb.Append(transformedBlock);
             }
-        }
-        catch (Exception ex)
-        {
-            throw;
         }
 
         return sb.ToString();

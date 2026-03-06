@@ -9,7 +9,7 @@ namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 /// <summary>
 /// ファイル変換ストラテジー
 /// </summary>
-public class FileTransformStrategy() : IBlockTransformStrategy
+public class FileTransformStrategy : IBlockTransformStrategy
 {
     /// <summary>
     /// ブロックタイプ

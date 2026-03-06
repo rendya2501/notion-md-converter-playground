@@ -5,18 +5,18 @@ namespace NotionMarkdownConverter.Domain.Models;
 /// <summary>
 /// Notionのブロック
 /// </summary>
-/// <param name="block"></param>
-public class NotionBlock(IBlock block)
+/// <param name="_block"></param>
+public class NotionBlock(IBlock _block)
 {
     /// <summary>
     /// ブロックID
     /// </summary>
-    public string Id { get; } = block.Id;
+    public string Id { get; } = _block.Id;
 
     /// <summary>
     /// ブロックタイプ
     /// </summary>
-    public BlockType Type { get; } = block.Type;
+    public BlockType Type { get; } = _block.Type;
 
     /// <summary>
     /// 子ブロック
@@ -26,10 +26,10 @@ public class NotionBlock(IBlock block)
     /// <summary>
     /// 子ブロックを持つかどうか
     /// </summary>
-    public bool HasChildren { get; } = block.HasChildren;
+    public bool HasChildren { get; } = _block.HasChildren;
 
     /// <summary>
     /// オリジナルのブロック
     /// </summary>
-    public object OriginalBlock { get; } = block;
+    public object OriginalBlock { get; } = _block;
 } 

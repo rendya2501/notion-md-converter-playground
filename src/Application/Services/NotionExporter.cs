@@ -16,7 +16,7 @@ namespace NotionMarkdownConverter.Application.Services;
 public class NotionExporter(
     IOptions<NotionExportOptions> _config,
     INotionClientWrapper _notionClient,
-    MarkdownGenerator _markdownGenerator,
+    MarkdownAssembler _markdownGenerator,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryBuilder _outputDirectoryBuilder,
     IPagePropertyMapper _pagePropertyMapper,

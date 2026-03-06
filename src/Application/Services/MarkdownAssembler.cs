@@ -12,11 +12,11 @@ namespace NotionMarkdownConverter.Application.Services;
 /// <param name="_frontmatterConverter">フロントマター変換サービス</param>
 /// <param name="_contentConverter">コンテンツ変換サービス</param>
 /// <param name="_markdownLinkProcessor">リンク処理サービス</param>
-public class MarkdownGenerator(
+public class MarkdownAssembler(
     INotionClientWrapper _notionClient,
     FrontmatterConverter _frontmatterConverter,
     ContentConverter _contentConverter,
-    DownloadLinkProcessor _markdownLinkProcessor)
+    MarkdownLinkProcessor _markdownLinkProcessor)
 {
     /// <summary>
     /// マークダウンを生成します。

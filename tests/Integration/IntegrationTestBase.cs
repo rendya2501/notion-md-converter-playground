@@ -79,8 +79,8 @@ public abstract class IntegrationTestBase : IDisposable
             config.OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}");
         });
         services.AddSingleton<INotionExporter, NotionExporter>();
-        services.AddSingleton<MarkdownGenerator>();
-        services.AddSingleton<DownloadLinkProcessor>();
+        services.AddSingleton<MarkdownAssembler>();
+        services.AddSingleton<MarkdownLinkProcessor>();
     }
 
     /// <summary>

@@ -36,9 +36,9 @@ public static class DependencyInjection
         // NotionExporterの登録
         services.AddSingleton<INotionExporter, NotionExporter>();
         // マークダウン生成サービスを登録   
-        services.AddSingleton<MarkdownGenerator>();
+        services.AddSingleton<MarkdownAssembler>();
         // ダウンロードリンク処理サービスを登録
-        services.AddSingleton<DownloadLinkProcessor>();
+        services.AddSingleton<MarkdownLinkProcessor>();
 
         return services;
     }

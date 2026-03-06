@@ -10,7 +10,7 @@ namespace NotionMarkdownConverter.Application.Services;
 /// <summary>
 /// マークダウン内のダウンロードリンクを処理するサービス
 /// </summary>
-public class DownloadLinkProcessor(IFileDownloader _fileDownloader)
+public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
 {
     /// <summary>
     /// マークダウン内のリンクを処理します

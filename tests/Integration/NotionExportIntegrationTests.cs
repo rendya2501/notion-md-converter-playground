@@ -48,7 +48,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     {
         // Arrange
         var client = GetService<INotionClientWrapper>();
-        var markdownGenerator = GetService<MarkdownGenerator>();
+        var markdownGenerator = GetService<MarkdownAssembler>();
 
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
 

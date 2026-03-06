@@ -62,6 +62,9 @@ public static class MarkdownInlineUtils
     // ── テキスト装飾 ──────────────────────────────
 
     /// <summary>装飾の共通処理（前後の空白を保持）</summary>
+    /// <param name="text">装飾するテキスト</param>
+    /// <param name="decoration">装飾に使用する記号（例: "**", "*"）</param>
+    /// <returns>装飾されたMarkdown文字列。空白のみの場合はそのまま返します。</returns>
     public static string Decoration(string text, string decoration)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -81,12 +84,19 @@ public static class MarkdownInlineUtils
         return $"{leading}{decoration}{content}{decoration}{trailing}";
     }
 
+    /// <summary>テキストを太字に変換します。</summary>
     public static string Bold(string text) => Decoration(text, "**");
+    /// <summary>テキストをイタリックに変換します。</summary>
     public static string Italic(string text) => Decoration(text, "*");
+    /// <summary>テキストを太字イタリックに変換します。</summary>
     public static string BoldItalic(string text) => Decoration(text, "***");
+    /// <summary>テキストに取り消し線を適用します。</summary>
     public static string Strikethrough(string text) => Decoration(text, "~~");
+    /// <summary>テキストをインラインコードに変換します。</summary>
     public static string InlineCode(string text) => $"`{text}`";
+    /// <summary>テキストに下線を適用します。</summary>
     public static string Underline(string text) => $"_{text}_";
+    /// <summary>数式をインライン数式記法に変換します。</summary>
     public static string InlineEquation(string equation) => $"${equation}$";
 
     // ── リンク・メディア ──────────────────────────

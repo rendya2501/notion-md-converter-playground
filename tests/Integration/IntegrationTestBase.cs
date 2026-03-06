@@ -1,20 +1,11 @@
-// tests/Integration/IntegrationTestBase.cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Domain.Markdown.Converters;
-using NotionMarkdownConverter.Domain.Transformers;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
-using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
-using NotionMarkdownConverter.Infrastructure.FileSystem;
-using NotionMarkdownConverter.Infrastructure.GitHub;
-using NotionMarkdownConverter.Infrastructure.Http;
-using NotionMarkdownConverter.Infrastructure.Notion;
+using NotionMarkdownConverter.Domain;
+using NotionMarkdownConverter.Infrastructure;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
@@ -74,6 +65,11 @@ public abstract class IntegrationTestBase : IDisposable
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
+        // ドメイン層とインフラ層のサービスを登録
+        services
+            .AddDomainServices()
+            .AddInfrastructureServices();
+
         // Application層
         services.Configure<NotionExportOptions>(config =>
         {
@@ -82,66 +78,9 @@ public abstract class IntegrationTestBase : IDisposable
             // テスト用の出力テンプレート（シンプルなパス）
             config.OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}");
         });
-
         services.AddSingleton<INotionExporter, NotionExporter>();
         services.AddSingleton<MarkdownGenerator>();
         services.AddSingleton<DownloadLinkProcessor>();
-
-        // Domain層
-        services.AddSingleton<FrontmatterConverter>();
-        services.AddSingleton<ContentConverter>();
-        services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
-        services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
-        services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
-        services.AddSingleton<BlockTransformDispatcher>();
-
-        // Infrastructure層
-        services.Configure<DownloaderOptions>(options =>
-        {
-            options.MaxRetryCount = 3;
-            options.RetryDelayMilliseconds = 1000;
-            options.TimeoutSeconds = 30;
-            options.SkipExistingFiles = true;
-        });
-
-        services.AddHttpClient();
-
-        services.AddSingleton<INotionClient>(provider =>
-        {
-            var options = provider.GetRequiredService<IOptions<NotionExportOptions>>();
-            return NotionClientFactory.Create(new ClientOptions
-            {
-                AuthToken = options.Value.NotionAuthToken
-            });
-        });
-
-        services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
-        services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
-        services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
-        services.AddSingleton<IFileDownloader, FileDownloader>();
     }
 
     /// <summary>

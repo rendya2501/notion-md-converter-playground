@@ -3,7 +3,7 @@ using NotionMarkdownConverter.Domain.Markdown.Utils;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace NotionMarkdownConverter.Tests;
+namespace NotionMarkdownConverter.Tests.Unit;
 
 public class UnitTest1
 {

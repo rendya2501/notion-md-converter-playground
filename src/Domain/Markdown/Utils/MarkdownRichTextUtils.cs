@@ -96,13 +96,4 @@ public static class MarkdownRichTextUtils
         => !string.IsNullOrEmpty(href)
            && Uri.TryCreate(href, UriKind.Absolute, out var uri)
            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
-
-    //public static bool IsURL(string text)
-    //{
-    //    if (string.IsNullOrEmpty(text))
-    //        return false;
-
-    //    return Uri.TryCreate(text, UriKind.Absolute, out Uri? uriResult)
-    //        && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-    //}
 }

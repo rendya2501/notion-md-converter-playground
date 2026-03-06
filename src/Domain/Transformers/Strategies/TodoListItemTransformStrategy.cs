@@ -45,7 +45,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
 
         // 子ブロックが存在しない場合、タスクリストを返す
         return string.IsNullOrEmpty(children)
-            ? $"{checkbox}"
+            ? checkbox
             : $"{checkbox}\n{MarkdownBlockUtils.Indent(children)}";
     }
 } 

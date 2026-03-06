@@ -36,7 +36,7 @@ public class MarkdownAssembler(
         var content = _contentConverter.Convert(await pageFullContent);
 
         // ファイルのダウンロードとリンクの変換処理 
-        var processedContent = await _markdownLinkProcessor.ProcessLinkAsync(content, outputDirectory);
+        var processedContent = await _markdownLinkProcessor.ProcessLinksAsync(content, outputDirectory);
 
         // マークダウンを組み立てる
         var markdownBuilder = new StringBuilder();

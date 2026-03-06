@@ -17,7 +17,7 @@ public class FileTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ファイルブロックを取得
-        var block = BlockConverter.GetOriginalBlock<FileBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<FileBlock>(context.CurrentBlock);
         // キャプションを取得
         var caption = block.File.Caption.Any()
             ? MarkdownRichTextUtils.RichTextsToMarkdown(block.File.Caption)

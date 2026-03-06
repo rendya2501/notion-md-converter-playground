@@ -18,7 +18,7 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     /// <param name="markdown">処理対象のMarkdown文字列</param>
     /// <param name="outputDirectory">ファイルのダウンロード先ディレクトリ</param>
     /// <returns>ダウンロードリンクをローカルパスに置換したMarkdown文字列</returns>
-    public async Task<string> ProcessLinkAsync(string markdown, string outputDirectory)
+    public async Task<string> ProcessLinksAsync(string markdown, string outputDirectory)
     {
         // 1. マークダウン内のダウンロードリンクを抽出
         var urls = ExtractDownloadLinks(markdown);

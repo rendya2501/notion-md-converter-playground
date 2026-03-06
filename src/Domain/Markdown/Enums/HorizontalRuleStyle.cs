@@ -3,7 +3,7 @@ namespace NotionMarkdownConverter.Domain.Markdown.Enums;
 /// <summary>
 /// 水平線スタイル
 /// </summary>
-public enum HolizontalRuleStyle
+public enum HorizontalRuleStyle
 {
     Hyphen,
     Asterisk,

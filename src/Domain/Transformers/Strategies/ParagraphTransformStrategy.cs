@@ -26,7 +26,7 @@ public class ParagraphTransformStrategy : IBlockTransformStrategy
         // 段落のテキストを取得して改行を追加
         var text = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(
-                BlockConverter.GetOriginalBlock<ParagraphBlock>(currentBlock).Paragraph.RichText));
+                BlockCaster.GetOriginalBlock<ParagraphBlock>(currentBlock).Paragraph.RichText));
 
         // 子ブロックが存在しない場合、段落のテキストを返す
         return string.IsNullOrEmpty(children)

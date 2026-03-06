@@ -63,13 +63,13 @@ public static class MarkdownBlockUtils
     /// </summary>
     /// <param name="style">水平線のスタイル。デフォルトはハイフン。</param>
     /// <returns>Markdown形式の水平線文字列</returns>
-    public static string HorizontalRule(HolizontalRuleStyle? style = HolizontalRuleStyle.Hyphen)
+    public static string HorizontalRule(HorizontalRuleStyle? style = HorizontalRuleStyle.Hyphen)
     {
         return style switch
         {
-            HolizontalRuleStyle.Hyphen => "---",
-            HolizontalRuleStyle.Asterisk => "***",
-            HolizontalRuleStyle.Underscore => "___",
+            HorizontalRuleStyle.Hyphen => "---",
+            HorizontalRuleStyle.Asterisk => "***",
+            HorizontalRuleStyle.Underscore => "___",
             _ => "---"
         };
     }

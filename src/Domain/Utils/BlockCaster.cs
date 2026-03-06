@@ -4,9 +4,9 @@ using NotionMarkdownConverter.Domain.Models;
 namespace NotionMarkdownConverter.Domain.Utils;
 
 /// <summary>
-/// ブロック変換サービス
+/// ブロックのオリジナルを取得するユーティリティ
 /// </summary>
-public static class BlockConverter
+public static class BlockCaster
 {
     /// <summary>
     /// ブロックのオリジナルを取得します。

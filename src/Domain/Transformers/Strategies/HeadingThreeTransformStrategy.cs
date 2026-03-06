@@ -16,7 +16,7 @@ public class HeadingThreeTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックを取得
-        var block = BlockConverter.GetOriginalBlock<HeadingThreeBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<HeadingThreeBlock>(context.CurrentBlock);
         // テキストを取得
         var text = MarkdownRichTextUtils.RichTextsToMarkdown(block.Heading_3.RichText);
 

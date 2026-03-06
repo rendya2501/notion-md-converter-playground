@@ -16,7 +16,7 @@ public class BookmarkTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックをブックマークブロックに変換
-        var originalBlock = BlockConverter.GetOriginalBlock<BookmarkBlock>(context.CurrentBlock);
+        var originalBlock = BlockCaster.GetOriginalBlock<BookmarkBlock>(context.CurrentBlock);
         // ブックマークのURLを取得
         var url = originalBlock.Bookmark.Url;
         // ブックマークのキャプションをMarkdown形式に変換

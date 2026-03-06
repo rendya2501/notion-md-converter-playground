@@ -16,7 +16,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // タスクリストのブロックを取得 
-        var block = BlockConverter.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
         // タスクリストのテキストを取得して改行を追加
         var text = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(block.ToDo.RichText));

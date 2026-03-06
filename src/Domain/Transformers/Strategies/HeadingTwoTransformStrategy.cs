@@ -16,7 +16,7 @@ public class HeadingTwoTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックを取得
-        var block = BlockConverter.GetOriginalBlock<HeadingTwoBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<HeadingTwoBlock>(context.CurrentBlock);
         // テキストを取得
         var text = MarkdownRichTextUtils.RichTextsToMarkdown(block.Heading_2.RichText);
 

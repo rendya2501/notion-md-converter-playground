@@ -17,7 +17,7 @@ public class ImageTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // 画像ブロックを取得
-        var block = BlockConverter.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<ImageBlock>(context.CurrentBlock);
         // 画像のタイトルを取得
         var title = MarkdownRichTextUtils.RichTextsToMarkdown(block.Image.Caption);
         // 画像のURLを取得

@@ -16,7 +16,7 @@ public class EquationTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // 方程式ブロックを取得
-        var block = BlockConverter.GetOriginalBlock<EquationBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<EquationBlock>(context.CurrentBlock);
         // 方程式の式を取得
         var text = block.Equation.Expression;
         // 方程式の式をMarkdown形式に変換

@@ -16,7 +16,7 @@ public class PDFTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        var block = BlockConverter.GetOriginalBlock<PDFBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<PDFBlock>(context.CurrentBlock);
 
         // キャプションがあればキャプションを、なければファイル名 or URLを表示テキストとして使用
         var caption = block.PDF.Caption.Any()

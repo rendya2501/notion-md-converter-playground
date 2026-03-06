@@ -8,7 +8,7 @@ namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 /// <summary>
 /// Notionページのブロック列をMarkdown本文に変換します。
 /// </summary>
-public class ContentConverter(BlockTransformDispatcher _strategyContext)
+public class ContentConverter(BlockTransformDispatcher _dispatcher)
 {
     /// <summary>
     /// Markdown本文に変換します。
@@ -41,7 +41,7 @@ public class ContentConverter(BlockTransformDispatcher _strategyContext)
             context.CurrentBlockIndex = index;
 
             // ブロックを変換
-            var transformedBlock = _strategyContext.Transform(context);
+            var transformedBlock = _dispatcher.Transform(context);
 
             // 変換されたブロックが存在する場合
             if (transformedBlock is not null)

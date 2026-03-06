@@ -23,7 +23,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
             .Count() + 1;
 
         // 番号付きリストのブロックを取得   
-        var block = BlockConverter.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
+        var block = BlockCaster.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
         // 番号付きリストのテキストを取得して改行を追加
         var text = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(

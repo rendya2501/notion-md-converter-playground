@@ -12,7 +12,7 @@ public static class MarkdownRichTextUtils
     /// <summary>
     /// リッチテキストアノテーション有効化設定
     /// </summary>
-    public class EnableAnnotations
+    public class AnnotationOptions
     {
         public bool Bold { get; set; } = true;
         public bool Italic { get; set; } = true;
@@ -29,10 +29,10 @@ public static class MarkdownRichTextUtils
     /// </summary>
     public static string RichTextsToMarkdown(
         IEnumerable<RichTextBase> richTexts,
-        EnableAnnotations? enableAnnotations = null,
+        AnnotationOptions? enableAnnotations = null,
         ColorMap? colorMap = null)
     {
-        enableAnnotations ??= new EnableAnnotations();
+        enableAnnotations ??= new AnnotationOptions();
         var result = new StringBuilder();
 
         foreach (var text in richTexts)

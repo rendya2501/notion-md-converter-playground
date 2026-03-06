@@ -54,33 +54,32 @@ public abstract class IntegrationTestBase : IDisposable
 
     /// <summary>
     /// DIサービスを登録します。
-    /// Program.cs の登録と同じ内容ですが、テスト用設定を使います。
+    /// Domain層・Infrastructure層は本番と同じ拡張メソッドを使い、
+    /// Application層のみテスト用設定（<see cref="TestSecrets"/>）で上書きします。
     /// </summary>
     private static void ConfigureServices(IServiceCollection services, TestSecrets secrets)
     {
-        // ロギング
         services.AddLogging(builder =>
         {
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
-        // ドメイン層とインフラ層のサービスを登録
-        services
-            .AddDomainServices()
-            .AddInfrastructureServices();
-
-        // Application層
+        // Application層: args の代わりに TestSecrets から直接設定
         services.Configure<NotionExportOptions>(config =>
         {
             config.NotionAuthToken = secrets.NotionAuthToken;
             config.NotionDatabaseId = secrets.NotionDatabaseId;
-            // テスト用の出力テンプレート（シンプルなパス）
             config.OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}");
         });
         services.AddSingleton<INotionExporter, NotionExporter>();
         services.AddSingleton<MarkdownAssembler>();
         services.AddSingleton<MarkdownLinkProcessor>();
+
+        // Domain層・Infrastructure層は本番と同じ登録を再利用
+        services
+            .AddDomainServices()
+            .AddInfrastructureServices();
     }
 
     /// <summary>

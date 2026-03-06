@@ -8,16 +8,16 @@ using System.Text.RegularExpressions;
 namespace NotionMarkdownConverter.Application.Services;
 
 /// <summary>
-/// マークダウン内のダウンロードリンクを処理するサービス
+/// Markdown内のダウンロードリンクを処理するサービス
 /// </summary>
 public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
 {
     /// <summary>
-    /// マークダウン内のリンクを処理します
+    /// Markdown内のダウンロードリンクをローカルファイルパスに置換し、ファイルをダウンロードします。
     /// </summary>
-    /// <param name="markdown"></param>
-    /// <param name="outputDirectory"></param>
-    /// <returns>マークダウン</returns>
+    /// <param name="markdown">処理対象のMarkdown文字列</param>
+    /// <param name="outputDirectory">ファイルのダウンロード先ディレクトリ</param>
+    /// <returns>ダウンロードリンクをローカルパスに置換したMarkdown文字列</returns>
     public async Task<string> ProcessLinkAsync(string markdown, string outputDirectory)
     {
         // 1. マークダウン内のダウンロードリンクを抽出
@@ -47,12 +47,11 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
         return await replaceTask;
     }
 
-
     /// <summary>
-    /// ファイル名を生成します。
+    /// ダウンロードURLからローカル保存用のファイル名を生成します。
     /// </summary>
-    /// <param name="uri">URI</param>
-    /// <returns>ファイル名</returns>
+    /// <param name="downloadLink">サニタイズ済みのダウンロードURL</param>
+    /// <returns>MD5ハッシュと元の拡張子を組み合わせたファイル名</returns>
     private static string GenerateFileName(string downloadLink)
     {
         // URIを生成
@@ -65,10 +64,10 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     }
 
     /// <summary>
-    /// マークダウン内のダウンロードリンクを抽出する
+    /// Markdown内からダウンロード対象のリンクURLを抽出します。
     /// </summary>
-    /// <param name="markdown"></param>
-    /// <returns></returns>
+    /// <param name="markdown">抽出対象のMarkdown文字列</param>
+    /// <returns>重複を除いたダウンロードリンクのURL一覧</returns>
     private static IEnumerable<string> ExtractDownloadLinks(string markdown)
     {
         // 特殊文字列を含むリンクを検出
@@ -81,21 +80,21 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     }
 
     /// <summary>
-    /// URLに含まれるDownloadMarkerをサニタイズします
+    /// URLに含まれる <see cref="LinkConstants.DownloadMarker"/> を除去します。
     /// </summary>
-    /// <param name="url"></param>
-    /// <returns></returns>
+    /// <param name="url">マーカーを含むURL</param>
+    /// <returns>マーカーを除去したURL</returns>
     private static string SanitizeUrl(string url)
     {
         return url.Replace(LinkConstants.DownloadMarker, string.Empty);
     }
 
     /// <summary>
-    /// マークダウン内の画像URLを置換する
+    /// Markdown内のダウンロードリンクをローカルファイル名に一括置換します。
     /// </summary>
-    /// <param name="markdown"></param>
-    /// <param name="urlFilePairs"></param>
-    /// <returns></returns>
+    /// <param name="markdown">置換対象のMarkdown文字列</param>
+    /// <param name="urlToLocalLinkPairs">ダウンロードURLとローカルファイル名のペア辞書</param>
+    /// <returns>置換後のMarkdown文字列</returns>
     private static string ReplaceDownloadLinks(string markdown, Dictionary<string, string> urlToLocalLinkPairs)
     {
         var result = markdown;

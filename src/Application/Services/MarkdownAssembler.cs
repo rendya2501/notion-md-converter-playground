@@ -6,12 +6,12 @@ using System.Text;
 namespace NotionMarkdownConverter.Application.Services;
 
 /// <summary>
-/// マークダウン生成サービス
+/// NotionページのコンテンツからMarkdown文字列を組み立てるサービス
 /// </summary>
-/// <param name="_notionClient">Notionクライアント</param>
-/// <param name="_frontmatterConverter">フロントマター変換サービス</param>
-/// <param name="_contentConverter">コンテンツ変換サービス</param>
-/// <param name="_markdownLinkProcessor">リンク処理サービス</param>
+/// <param name="_notionClient">Notionページの全内容を取得するクライアント</param>
+/// <param name="_frontmatterConverter">ページプロパティをフロントマターに変換するコンバーター</param>
+/// <param name="_contentConverter">ブロック列をMarkdown本文に変換するコンバーター</param>
+/// <param name="_markdownLinkProcessor">Markdown内のダウンロードリンクを処理するプロセッサー</param>
 public class MarkdownAssembler(
     INotionClientWrapper _notionClient,
     FrontmatterConverter _frontmatterConverter,
@@ -19,12 +19,12 @@ public class MarkdownAssembler(
     MarkdownLinkProcessor _markdownLinkProcessor)
 {
     /// <summary>
-    /// マークダウンを生成します。
+    /// 指定されたページプロパティを元に、フロントマターと本文を組み立てたMarkdown文字列を生成します。
     /// </summary>
-    /// <param name="pageProperty">ページのプロパティ</param>
-    /// <param name="outputDirectory">出力ディレクトリ</param>
-    /// <returns>生成されたマークダウン</returns>
-    public async Task<string> GenerateMarkdownAsync(PageProperty pageProperty, string outputDirectory)
+    /// <param name="pageProperty">組み立て対象のページプロパティ</param>
+    /// <param name="outputDirectory">ダウンロードファイルの出力先ディレクトリ</param>
+    /// <returns>フロントマターと本文を含むMarkdown文字列</returns>
+    public async Task<string> AssembleAsync(PageProperty pageProperty, string outputDirectory)
     {
         // ページの全内容を取得(非同期で実行)
         var pageFullContent = _notionClient.GetPageFullContentAsync(pageProperty.PageId);

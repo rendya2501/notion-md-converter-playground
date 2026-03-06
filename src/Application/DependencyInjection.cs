@@ -33,11 +33,11 @@ public static class DependencyInjection
             config.OutputDirectoryPathTemplate = args[2];
         });
 
-        // NotionExporterの登録
+        // Notionのページをエクスポートするサービスを登録
         services.AddSingleton<INotionExporter, NotionExporter>();
-        // マークダウン生成サービスを登録   
+        // Markdownの組み立てサービスを登録
         services.AddSingleton<MarkdownAssembler>();
-        // ダウンロードリンク処理サービスを登録
+        // Markdown内のダウンロードリンク処理サービスを登録
         services.AddSingleton<MarkdownLinkProcessor>();
 
         return services;

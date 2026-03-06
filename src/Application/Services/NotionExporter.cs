@@ -16,14 +16,14 @@ namespace NotionMarkdownConverter.Application.Services;
 public class NotionExporter(
     IOptions<NotionExportOptions> _config,
     INotionClientWrapper _notionClient,
-    MarkdownAssembler _markdownGenerator,
+    MarkdownAssembler _markdownAssembler,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryBuilder _outputDirectoryBuilder,
     IPagePropertyMapper _pagePropertyMapper,
     ILogger<NotionExporter> _logger) : INotionExporter
 {
     /// <summary>
-    /// Notionのページをエクスポートします。
+    /// 公開対象のNotionページを取得し、Markdownファイルとしてエクスポートします。
     /// </summary>
     /// <returns></returns>
     public async Task ExportPagesAsync()
@@ -67,11 +67,11 @@ public class NotionExporter(
     }
 
     /// <summary>
-    /// ページをエクスポートします。
+    /// 単一ページのエクスポート処理を実行します。
     /// </summary>
-    /// <param name="page"></param>
-    /// <param name="now"></param>
-    /// <returns></returns>
+    /// <param name="page">エクスポート対象のNotionページ</param>
+    /// <param name="now">処理実行時刻。公開日時の判定と更新に使用します。</param>
+    /// <returns>エクスポートが実行された場合は <c>true</c>、スキップされた場合は <c>false</c></returns>
     private async Task<bool> ExportPageAsync(Page page, DateTime now)
     {
         try
@@ -88,8 +88,8 @@ public class NotionExporter(
             // 出力ディレクトリを構築
             var outputDirectory = _outputDirectoryBuilder.Build(pageData);
 
-            // マークダウンを生成
-            var markdown = await _markdownGenerator.GenerateMarkdownAsync(pageData, outputDirectory);
+            // Markdownを組み立てる
+            var markdown = await _markdownAssembler.AssembleAsync(pageData, outputDirectory);
 
             // マークダウンを出力
             await File.WriteAllTextAsync(
@@ -111,10 +111,11 @@ public class NotionExporter(
 
     /// <summary>
     /// ページをエクスポートするかどうかを判定します。
+    /// 公開ステータスが公開待ち、かつ公開日時が現在日時以前の場合にエクスポート対象と判断します。
     /// </summary>
-    /// <param name="pageProperty"></param>
-    /// <param name="now"></param>
-    /// <returns></returns>
+    /// <param name="pageProperty">判定対象のページプロパティ</param>
+    /// <param name="now">判定基準時刻</param>
+    /// <returns>エクスポート対象の場合は <c>true</c></returns>
     private bool ShouldExportPage(PageProperty pageProperty, DateTime now)
     {
         // 公開ステータスが公開待ちでない場合はスキップ

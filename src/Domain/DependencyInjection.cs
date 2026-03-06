@@ -7,8 +7,23 @@ using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Domain;
 
+/// <summary>
+/// ドメイン層のDIクラス
+/// </summary>
+/// <remarks>
+/// ドメイン層は本来、外部フレームワークへの依存を持たない純粋なビジネスロジックの場所ですが、
+/// このプロジェクトでは <see cref="BlockTransformDispatcher"/> がStrategyパターンを採用しており、
+/// <see cref="IBlockTransformStrategy"/> の実装群をコレクションとして受け取る設計上、
+/// DIによるコレクション注入が必要となります。
+/// これはStrategyパターンがもたらす拡張性・保守性とのトレードオフとして意図的に受け入れています。
+/// </remarks>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// ドメイン層のサービスをDIコンテナに登録します。
+    /// </summary>
+    /// <param name="services">DIコンテナ</param>
+    /// <returns>DIコンテナ</returns>
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
         //// ブロック変換ストラテジーを登録

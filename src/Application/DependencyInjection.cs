@@ -5,8 +5,17 @@ using NotionMarkdownConverter.Application.Services;
 
 namespace NotionMarkdownConverter.Application;
 
+/// <summary>
+/// アプリケーション層のDIクラス
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// アプリケーション層のサービスをDIコンテナに登録します。
+    /// </summary>
+    /// <param name="services">DIコンテナ</param>
+    /// <param name="args">コマンドライン引数</param>
+    /// <returns>DIコンテナ</returns>
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
         string[] args)
@@ -24,6 +33,7 @@ public static class DependencyInjection
             config.OutputDirectoryPathTemplate = args[2];
         });
 
+        // NotionExporterの登録
         services.AddSingleton<INotionExporter, NotionExporter>();
         // マークダウン生成サービスを登録   
         services.AddSingleton<MarkdownGenerator>();

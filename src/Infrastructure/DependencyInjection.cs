@@ -10,8 +10,16 @@ using NotionMarkdownConverter.Infrastructure.Notion;
 
 namespace NotionMarkdownConverter.Infrastructure;
 
+/// <summary>
+/// インフラストラクチャ層のDIクラス
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// インフラストラクチャ層のサービスをDIコンテナに登録します。
+    /// </summary>
+    /// <param name="services">DIコンテナ</param>
+    /// <returns>DIコンテナ</returns>
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         // ダウンローダーのオプション設定
@@ -37,9 +45,13 @@ public static class DependencyInjection
             });
         });
 
+        // NotionClientWrapperの登録
         services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+        // GitHubEnvironmentUpdaterの登録
         services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
+        // OutputDirectoryBuilderの登録
         services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
+        // FileDownloaderの登録
         services.AddSingleton<IFileDownloader, FileDownloader>();
 
         return services;

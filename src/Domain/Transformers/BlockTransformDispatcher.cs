@@ -1,6 +1,6 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Transformers.Context;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
+using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Domain.Transformers;
 

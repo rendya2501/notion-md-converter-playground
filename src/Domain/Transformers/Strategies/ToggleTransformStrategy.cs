@@ -2,6 +2,7 @@ using Notion.Client;
 using NotionMarkdownConverter.Domain.Markdown.Enums;
 using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
+using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Domain.Utils;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
@@ -10,18 +11,8 @@ namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 /// トグル変換ストラテジー
 /// </summary>
 public class ToggleTransformStrategy : IBlockTransformStrategy
-{
-    /// <summary>
-    /// ブロックタイプ
-    /// </summary>
-    /// <value></value>
-    public BlockType BlockType => BlockType.Toggle;
+{    public BlockType BlockType => BlockType.Toggle;
 
-    /// <summary>
-    /// ブロックを変換します。
-    /// </summary>
-    /// <param name="context">変換コンテキスト</param>
-    /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
         // 子ブロックを変換

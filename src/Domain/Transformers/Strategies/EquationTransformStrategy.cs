@@ -1,6 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
+using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Domain.Utils;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
@@ -10,17 +11,8 @@ namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 /// </summary>
 public class EquationTransformStrategy : IBlockTransformStrategy
 {
-    /// <summary>
-    /// ブロックタイプ
-    /// </summary>
-    /// <value></value>
     public BlockType BlockType => BlockType.Equation;
 
-    /// <summary>
-    /// ブロックを変換します。
-    /// </summary>
-    /// <param name="context">変換コンテキスト</param>
-    /// <returns>変換されたマークダウン文字列</returns>
     public string Transform(NotionBlockTransformContext context)
     {
         // 方程式ブロックを取得

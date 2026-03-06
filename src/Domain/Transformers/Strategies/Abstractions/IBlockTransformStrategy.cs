@@ -1,7 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 
-namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
+namespace NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 /// <summary>
 /// ブロック変換ストラテジーのインターフェース

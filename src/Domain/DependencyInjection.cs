@@ -3,6 +3,7 @@ using NotionMarkdownConverter.Domain.Mappers;
 using NotionMarkdownConverter.Domain.Markdown.Converters;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
+using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Domain;
 

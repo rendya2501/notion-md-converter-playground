@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
+namespace NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 /// <summary>
 /// デフォルトのブロック変換ストラテジーのインターフェース

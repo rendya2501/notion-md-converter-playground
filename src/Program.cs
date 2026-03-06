@@ -5,7 +5,7 @@ using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Domain;
 using NotionMarkdownConverter.Infrastructure;
 
-// DIコンテナの設定
+// DIコンテナを構築
 var services = new ServiceCollection();
 
 // ロギングの設定

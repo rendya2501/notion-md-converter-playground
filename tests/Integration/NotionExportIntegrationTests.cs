@@ -1,6 +1,5 @@
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Domain.Mappers;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 

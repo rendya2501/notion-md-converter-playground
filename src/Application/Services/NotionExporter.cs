@@ -4,7 +4,6 @@ using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Mappers;
 using NotionMarkdownConverter.Domain.Models;
 using System.Text;
 

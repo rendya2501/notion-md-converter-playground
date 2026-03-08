@@ -1,7 +1,7 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Models;
 
-namespace NotionMarkdownConverter.Domain.Mappers;
+namespace NotionMarkdownConverter.Application.Abstractions;
 
 /// <summary>
 /// Notionページのプロパティをドメインモデルに変換するマッパーのインターフェース

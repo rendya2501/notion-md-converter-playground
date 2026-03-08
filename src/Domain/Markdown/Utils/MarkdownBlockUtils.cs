@@ -34,7 +34,8 @@ public static class MarkdownBlockUtils
     /// <returns>Markdown形式のコードブロック文字列</returns>
     public static string CodeBlock(string code, string? language = null)
     {
-        return $"``` {language ?? string.Empty}\n{code}\n```";
+        var languageSuffix = string.IsNullOrEmpty(language) ? string.Empty : language;
+        return $"```{languageSuffix}\n{code}\n```";
     }
 
     /// <summary>

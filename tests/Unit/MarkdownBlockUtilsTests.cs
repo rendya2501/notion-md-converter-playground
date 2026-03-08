@@ -38,19 +38,17 @@ public class MarkdownBlockUtilsTests
     // ── CodeBlock ─────────────────────────────────────────────────────
 
     [Fact]
-    public void CodeBlock_WithLanguage_ReturnsCodeFence()
+    public void CodeBlock_WithLanguage_ReturnsCodeFenceWithLanguage()
     {
         var result = MarkdownBlockUtils.CodeBlock("var x = 1;", "csharp");
-        Assert.Equal("``` csharp\nvar x = 1;\n```", result);
+        Assert.Equal("```csharp\nvar x = 1;\n```", result);
     }
 
     [Fact]
-    public void CodeBlock_WithoutLanguage_ReturnsCodeFenceWithEmptyLanguage()
+    public void CodeBlock_WithoutLanguage_ReturnsCodeFenceWithoutTrailingSpace()
     {
         var result = MarkdownBlockUtils.CodeBlock("var x = 1;");
-        Assert.Equal("```  \nvar x = 1;\n```", result.Replace("``` \n", "```  \n")); // 空文字列の場合
-        Assert.StartsWith("``` ", result);
-        Assert.Contains("var x = 1;", result);
+        Assert.Equal("```\nvar x = 1;\n```", result);
     }
 
     // ── BlockEquation ─────────────────────────────────────────────────

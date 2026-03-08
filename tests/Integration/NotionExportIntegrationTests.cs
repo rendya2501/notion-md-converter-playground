@@ -53,10 +53,9 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
 
         // ページが0件なら検証できないのでスキップ
-        // Skip()はxUnitでテストを条件付きでスキップする方法
         if (pages.Count == 0)
         {
-            return; // スキップ相当（本来はSkip属性を使うが、動的スキップはxUnitでは別途対応が必要）
+            Assert.Skip("テスト用DBにページが存在しないためスキップします。");
         }
 
         var firstPage = pages[0];

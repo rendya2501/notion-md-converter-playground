@@ -8,6 +8,6 @@ public interface INotionExporter
     /// <summary>
     /// Notionのページをエクスポートします。
     /// </summary>
-    /// <returns></returns>
+    /// <returns>エクスポート処理が完了したときに解決するタスク</returns>
     Task ExportPagesAsync();
-} 
+}

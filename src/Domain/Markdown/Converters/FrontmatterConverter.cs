@@ -6,7 +6,7 @@ namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 /// <summary>
 /// Notionページのプロパティ情報をMarkdownのフロントマターに変換します。
 /// </summary>
-public class FrontmatterConverter 
+public class FrontmatterConverter
 {
     private const string TitleName = "title";
     private const string TypeName = "type";
@@ -15,42 +15,45 @@ public class FrontmatterConverter
     private const string TagsName = "tags";
 
     /// <summary>
-    /// フロントマターに変換します。
+    /// ページプロパティをMarkdownフロントマター文字列に変換します。
     /// </summary>
-    /// <param name="pageData"></param>
-    /// <returns></returns>
-    public string Convert(PageProperty pageData)
+    /// <param name="pageProperty">変換元のページプロパティ</param>
+    /// <returns>
+    /// <c>---</c> で囲まれたYAML形式のフロントマター文字列。
+    /// 末尾には空行が含まれます。
+    /// </returns>
+    public string Convert(PageProperty pageProperty)
     {
         var sb = new StringBuilder();
 
         sb.AppendLine("---");
 
         // タイプがあれば追加
-        if (!string.IsNullOrWhiteSpace(pageData.Type))
+        if (!string.IsNullOrWhiteSpace(pageProperty.Type))
         {
-            sb.AppendLine($"{TypeName}: \"{pageData.Type}\"");
+            sb.AppendLine($"{TypeName}: \"{pageProperty.Type}\"");
         }
 
         // タイトルは必須
-        sb.AppendLine($"{TitleName}: \"{pageData.Title}\"");
+        sb.AppendLine($"{TitleName}: \"{pageProperty.Title}\"");
 
         // 説明文があれば追加
-        if (!string.IsNullOrWhiteSpace(pageData.Description))
+        if (!string.IsNullOrWhiteSpace(pageProperty.Description))
         {
-            sb.AppendLine($"{DescriptionName}: \"{pageData.Description}\"");
+            sb.AppendLine($"{DescriptionName}: \"{pageProperty.Description}\"");
         }
 
         // タグがあれば追加
-        if (pageData.Tags.Count > 0)
+        if (pageProperty.Tags.Count > 0)
         {
-            var formattedTags = pageData.Tags.Select(tag => $"\"{tag}\"");
+            var formattedTags = pageProperty.Tags.Select(tag => $"\"{tag}\"");
             sb.AppendLine($"{TagsName}: [{string.Join(',', formattedTags)}]");
         }
 
         // 公開日時があれば追加
-        if (pageData.PublishedDateTime.HasValue)
+        if (pageProperty.PublishedDateTime.HasValue)
         {
-            sb.AppendLine($"{PublishedName}: \"{pageData.PublishedDateTime.Value:s}\"");
+            sb.AppendLine($"{PublishedName}: \"{pageProperty.PublishedDateTime.Value:s}\"");
         }
 
         sb.AppendLine("---");

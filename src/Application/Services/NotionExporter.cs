@@ -3,8 +3,6 @@ using Microsoft.Extensions.Options;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Models;
 using System.Text;
 
 namespace NotionMarkdownConverter.Application.Services;
@@ -20,6 +18,7 @@ public class NotionExporter(
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IOutputDirectoryProvider _outputDirectoryBuilder,
     IPagePropertyMapper _pagePropertyMapper,
+    PageExportEligibilityChecker _eligibilityChecker,
     ILogger<NotionExporter> _logger) : INotionExporter
 {
     /// <summary>
@@ -77,7 +76,7 @@ public class NotionExporter(
             var pageData = _pagePropertyMapper.Map(page);
 
             // ページをエクスポートするかどうかを判定
-            if (!ShouldExportPage(pageData, now))
+            if (!_eligibilityChecker.ShouldExport(pageData, now))
             {
                 return false;
             }
@@ -106,41 +105,5 @@ public class NotionExporter(
             _logger.LogError(ex, "エクスポート失敗: PageId={PageId}", page.Id);
             return false;
         }
-    }
-
-    /// <summary>
-    /// ページをエクスポートするかどうかを判定します。
-    /// 公開ステータスが公開待ち、かつ公開日時が現在日時以前の場合にエクスポート対象と判断します。
-    /// </summary>
-    /// <param name="pageProperty">判定対象のページプロパティ</param>
-    /// <param name="now">判定基準時刻</param>
-    /// <returns>エクスポート対象の場合は <c>true</c></returns>
-    private bool ShouldExportPage(PageProperty pageProperty, DateTime now)
-    {
-        // 公開ステータスが公開待ちでない場合はスキップ
-        if (pageProperty.PublicStatus != PublicStatus.Queued)
-        {
-            _logger.LogInformation("スキップ: PageId={PageId}, Title={Title}, 理由=公開待ち以外のステータス",
-                pageProperty.PageId, pageProperty.Title);
-            return false;
-        }
-
-        // 公開日時が未設定の場合はスキップ
-        if (!pageProperty.PublishedDateTime.HasValue)
-        {
-            _logger.LogInformation("スキップ: PageId={PageId}, Title={Title}, 理由=公開日時未設定",
-                  pageProperty.PageId, pageProperty.Title);
-            return false;
-        }
-
-        // 公開日時が未来の場合はスキップ
-        if (now < pageProperty.PublishedDateTime.Value)
-        {
-            _logger.LogInformation("スキップ: PageId={PageId}, Title={Title}, 理由=公開日時未到達",
-                pageProperty.PageId, pageProperty.Title);
-            return false;
-        }
-
-        return true;
     }
 }

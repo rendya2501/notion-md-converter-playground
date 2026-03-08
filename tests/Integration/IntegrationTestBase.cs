@@ -76,9 +76,8 @@ public abstract class IntegrationTestBase : IDisposable
         services.AddSingleton<MarkdownAssembler>();
         services.AddSingleton<MarkdownLinkProcessor>();
 
-        // Domain層・Infrastructure層は本番と同じ登録を再利用
+        // Infrastructure層は本番と同じ登録を再利用
         services
-            .AddDomainServices()
             .AddInfrastructureServices();
     }
 

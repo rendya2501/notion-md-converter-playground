@@ -38,7 +38,8 @@ public static class DependencyInjection
         services.AddSingleton<MarkdownAssembler>();
         // Markdown内のダウンロードリンク処理サービスを登録
         services.AddSingleton<MarkdownLinkProcessor>();
-
+        // ページの公開対象判定サービスを登録
+        services.AddSingleton<PageExportEligibilityChecker>();
 
         // ストラテジーの登録
         services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();

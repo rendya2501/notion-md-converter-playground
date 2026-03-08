@@ -17,7 +17,7 @@ public class ContentConverter(BlockTransformDispatcher _dispatcher)
     public string Convert(List<NotionBlock> blocks)
     {
         // ブロックが空の場合は早期リターン
-        if (blocks is null || blocks.Count == 0)
+        if (blocks.Count == 0)
         {
             return string.Empty;
         }
@@ -34,17 +34,18 @@ public class ContentConverter(BlockTransformDispatcher _dispatcher)
         };
 
         // 各ブロックをMarkdown文字列に変換します。
-        // コンテキストを使い回すことで、ストラテジー側が前後のブロック情報を
-        // 参照できるようにしています（番号付きリストの連番管理など）。
-        // 空ブロックは "" として変換され、改行として出力されます。
-        var results = blocks.Select((block, index) =>
+        // forループでインデックスを明示的に管理することで、
+        // コンテキストへの副作用を伴う処理をLINQのSelectに混在させません。
+        var results = new List<string>(blocks.Count);
+        for (var i = 0; i < blocks.Count; i++)
         {
-            context.CurrentBlock = block;
-            context.CurrentBlockIndex = index;
-            return _dispatcher.Transform(context);
-        });
+            context.CurrentBlock = blocks[i];
+            context.CurrentBlockIndex = i;
+            results.Add(_dispatcher.Transform(context));
+        }
 
         // ブロック間を改行で結合して本文を組み立てます。
+        // 空ブロックは""として変換され、改行として出力されます。
         return string.Join("\n", results);
     }
 }

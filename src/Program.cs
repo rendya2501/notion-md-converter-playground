@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter.Application;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Domain;
 using NotionMarkdownConverter.Infrastructure;
 
 // コマンドライン引数を即時パース・バリデーションします。

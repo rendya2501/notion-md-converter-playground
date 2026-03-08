@@ -62,7 +62,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         var firstPage = pages[0];
 
         // PagePropertyMapperで変換
-        var pageProperty = pagePropertyMapper.CopyPageProperties(firstPage);
+        var pageProperty = pagePropertyMapper.Map(firstPage);
 
         // 出力ディレクトリを作成
         var outputDir = Path.Combine(Secrets.OutputDirectory, "test-output");

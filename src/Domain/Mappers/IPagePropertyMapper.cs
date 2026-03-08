@@ -9,9 +9,9 @@ namespace NotionMarkdownConverter.Domain.Mappers;
 public interface IPagePropertyMapper
 {
     /// <summary>
-    /// Notionページのプロパティをコピーし、<see cref="PageProperty"/>に変換します。
+    /// NotionページのプロパティをPagePropertyモデルにマッピングします。
     /// </summary>
-    /// <param name="page">変換元のNotionページ</param>
-    /// <returns>変換された<see cref="PageProperty"/></returns>
-    PageProperty CopyPageProperties(Page page);
+    /// <param name="page">マッピング元のNotionページ</param>
+    /// <returns>マッピング結果の<see cref="PageProperty"/></returns>
+    PageProperty Map(Page page);
 }

@@ -104,7 +104,6 @@ public static class MarkdownInlineUtils
     /// <summary>リンク変換</summary>
     public static string Link(string text, string url) => $"[{text}]({url})";
 
-
     /// <summary>画像変換</summary>
     public static string Image(string text, string url, string? width = null)
     {
@@ -174,17 +173,13 @@ public static class MarkdownInlineUtils
     }
 
     /// <summary>
-    /// オブジェクトをプロパティ文字列に変換します。
+    /// プロパティ辞書をHTML属性文字列に変換します。
     /// </summary>
-    /// <param name="props">プロパティの辞書</param>
-    /// <returns></returns>
+    /// <param name="props">プロパティの辞書（値が空のエントリは無視されます）</param>
+    /// <returns>HTML属性形式の文字列</returns>
     private static string ObjectToPropertiesStr(Dictionary<string, string> props)
     {
-        if (props == null || props.Count == 0)
-        {
-            return string.Empty;
-        }
-
+        // props は非nullable かつ呼び出し元でCount > 0 を確認済みのため、空チェックは不要
         var sb = new StringBuilder();
         foreach (var prop in props)
         {

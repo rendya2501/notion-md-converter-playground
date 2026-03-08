@@ -72,20 +72,20 @@ public class NotionExporter(
     {
         try
         {
-            // ページのプロパティをコピー
-            var pageData = _pagePropertyMapper.Map(page);
+            // Notionページのプロパティをドメインモデルに変換
+            var pageProperty = _pagePropertyMapper.Map(page);
 
             // ページをエクスポートするかどうかを判定
-            if (!_eligibilityChecker.ShouldExport(pageData, now))
+            if (!_eligibilityChecker.ShouldExport(pageProperty, now))
             {
                 return false;
             }
 
             // 出力ディレクトリを構築
-            var outputDirectory = _outputDirectoryBuilder.BuildAndCreate(pageData);
+            var outputDirectory = _outputDirectoryBuilder.BuildAndCreate(pageProperty);
 
             // Markdownを組み立てる
-            var markdown = await _markdownAssembler.AssembleAsync(pageData, outputDirectory);
+            var markdown = await _markdownAssembler.AssembleAsync(pageProperty, outputDirectory);
 
             // マークダウンを出力
             await File.WriteAllTextAsync(

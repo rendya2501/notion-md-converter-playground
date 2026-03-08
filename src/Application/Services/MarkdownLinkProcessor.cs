@@ -20,43 +20,42 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     /// <returns>ダウンロードリンクをローカルパスに置換したMarkdown文字列</returns>
     public async Task<string> ProcessLinksAsync(string markdown, string outputDirectory)
     {
-        // 1. マークダウン内のダウンロードリンクを抽出
+        // 1. マークダウン内のダウンロード対象URLを抽出
         var urls = ExtractDownloadLinks(markdown);
 
-        // 2. regexした結果からローカルリンクを生成しておく
-        var urlToLocalLinkPairs = urls.ToDictionary(
+        // 2. 抽出したURLごとに、マーカーを除去したURLとローカルファイル名のペアを生成
+        var urlToLocalFilePairs = urls.ToDictionary(
             url => url,
             url => GenerateFileName(SanitizeUrl(url))
         );
 
-        // 3. マークダウン文字列からregexした結果とローカルリンクのペアを置換する
-        Task<string> replaceTask = Task.Run(() => ReplaceDownloadLinks(markdown, urlToLocalLinkPairs));
+        // 3. マークダウン内のダウンロードURL（マーカー付き）をローカルファイル名に置換するタスクを開始
+        Task<string> replaceTask = Task.Run(() => ReplaceDownloadLinks(markdown, urlToLocalFilePairs));
 
-        // 4. サニタイジング文字列とローカルリンクのペアを元にダウンロードタスクを生成する
-        IEnumerable<Task> downloadTasks = urlToLocalLinkPairs.Select(pair =>
+        // 4. 各URLのダウンロードタスクを生成（マーカー除去後のURLを使用）
+        IEnumerable<Task> downloadTasks = urlToLocalFilePairs.Select(pair =>
         {
             var sanitizedUrl = SanitizeUrl(pair.Key);
             var localFileName = pair.Value;
             return _fileDownloader.DownloadAsync(new UrlFilePair(sanitizedUrl, localFileName), outputDirectory);
         });
 
-        // 5. タスクをawaitする(3番と4番を並列実行)
+        // 5. 置換タスクとダウンロードタスクを並列実行
         await Task.WhenAll(replaceTask, Task.WhenAll(downloadTasks));
 
-        // 6. 結果を返す
+        // 6. 置換済みのMarkdownを返す
         return await replaceTask;
     }
 
     /// <summary>
     /// ダウンロードURLからローカル保存用のファイル名を生成します。
     /// </summary>
-    /// <param name="downloadLink">サニタイズ済みのダウンロードURL</param>
+    /// <param name="downloadLink">マーカー除去済みのダウンロードURL</param>
     /// <returns>MD5ハッシュと元の拡張子を組み合わせたファイル名</returns>
     private static string GenerateFileName(string downloadLink)
     {
-        // URIを生成
+        // URIのパス部分（クエリ文字列除外）をもとにMD5ハッシュを生成してファイル名とする
         var uri = new Uri(downloadLink);
-        // URIのパス部分をUTF-8でエンコード
         var fileNameBytes = Encoding.UTF8.GetBytes(uri.LocalPath);
 
         // MD5ハッシュを生成し、16進数文字列に変換
@@ -70,7 +69,7 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     /// <returns>重複を除いたダウンロードリンクのURL一覧</returns>
     private static IEnumerable<string> ExtractDownloadLinks(string markdown)
     {
-        // 特殊文字列を含むリンクを検出
+        // ダウンロードマーカーを含むリンクを正規表現で検出
         var pattern = @"!?\[.*?\]\(\s*(" + Regex.Escape(LinkConstants.DownloadMarker) + @".*?)\s*\)";
         // 正規表現でマッチする部分を取得
         var matches = Regex.Matches(markdown, pattern);
@@ -93,12 +92,12 @@ public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
     /// Markdown内のダウンロードリンクをローカルファイル名に一括置換します。
     /// </summary>
     /// <param name="markdown">置換対象のMarkdown文字列</param>
-    /// <param name="urlToLocalLinkPairs">ダウンロードURLとローカルファイル名のペア辞書</param>
+    /// <param name="urlToLocalFilePairs">マーカー付きURLとローカルファイル名のペア辞書</param>
     /// <returns>置換後のMarkdown文字列</returns>
-    private static string ReplaceDownloadLinks(string markdown, Dictionary<string, string> urlToLocalLinkPairs)
+    private static string ReplaceDownloadLinks(string markdown, Dictionary<string, string> urlToLocalFilePairs)
     {
         var result = markdown;
-        foreach (var pair in urlToLocalLinkPairs)
+        foreach (var pair in urlToLocalFilePairs)
         {
             result = result.Replace(pair.Key, pair.Value);
         }

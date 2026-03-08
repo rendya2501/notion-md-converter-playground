@@ -15,14 +15,17 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        // 番号付きリストのリスト数を取得
+        // 現在のインデックスより前にある連続した NumberedListItemBlock の数を数えて連番を決定します。
+        // 計算量はO(n)ですが、呼び出しはブロック数分繰り返されるため、全体ではO(n²)になります。
+        // ブロック数が通常のページ規模（数百件以下）では実用上問題ありません。
+        // 将来的にパフォーマンスが問題になる場合は、ContentConverter側でカウンターを管理する設計変更を検討してください。
         var listCount = context.Blocks
             .Take(context.CurrentBlockIndex)
             .Reverse()
             .TakeWhile(b => b.OriginalBlock is NumberedListItemBlock)
             .Count() + 1;
 
-        // 番号付きリストのブロックを取得   
+        // 番号付きリストのブロックを取得
         var block = BlockAccessor.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
         // 番号付きリストのテキストを取得して改行を追加
         var text = MarkdownBlockUtils.ApplyLineBreaks(
@@ -45,4 +48,4 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
             ? MarkdownListUtils.NumberedList(formattedText, listCount)
             : $"{MarkdownListUtils.NumberedList(formattedText, listCount)}\n{MarkdownBlockUtils.Indent(children, 3)}";
     }
-} 
+}

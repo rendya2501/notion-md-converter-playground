@@ -11,7 +11,7 @@ public class GitHubEnvironmentUpdater(ILogger<GitHubEnvironmentUpdater> _logger)
     /// <summary>
     /// GitHub Actions の環境変数を更新します。
     /// </summary>
-    /// <param name="exportedCount"></param>
+    /// <param name="exportedCount">エクスポートしたページ数</param>
     public void UpdateEnvironment(int exportedCount)
     {
         // GitHub Actions の環境変数ファイルパスを取得
@@ -24,10 +24,9 @@ public class GitHubEnvironmentUpdater(ILogger<GitHubEnvironmentUpdater> _logger)
             return;
         }
 
-        using (StreamWriter writer = new(githubOutput, true))
-        {
-            writer.WriteLine($"exported_count={exportedCount}");
-        }
+        using var writer = new StreamWriter(githubOutput, append: true);
+        writer.WriteLine($"exported_count={exportedCount}");
+
         _logger.LogInformation("exported_count={exportedCount}", exportedCount);
     }
-} 
+}

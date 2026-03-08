@@ -15,14 +15,8 @@ public static class MarkdownBlockUtils
     /// <returns>Markdown形式の見出し文字列</returns>
     public static string Heading(string text, int level)
     {
-        if (level < 1)
-        {
-            level = 1;
-        }
-        if (level > 6)
-        {
-            level = 6;
-        }
+        if (level < 1) level = 1;
+        if (level > 6) level = 6;
         return $"{new string('#', level)} {text}";
     }
 
@@ -112,11 +106,12 @@ public static class MarkdownBlockUtils
         };
 
         var lines = text.Split('\n');
-        var indentedLines = lines.Select(line =>
+        // "indentedLines" ではなくトレイリングスペース付与のため processedLines と命名
+        var processedLines = lines.Select(line =>
             string.IsNullOrWhiteSpace(line)
                 ? line
                 : MarkdownInlineUtils.AppendTrailingSpaces(line));
-        return string.Join(lineBreak, indentedLines);
+        return string.Join(lineBreak, processedLines);
     }
 
     /// <summary>

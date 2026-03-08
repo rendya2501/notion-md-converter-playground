@@ -27,7 +27,7 @@ public class MarkdownAssembler(
     public async Task<string> AssembleAsync(PageProperty pageProperty, string outputDirectory)
     {
         // ページの全内容を取得(非同期で実行)
-        var pageFullContent = _notionClient.GetPageFullContentAsync(pageProperty.PageId);
+        var pageFullContent = _notionClient.FetchBlockTreeAsync(pageProperty.PageId);
 
         // フロントマターを作成
         var frontmatter = _frontmatterConverter.Convert(pageProperty);

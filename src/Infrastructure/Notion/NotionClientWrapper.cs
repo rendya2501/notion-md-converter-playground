@@ -7,15 +7,17 @@ using NotionMarkdownConverter.Domain.Models;
 namespace NotionMarkdownConverter.Infrastructure.Notion;
 
 /// <summary>
-/// Notionのクライアントラッパー
+/// Notion APIクライアントのラッパー。
+/// ページネーションの処理や再帰的なブロック取得を隠蔽します。
 /// </summary>
 public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
 {
     /// <summary>
-    /// 公開用ページを取得します。
+    /// 公開待ちステータスのページ一覧を取得します。
+    /// ページネーションを処理し、すべてのページを返します。
     /// </summary>
-    /// <param name="databaseId"></param>
-    /// <returns></returns>
+    /// <param name="databaseId">取得対象のNotionデータベースID</param>
+    /// <returns>公開待ちページのリスト</returns>
     public async Task<List<Page>> GetPagesForPublishingAsync(string databaseId)
     {
         var allPages = new List<Page>();
@@ -38,11 +40,11 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
     }
 
     /// <summary>
-    /// ページのプロパティを更新します。
+    /// エクスポート完了後にページのプロパティを更新します。
+    /// クロール日時を記録し、公開ステータスを公開済みに変更します。
     /// </summary>
-    /// <param name="pageId"></param>
-    /// <param name="now"></param>
-    /// <returns></returns>
+    /// <param name="pageId">更新対象のページID</param>
+    /// <param name="now">クロール日時として記録する日時（UTC）</param>
     public async Task UpdatePagePropertiesAsync(string pageId, DateTime now)
     {
         await _client.Pages.UpdateAsync(pageId, new PagesUpdateParameters
@@ -51,38 +53,30 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
             {
                 [NotionPagePropertyNames.CrawledAtPropertyName] = new DatePropertyValue
                 {
-                    Date = new Date
-                    {
-                        Start = now
-                    }
+                    Date = new Date { Start = now }
                 },
                 [NotionPagePropertyNames.PublicStatusName] = new SelectPropertyValue
                 {
-                    Select = new SelectOption
-                    {
-                        Name = PublicStatus.Published.ToString()
-                    }
+                    Select = new SelectOption { Name = PublicStatus.Published.ToString() }
                 }
             }
         });
     }
 
     /// <summary>
-    /// ページの全内容を取得します。
+    /// 指定ブロックの子ブロックをすべて再帰的に取得し、ツリー構造として返します。
+    /// ページネーションを処理し、子ブロックを持つブロックは並列で再帰取得します。
     /// </summary>
-    /// <param name="blockId"></param>
-    /// <returns></returns>
-    public async Task<List<NotionBlock>> GetPageFullContentAsync(string blockId)
+    /// <param name="blockId">取得起点となるブロックID（ページIDも可）</param>
+    /// <returns>子ブロックを再帰的に展開したブロックのリスト</returns>
+    public async Task<List<NotionBlock>> FetchBlockTreeAsync(string blockId)
     {
-        // ページの全内容を取得するためのリスト
-        List<NotionBlock> results = [];
-        // 次のカーソル
+        var blocks = new List<NotionBlock>();
         string? nextCursor = null;
 
-        // ページの親要素を取得
+        // ページネーションを処理しながら直下の子ブロックをすべて取得します。
         do
         {
-            // ページの親要素を取得
             var pagination = await _client.Blocks.RetrieveChildrenAsync(
                 new BlockRetrieveChildrenRequest
                 {
@@ -90,19 +84,20 @@ public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
                     StartCursor = nextCursor
                 }
             );
-            // ページの親要素を追加
-            results.AddRange(pagination.Results.Select(s => new NotionBlock(s)));
-            // 次のカーソルを更新
+
+            blocks.AddRange(pagination.Results.Select(s => new NotionBlock(s)));
             nextCursor = pagination.HasMore ? pagination.NextCursor : null;
         } while (nextCursor != null);
 
-        // ページの子要素を取得
-        var tasks = results
+        // 子ブロックを持つブロックを並列で再帰取得します。
+        // Task.WhenAllで並列化することでAPI呼び出しの待機時間を短縮します。
+        var tasks = blocks
             .Where(block => block.HasChildren)
-            .Select(async block => block.Children = await GetPageFullContentAsync(block.Id))
+            .Select(async block => block.Children = await FetchBlockTreeAsync(block.Id))
             .ToList();
 
         await Task.WhenAll(tasks);
-        return results;
+
+        return blocks;
     }
 }

@@ -23,7 +23,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         // ダウンローダーのオプション設定
-        services.Configure<DownloaderOptions>(options =>
+        services.Configure<HttpFileDownloaderOptions>(options =>
         {
             options.MaxRetryCount = 3;
             options.RetryDelayMilliseconds = 1000;
@@ -52,7 +52,7 @@ public static class DependencyInjection
         // OutputDirectoryBuilderの登録
         services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
         // FileDownloaderの登録
-        services.AddSingleton<IFileDownloader, FileDownloader>();
+        services.AddSingleton<IFileDownloader, HttpFileDownloader>();
 
         return services;
     }

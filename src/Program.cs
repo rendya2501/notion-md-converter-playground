@@ -35,7 +35,6 @@ services.AddLogging(builder =>
 // 各層のサービスを登録
 services
     .AddApplicationServices(options)
-    .AddDomainServices()
     .AddInfrastructureServices();
 
 // サービスプロバイダーの構築

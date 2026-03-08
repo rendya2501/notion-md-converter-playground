@@ -3,6 +3,11 @@ using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
+using NotionMarkdownConverter.Domain.Mappers;
+using NotionMarkdownConverter.Domain.Markdown.Converters;
+using NotionMarkdownConverter.Domain.Transformers;
+using NotionMarkdownConverter.Domain.Transformers.Strategies;
+using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Application;
 
@@ -33,6 +38,45 @@ public static class DependencyInjection
         services.AddSingleton<MarkdownAssembler>();
         // Markdown内のダウンロードリンク処理サービスを登録
         services.AddSingleton<MarkdownLinkProcessor>();
+
+
+        // ストラテジーの登録
+        services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, CalloutTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, CodeTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, ColumnListTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, DividerTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, EmbedTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, EquationTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, FileTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, HeadingOneTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, HeadingTwoTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, HeadingThreeTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, ImageTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, LinkPreviewTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, NumberedListItemTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, ParagraphTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, PDFTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, QuoteTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, SyncedBlockTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, TableOfContentsTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, TableTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, TodoListItemTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
+        services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
+        services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
+        // ブロック変換ストラテジーコンテキストを登録
+        services.AddSingleton<BlockTransformDispatcher>();
+
+        // マークダウンコンバーターを登録
+        services.AddSingleton<ContentConverter>();
+        // フロントマター変換サービスを登録
+        services.AddSingleton<FrontmatterConverter>();
+        // ページプロパティマッパーを登録
+        services.AddSingleton<IPagePropertyMapper, PagePropertyMapper>();
+
 
         return services;
     }

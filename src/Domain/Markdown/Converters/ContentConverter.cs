@@ -1,7 +1,6 @@
 using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Context;
-using System.Text;
 
 namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 
@@ -17,12 +16,15 @@ public class ContentConverter(BlockTransformDispatcher _dispatcher)
     /// <returns>変換されたマークダウン文字列</returns>
     public string Convert(List<NotionBlock> blocks)
     {
+        // ブロックが空の場合は早期リターン
         if (blocks is null || blocks.Count == 0)
         {
             return string.Empty;
         }
 
         // 変換コンテキストを作成
+        // ExecuteTransformBlocks に自身を渡すことで、子ブロックを持つストラテジーが
+        // 再帰的にこのメソッドを呼び出せるようにしています。
         var context = new NotionBlockTransformContext
         {
             ExecuteTransformBlocks = Convert,
@@ -31,30 +33,18 @@ public class ContentConverter(BlockTransformDispatcher _dispatcher)
             CurrentBlockIndex = 0
         };
 
-        var sb = new StringBuilder();
-
-        // ブロックを変換
-        foreach (var (block, index) in blocks.Select((block, index) => (block, index)))
+        // 各ブロックをMarkdown文字列に変換します。
+        // コンテキストを使い回すことで、ストラテジー側が前後のブロック情報を
+        // 参照できるようにしています（番号付きリストの連番管理など）。
+        // 空ブロックは "" として変換され、改行として出力されます。
+        var results = blocks.Select((block, index) =>
         {
-            // 変換コンテキストを更新
             context.CurrentBlock = block;
             context.CurrentBlockIndex = index;
+            return _dispatcher.Transform(context);
+        });
 
-            // ブロックを変換
-            var transformedBlock = _dispatcher.Transform(context);
-
-            // 変換されたブロックが存在する場合
-            if (transformedBlock is not null)
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Append('\n');
-                }
-
-                sb.Append(transformedBlock);
-            }
-        }
-
-        return sb.ToString();
+        // ブロック間を改行で結合して本文を組み立てます。
+        return string.Join("\n", results);
     }
 }

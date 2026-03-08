@@ -1,6 +1,5 @@
 using Notion.Client;
 using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Utils;
 
 namespace NotionMarkdownConverter.Tests.Unit;
@@ -239,39 +238,5 @@ public class PropertyParserTests
         var result = PropertyParser.TryParseAsEnum<PublicStatus>(value, out _);
 
         Assert.False(result);
-    }
-}
-
-/// <summary>
-/// BlockCasterのユニットテスト
-/// </summary>
-public class BlockCasterTests
-{
-    [Fact]
-    public void GetOriginalBlock_CorrectType_ReturnsTypedBlock()
-    {
-        var paragraphBlock = new ParagraphBlock
-        {
-            Paragraph = new ParagraphBlock.Info { RichText = [] }
-        };
-        var notionBlock = new NotionBlock(paragraphBlock);
-
-        var result = BlockAccessor.GetOriginalBlock<ParagraphBlock>(notionBlock);
-
-        Assert.NotNull(result);
-        Assert.IsType<ParagraphBlock>(result);
-    }
-
-    [Fact]
-    public void GetOriginalBlock_WrongType_ThrowsInvalidCastException()
-    {
-        var paragraphBlock = new ParagraphBlock
-        {
-            Paragraph = new ParagraphBlock.Info { RichText = [] }
-        };
-        var notionBlock = new NotionBlock(paragraphBlock);
-
-        Assert.Throws<InvalidCastException>(() =>
-            BlockAccessor.GetOriginalBlock<HeadingOneBlock>(notionBlock));
     }
 }

@@ -25,12 +25,12 @@ public class OutputDirectoryProvider(IOptions<NotionExportOptions> _config) : IO
     /// <returns>作成した出力ディレクトリの絶対パス</returns>
     /// <exception cref="InvalidOperationException">
     /// <see cref="PageProperty.PublishedDateTime"/> が null の場合にスローします。
-    /// 呼び出し元（NotionExporter.ShouldExportPage）でガード済みですが、
+    /// 呼び出し元（PageExportEligibilityChecker.ShouldExport）でガード済みですが、
     /// 将来の別の呼び出し元からの誤用を防ぐために明示的にチェックしています。
     /// </exception>
     public string BuildAndCreate(PageProperty pageProperty)
     {
-        // ShouldExportPageでガード済みだが、このクラス単体で呼ばれた場合の誤用を防ぐ。
+        // PageExportEligibilityChecker.ShouldExportでガード済みだが、このクラス単体で呼ばれた場合の誤用を防ぐ。
         if (!pageProperty.PublishedDateTime.HasValue)
         {
             throw new InvalidOperationException(

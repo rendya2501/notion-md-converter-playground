@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NotionMarkdownConverter.Application;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Domain;
 using NotionMarkdownConverter.Infrastructure;
 
 namespace NotionMarkdownConverter.Tests.Integration;
@@ -65,19 +65,16 @@ public abstract class IntegrationTestBase : IDisposable
             builder.SetMinimumLevel(LogLevel.Debug);
         });
 
-        // Application層: args の代わりに TestSecrets から直接設定
-        services.Configure<NotionExportOptions>(config =>
+        var options = new NotionExportOptions
         {
-            config.NotionAuthToken = secrets.NotionAuthToken;
-            config.NotionDatabaseId = secrets.NotionDatabaseId;
-            config.OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}");
-        });
-        services.AddSingleton<INotionExporter, NotionExporter>();
-        services.AddSingleton<MarkdownAssembler>();
-        services.AddSingleton<MarkdownLinkProcessor>();
+            NotionAuthToken = secrets.NotionAuthToken,
+            NotionDatabaseId = secrets.NotionDatabaseId,
+            OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}")
+        };
 
-        // Infrastructure層は本番と同じ登録を再利用
+        // 各層のサービスを登録
         services
+            .AddApplicationServices(options)
             .AddInfrastructureServices();
     }
 

@@ -24,7 +24,7 @@ public class ParagraphTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // 段落のテキストを取得して改行を追加
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(
                 BlockAccessor.GetOriginalBlock<ParagraphBlock>(currentBlock).Paragraph.RichText));
 

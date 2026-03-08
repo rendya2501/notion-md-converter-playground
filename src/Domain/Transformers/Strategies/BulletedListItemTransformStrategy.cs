@@ -17,7 +17,7 @@ public class BulletedListItemTransformStrategy : IBlockTransformStrategy
     {
         var block = BlockAccessor.GetOriginalBlock<BulletedListItemBlock>(context.CurrentBlock);
         // テキストを改行で分割
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(block.BulletedListItem.RichText));
 
         // テキストに改行が含まれている場合、2行目以降にインデントを適用

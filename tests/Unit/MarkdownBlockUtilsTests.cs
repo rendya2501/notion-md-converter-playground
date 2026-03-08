@@ -139,21 +139,21 @@ public class MarkdownBlockUtilsTests
     [Fact]
     public void LineBreak_SingleLine_AppendsTrailingSpaces()
     {
-        var result = MarkdownBlockUtils.LineBreak("テキスト");
+        var result = MarkdownBlockUtils.ApplyLineBreaks("テキスト");
         Assert.Equal("テキスト  ", result);
     }
 
     [Fact]
     public void LineBreak_WhitespaceOnlyLine_DoesNotAppendSpaces()
     {
-        var result = MarkdownBlockUtils.LineBreak("   ");
+        var result = MarkdownBlockUtils.ApplyLineBreaks("   ");
         Assert.Equal("   ", result);
     }
 
     [Fact]
     public void LineBreak_BrStyle_JoinsWithBrTag()
     {
-        var result = MarkdownBlockUtils.LineBreak("1行\n2行", LineBreakStyle.BR);
+        var result = MarkdownBlockUtils.ApplyLineBreaks("1行\n2行", LineBreakStyle.BR);
         Assert.Contains("<BR>", result);
     }
 

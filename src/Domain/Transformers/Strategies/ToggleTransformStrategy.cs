@@ -20,7 +20,7 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
         // トグルブロックを取得
         var toggleBlock = BlockAccessor.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
         // タイトルを取得して改行を追加
-        var title = MarkdownBlockUtils.LineBreak(
+        var title = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText), LineBreakStyle.BR);
 
         // 詳細を生成

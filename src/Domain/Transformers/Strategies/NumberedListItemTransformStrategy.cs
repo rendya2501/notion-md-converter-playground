@@ -25,7 +25,7 @@ public class NumberedListItemTransformStrategy : IBlockTransformStrategy
         // 番号付きリストのブロックを取得   
         var block = BlockAccessor.GetOriginalBlock<NumberedListItemBlock>(context.CurrentBlock);
         // 番号付きリストのテキストを取得して改行を追加
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(
                 block.NumberedListItem.RichText));
 

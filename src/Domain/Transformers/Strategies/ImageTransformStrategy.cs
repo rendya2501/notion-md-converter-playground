@@ -29,7 +29,7 @@ public class ImageTransformStrategy : IBlockTransformStrategy
         };
 
         // 画像シグネチャを生成して改行を追加
-        return MarkdownBlockUtils.LineBreak(
+        return MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownInlineUtils.Image(title, url));
     }
 }

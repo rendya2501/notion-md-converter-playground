@@ -25,7 +25,7 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
         var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
 
         // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownInlineUtils.WithLineBreak(
+        return MarkdownInlineUtils.AppendTrailingSpaces(
             MarkdownInlineUtils.Link(displayText, url));
     }
 }

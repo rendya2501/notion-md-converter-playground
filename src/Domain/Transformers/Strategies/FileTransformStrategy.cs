@@ -31,7 +31,7 @@ public class FileTransformStrategy : IBlockTransformStrategy
         };
 
         // リンクを生成して改行を追加
-        return MarkdownBlockUtils.LineBreak(
+        return MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownInlineUtils.Link(caption, url));
     }
 }

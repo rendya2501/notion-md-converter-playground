@@ -18,7 +18,7 @@ public class TodoListItemTransformStrategy : IBlockTransformStrategy
         // タスクリストのブロックを取得 
         var block = BlockAccessor.GetOriginalBlock<ToDoBlock>(context.CurrentBlock);
         // タスクリストのテキストを取得して改行を追加
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(block.ToDo.RichText));
 
         // テキストに改行が含まれている場合、2行目以降にインデントを適用

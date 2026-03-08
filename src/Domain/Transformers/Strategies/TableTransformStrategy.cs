@@ -78,7 +78,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
 
         // データ行を生成（パディングを追加）
         var dataRows = rows.Select(row => 
-            "| " + string.Join(" | ", row.Select((cell, i) => MarkdownBlockUtils.LineBreak(cell, LineBreakStyle.BR).PadRight(columnWidths[i]))) + " |");
+            "| " + string.Join(" | ", row.Select((cell, i) => MarkdownBlockUtils.ApplyLineBreaks(cell, LineBreakStyle.BR).PadRight(columnWidths[i]))) + " |");
 
         return $"{headerRow}\n{alignmentRow}\n{string.Join("\n", dataRows)}";
     }

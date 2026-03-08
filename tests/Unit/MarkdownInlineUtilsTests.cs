@@ -128,7 +128,7 @@ public class MarkdownInlineUtilsTests
     [Fact]
     public void WithLineBreak_AppendsTwoTrailingSpaces()
     {
-        var result = MarkdownInlineUtils.WithLineBreak("テキスト");
+        var result = MarkdownInlineUtils.AppendTrailingSpaces("テキスト");
         Assert.Equal("テキスト  ", result);
     }
 

@@ -36,7 +36,7 @@ public class PDFTransformStrategy : IBlockTransformStrategy
                 ? Path.GetFileName(new Uri(uploaded.File.Url).LocalPath)
                 : url);
 
-        return MarkdownBlockUtils.LineBreak(
+        return MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownInlineUtils.Link(displayText, url));
     }
 }

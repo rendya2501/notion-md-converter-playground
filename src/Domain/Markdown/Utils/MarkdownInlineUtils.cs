@@ -118,8 +118,16 @@ public static class MarkdownInlineUtils
     /// <summary>コメント変換</summary>
     public static string Comment(string text) => $"<!-- {text} -->";
 
-    /// <summary>行末に改行用スペースを追加</summary>
-    public static string WithLineBreak(string text) => $"{text}  ";
+    /// <summary>
+    /// 1行のテキスト末尾にMarkdown改行用トレイリングスペース（半角スペース2つ）を追加します。
+    /// </summary>
+    /// <remarks>
+    /// これはMarkdownの強制改行構文です。
+    /// 複数行にまとめて適用したい場合は <see cref="MarkdownBlockUtils.ApplyLineBreaks"/> を使用してください。
+    /// </remarks>
+    /// <param name="text">処理するテキスト</param>
+    /// <returns>末尾にスペース2つが追加されたテキスト</returns>
+    public static string AppendTrailingSpaces(string text) => $"{text}  ";
 
     // ── 色 ───────────────────────────────────────
 

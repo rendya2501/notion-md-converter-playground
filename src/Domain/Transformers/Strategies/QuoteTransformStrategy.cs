@@ -21,7 +21,7 @@ public class QuoteTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // 引用のテキストを取得して改行を追加
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(
                 BlockAccessor.GetOriginalBlock<QuoteBlock>(context.CurrentBlock).Quote.RichText));
 

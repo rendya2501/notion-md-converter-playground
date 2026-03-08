@@ -21,7 +21,7 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
             : string.Empty;
 
         // コールアウトのテキストをMarkdown形式に変換
-        var text = MarkdownBlockUtils.LineBreak(
+        var text = MarkdownBlockUtils.ApplyLineBreaks(
             MarkdownRichTextUtils.RichTextsToMarkdown(
                 BlockAccessor.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
 

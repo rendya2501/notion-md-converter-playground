@@ -91,12 +91,17 @@ public static class MarkdownBlockUtils
     }
 
     /// <summary>
-    /// 文字列の各行末にMarkdown改行用スペースを追加します。空白のみの行はスキップします。
+    /// 複数行テキストの各行末にMarkdown改行用トレイリングスペースを追加します。
+    /// 空白のみの行はスキップします。
     /// </summary>
+    /// <remarks>
+    /// <see cref="MarkdownInlineUtils.AppendTrailingSpaces"/> を各行に適用するブロックレベルの操作です。
+    /// 1行だけ処理したい場合は <see cref="MarkdownInlineUtils.AppendTrailingSpaces"/> を直接使用してください。
+    /// </remarks>
     /// <param name="text">処理するテキスト</param>
-    /// <param name="lineBreakType">改行スタイル。デフォルトは改行コード（\n）。</param>
-    /// <returns>行末にスペースが追加された文字列</returns>
-    public static string LineBreak(string text, LineBreakStyle lineBreakType = LineBreakStyle.Newline)
+    /// <param name="lineBreakType">行の結合に使用する改行スタイル。デフォルトは改行コード（\n）。</param>
+    /// <returns>各行末にトレイリングスペースが追加された文字列</returns>
+    public static string ApplyLineBreaks(string text, LineBreakStyle lineBreakType = LineBreakStyle.Newline)
     {
         var lineBreak = lineBreakType switch
         {
@@ -109,7 +114,7 @@ public static class MarkdownBlockUtils
         var indentedLines = lines.Select(line =>
             string.IsNullOrWhiteSpace(line)
                 ? line
-                : MarkdownInlineUtils.WithLineBreak(line));
+                : MarkdownInlineUtils.AppendTrailingSpaces(line));
         return string.Join(lineBreak, indentedLines);
     }
 

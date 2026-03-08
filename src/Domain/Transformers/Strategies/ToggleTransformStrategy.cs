@@ -11,7 +11,8 @@ namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 /// トグル変換ストラテジー
 /// </summary>
 public class ToggleTransformStrategy : IBlockTransformStrategy
-{    public BlockType BlockType => BlockType.Toggle;
+{
+    public BlockType BlockType => BlockType.Toggle;
 
     public string Transform(NotionBlockTransformContext context)
     {

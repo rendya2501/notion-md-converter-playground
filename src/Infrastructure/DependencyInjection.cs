@@ -50,7 +50,7 @@ public static class DependencyInjection
         // GitHubEnvironmentUpdaterの登録
         services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
         // OutputDirectoryBuilderの登録
-        services.AddSingleton<IOutputDirectoryBuilder, OutputDirectoryBuilder>();
+        services.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>();
         // FileDownloaderの登録
         services.AddSingleton<IFileDownloader, HttpFileDownloader>();
 

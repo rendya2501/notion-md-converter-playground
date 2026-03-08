@@ -29,10 +29,16 @@ public class OutputDirectoryBuilder(
             ? pageProperty.Slug
             : pageProperty.Title;
 
+        if (!pageProperty.PublishedDateTime.HasValue)
+        {
+            throw new InvalidOperationException(
+                $"公開日時が設定されていません。PageId={pageProperty.PageId}");
+        }
+
         // 出力ディレクトリパスをレンダリング
         var outputDirectory = template.Render(new
         {
-            publish = pageProperty.PublishedDateTime!.Value,
+            publish = pageProperty.PublishedDateTime.Value,
             title = pageProperty.Title,
             slug = slug
         });

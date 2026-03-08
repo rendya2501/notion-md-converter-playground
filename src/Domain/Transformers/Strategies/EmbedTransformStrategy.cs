@@ -16,7 +16,7 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ブロックを埋め込みブロックに変換
-        var originalBlock = BlockCaster.GetOriginalBlock<EmbedBlock>(context.CurrentBlock);
+        var originalBlock = BlockAccessor.GetOriginalBlock<EmbedBlock>(context.CurrentBlock);
         // 埋め込みのURLを取得
         var url = originalBlock.Embed.Url;
         // 埋め込みのキャプションをMarkdown形式に変換

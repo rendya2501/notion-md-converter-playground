@@ -18,7 +18,7 @@ public class ToggleTransformStrategy : IBlockTransformStrategy
         // 子ブロックを変換
         var children = context.ExecuteTransformBlocks(context.CurrentBlock.Children);
         // トグルブロックを取得
-        var toggleBlock = BlockCaster.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
+        var toggleBlock = BlockAccessor.GetOriginalBlock<ToggleBlock>(context.CurrentBlock);
         // タイトルを取得して改行を追加
         var title = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(toggleBlock.Toggle.RichText), LineBreakStyle.BR);

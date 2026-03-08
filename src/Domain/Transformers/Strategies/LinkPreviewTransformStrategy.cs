@@ -15,7 +15,7 @@ public class LinkPreviewTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        var linkPreview = BlockCaster.GetOriginalBlock<LinkPreviewBlock>(context.CurrentBlock);
+        var linkPreview = BlockAccessor.GetOriginalBlock<LinkPreviewBlock>(context.CurrentBlock);
         var url = linkPreview.LinkPreview.Url;
         
         return MarkdownInlineUtils.Link(url,url);

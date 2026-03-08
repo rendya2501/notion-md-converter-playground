@@ -23,7 +23,7 @@ public class CalloutTransformStrategy : IBlockTransformStrategy
         // コールアウトのテキストをMarkdown形式に変換
         var text = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(
-                BlockCaster.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
+                BlockAccessor.GetOriginalBlock<CalloutBlock>(context.CurrentBlock).Callout.RichText));
 
         // 子ブロックが存在しない場合、コールアウトのテキストを返す
         var result = string.IsNullOrEmpty(children) ? text : $"{text}\n{children}";

@@ -15,7 +15,7 @@ public class CodeTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        var codeBlock = BlockCaster.GetOriginalBlock<CodeBlock>(context.CurrentBlock);
+        var codeBlock = BlockAccessor.GetOriginalBlock<CodeBlock>(context.CurrentBlock);
         var language = codeBlock.Code.Language;
         var text = MarkdownRichTextUtils.RichTextsToMarkdown(codeBlock.Code.RichText);
 

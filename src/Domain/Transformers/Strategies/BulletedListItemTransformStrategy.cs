@@ -15,7 +15,7 @@ public class BulletedListItemTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        var block = BlockCaster.GetOriginalBlock<BulletedListItemBlock>(context.CurrentBlock);
+        var block = BlockAccessor.GetOriginalBlock<BulletedListItemBlock>(context.CurrentBlock);
         // テキストを改行で分割
         var text = MarkdownBlockUtils.LineBreak(
             MarkdownRichTextUtils.RichTextsToMarkdown(block.BulletedListItem.RichText));

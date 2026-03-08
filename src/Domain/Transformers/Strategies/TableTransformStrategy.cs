@@ -26,7 +26,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
         // var tableBlock = BlockConverter.GetOriginalBlock<TableBlock>(context.CurrentBlock);
 
         // テーブルの最初の行をヘッダーとして取得 (Children[0]はヘッダー行)
-        var headers = BlockCaster.GetOriginalBlock<TableRowBlock>(context.CurrentBlock.Children[0]);
+        var headers = BlockAccessor.GetOriginalBlock<TableRowBlock>(context.CurrentBlock.Children[0]);
         // テーブルの残りの行を取得 (Children[1]以降はデータ行)
         var rows = context.CurrentBlock.Children.Skip(1);
 
@@ -37,7 +37,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
 
         // データ行のセルを取得
         var rowsCells = rows
-            .Select(s => BlockCaster.GetOriginalBlock<TableRowBlock>(s).
+            .Select(s => BlockAccessor.GetOriginalBlock<TableRowBlock>(s).
                 TableRow.Cells
                 .Select(cell => MarkdownRichTextUtils.RichTextsToMarkdown(cell))
                 .ToList())

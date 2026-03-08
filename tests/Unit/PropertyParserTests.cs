@@ -256,7 +256,7 @@ public class BlockCasterTests
         };
         var notionBlock = new NotionBlock(paragraphBlock);
 
-        var result = BlockCaster.GetOriginalBlock<ParagraphBlock>(notionBlock);
+        var result = BlockAccessor.GetOriginalBlock<ParagraphBlock>(notionBlock);
 
         Assert.NotNull(result);
         Assert.IsType<ParagraphBlock>(result);
@@ -272,6 +272,6 @@ public class BlockCasterTests
         var notionBlock = new NotionBlock(paragraphBlock);
 
         Assert.Throws<InvalidCastException>(() =>
-            BlockCaster.GetOriginalBlock<HeadingOneBlock>(notionBlock));
+            BlockAccessor.GetOriginalBlock<HeadingOneBlock>(notionBlock));
     }
 }

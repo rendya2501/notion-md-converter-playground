@@ -16,7 +16,7 @@ public class VideoTransformStrategy : IBlockTransformStrategy
     public string Transform(NotionBlockTransformContext context)
     {
         // ビデオブロックを取得
-        var videoBlock = BlockCaster.GetOriginalBlock<VideoBlock>(context.CurrentBlock);
+        var videoBlock = BlockAccessor.GetOriginalBlock<VideoBlock>(context.CurrentBlock);
         // ビデオのURLを取得
         var url = videoBlock.Video switch
         {

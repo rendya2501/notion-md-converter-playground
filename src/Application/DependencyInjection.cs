@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Application.Services;
@@ -11,27 +12,20 @@ namespace NotionMarkdownConverter.Application;
 public static class DependencyInjection
 {
     /// <summary>
-    /// アプリケーション層のサービスをDIコンテナに登録します。
+    /// アプリケーション層のサービスを登録します。
     /// </summary>
-    /// <param name="services">DIコンテナ</param>
-    /// <param name="args">コマンドライン引数</param>
-    /// <returns>DIコンテナ</returns>
+    /// <param name="services">サービスコレクション</param>
+    /// <param name="options">
+    /// コマンドライン引数からパース済みの設定値。
+    /// Program.csで即時バリデーション済みのため、ここでは検証しません。
+    /// </param>
     public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
-        string[] args)
+        NotionExportOptions options)
     {
-        // コマンドライン引数から設定を取得
-        services.Configure<NotionExportOptions>(config =>
-        {
-            if (args.Length != 3)
-            {
-                throw new ArgumentException("Required arguments: [NotionAuthToken] [DatabaseId] [OutputPathTemplate]");
-            }
-
-            config.NotionAuthToken = args[0];
-            config.NotionDatabaseId = args[1];
-            config.OutputDirectoryPathTemplate = args[2];
-        });
+        // Options.Createを使うことでIOptions<T>として注入可能にしつつ、
+        // Configureの遅延評価を排除します。
+        services.AddSingleton(Options.Create(options));
 
         // Notionのページをエクスポートするサービスを登録
         services.AddSingleton<INotionExporter, NotionExporter>();

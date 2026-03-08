@@ -2,8 +2,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter.Application;
 using NotionMarkdownConverter.Application.Abstractions;
+using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Domain;
 using NotionMarkdownConverter.Infrastructure;
+
+// コマンドライン引数を即時パース・バリデーションします。
+// Configure内で行うと遅延評価により、NotionExportOptionsの初回アクセス時まで
+// エラーが発生せず原因特定が困難になるため、ここで即時チェックします。
+if (args.Length != 3)
+{
+    Console.Error.WriteLine("Usage: NotionMarkdownConverter <auth_token> <database_id> <output_directory_path_template>");
+    return;
+}
+
+var options = new NotionExportOptions
+{
+    NotionAuthToken = args[0],
+    NotionDatabaseId = args[1],
+    OutputDirectoryPathTemplate = args[2]
+};
 
 // DIコンテナを構築
 var services = new ServiceCollection();
@@ -17,7 +34,7 @@ services.AddLogging(builder =>
 
 // 各層のサービスを登録
 services
-    .AddApplicationServices(args)
+    .AddApplicationServices(options)
     .AddDomainServices()
     .AddInfrastructureServices();
 

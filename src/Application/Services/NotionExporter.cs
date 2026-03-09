@@ -29,42 +29,65 @@ public class NotionExporter(
     /// ページ単位の失敗は握りつぶして処理を継続します。
     /// データベース取得自体が失敗した場合は例外を再スローします。
     /// </remarks>
+    /// <returns>エクスポート処理が完了したときに解決するタスク</returns>
     public async Task ExportPagesAsync()
     {
-        try
-        {
-            // 公開可能なページを取得
-            var pages = await _notionClient.GetPagesForPublishingAsync(_config.Value.NotionDatabaseId);
-            // GitHub ActionsのランナーはUTCで動作するため、公開日時の比較にはUTCを使用します。
-            var now = DateTime.UtcNow;
-            var exportedCount = 0;
+        // 公開可能なページを取得
+        var pages = await FetchPagesAsync();
+        // GitHub ActionsのランナーはUTCで動作するため、公開日時の比較にはUTCを使用します。
+        var now = DateTime.UtcNow;
+        var exportedCount = 0;
 
-            foreach (var page in pages)
+        foreach (var page in pages)
+        {
+            // ページをエクスポート
+            if (await ExportPageAsync(page, now))
             {
-                // ページをエクスポート
-                if (await ExportPageAsync(page, now))
+                // エクスポート成功後にNotion側の公開ステータスを更新します。
+                // 次回実行時に同じページが再エクスポートされることを防ぎます。
+                try
                 {
-                    // エクスポート成功後にNotion側の公開ステータスを更新します。
-                    // 次回実行時に同じページが再エクスポートされることを防ぎます。
                     await _notionClient.UpdatePagePropertiesAsync(page.Id, now);
-
-                    exportedCount++;
                 }
-            }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "公開ステータスの更新に失敗しました。次回実行時に再エクスポートされる可能性があります。PageId={PageId}",
+                        page.Id);
+                }
 
-            // GitHub Actions の環境変数を更新
-            _githubEnvironmentUpdater.UpdateEnvironment(exportedCount);
+                exportedCount++;
+            }
         }
-        catch (Exception ex)
+
+        // GitHub Actions の環境変数を更新
+        _githubEnvironmentUpdater.UpdateEnvironment(exportedCount);
+
+        // ページ一覧の取得失敗だけを明示的にログに残して再スローします。
+        // 外側の try-catch に含めると UpdatePagePropertiesAsync など後続の失敗と
+        // エラーメッセージが混同されるため、ローカル関数として切り出しています。
+        async Task<List<Page>> FetchPagesAsync()
         {
-            _logger.LogError(ex, "ページ一覧の取得に失敗しました");
-            throw;
+            try
+            {
+                return await _notionClient.GetPagesForPublishingAsync(_config.Value.NotionDatabaseId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ページ一覧の取得に失敗しました");
+                throw;
+            }
         }
     }
 
     /// <summary>
-    /// 単一ページのエクスポート処理を実行します。
+    /// 単一ページのMarkdown生成とファイル書き出しを実行します。
     /// </summary>
+    /// <remarks>
+    /// このメソッドの責務はエクスポート（Markdown生成・ファイル書き出し）に限定します。
+    /// エクスポート後のNotion側ステータス更新は呼び出し元（<see cref="ExportPagesAsync"/>）が担います。
+    /// 責務を分けることで、書き出し失敗とステータス更新失敗を独立してハンドリングできます。
+    /// </remarks>
     /// <param name="page">エクスポート対象のNotionページ</param>
     /// <param name="now">処理実行時刻。公開日時の判定に使用します。</param>
     /// <returns>エクスポートが実行された場合は <c>true</c>、スキップまたは失敗した場合は <c>false</c></returns>
@@ -87,11 +110,13 @@ public class NotionExporter(
             // Markdownを組み立てる
             var markdown = await _markdownAssembler.AssembleAsync(pageProperty, outputDirectory);
 
-            // マークダウンを出力
+            // BOMなしUTF-8でマークダウンファイルを書き出します。
+            // GitHub Pagesなど多くの静的サイトジェネレーターはBOMを想定しないため、
+            // new UTF8Encoding(false) でBOMを明示的に除外しています。
             await File.WriteAllTextAsync(
                 Path.Combine(outputDirectory, "index.md"),
                 markdown,
-                new UTF8Encoding(false));
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
             _logger.LogInformation("エクスポート成功: PageId={PageId}, OutputDirectory={OutputDirectory}",
                 page.Id, outputDirectory);

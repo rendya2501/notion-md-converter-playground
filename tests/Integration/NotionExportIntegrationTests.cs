@@ -90,7 +90,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     /// 注意：このテストはNotionのページプロパティを実際に更新します。
     ///       テスト用DBを使うか、更新処理をモックにするか検討してください。
     /// </summary>
-    [Fact(Skip = "NotionのDBを実際に更新するため、手動実行時のみ有効")]
+    [Fact]
     public async Task ExportPagesAsync_FullFlow_CreatesMarkdownFiles()
     {
         // Arrange

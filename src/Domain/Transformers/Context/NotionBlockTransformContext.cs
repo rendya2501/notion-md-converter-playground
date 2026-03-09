@@ -3,31 +3,31 @@ using NotionMarkdownConverter.Domain.Models;
 namespace NotionMarkdownConverter.Domain.Transformers.Context;
 
 /// <summary>
-/// ブロック変換の状態
+/// ブロック変換処理のコンテキスト。
+/// 現在処理中のブロック、ブロックリスト、子ブロック変換のデリゲートを保持します。
 /// </summary>
 public class NotionBlockTransformContext
 {
     /// <summary>
-    /// ブロックを変換する
+    /// 子ブロックのリストをMarkdown文字列に変換するデリゲート。
+    /// 子ブロックを持つストラテジーが再帰的に変換処理を呼び出すために使用します。
     /// </summary>
-    /// <value></value>
     public required Func<List<NotionBlock>, string> ExecuteTransformBlocks { get; set; }
 
     /// <summary>
-    /// ブロックのリスト
+    /// 変換対象のブロックリスト全体。
+    /// 番号付きリストのカウンター計算など、前後のブロックを参照する処理で使用します。
     /// </summary>
-    /// <value></value>
     public required List<NotionBlock> Blocks { get; set; }
 
     /// <summary>
-    /// 現在のブロック
+    /// 現在処理中のブロック。
+    /// 各反復で <see cref="ContentConverter"/> によって更新されます。
     /// </summary>
-    /// <value></value>
     public required NotionBlock CurrentBlock { get; set; }
 
     /// <summary>
-    /// 現在のブロックのインデックス
+    /// <see cref="Blocks"/> 内における <see cref="CurrentBlock"/> のインデックス。
     /// </summary>
-    /// <value></value>
     public int CurrentBlockIndex { get; set; }
 }

@@ -22,7 +22,7 @@ public class MarkdownLinkProcessorTests
 
         public Task DownloadAsync(UrlFilePair urlFilePair, string outputDirectory)
         {
-            Calls.Add((urlFilePair.OriginalUrl, urlFilePair.ConversionFileName, outputDirectory));
+            Calls.Add((urlFilePair.OriginalUrl, urlFilePair.LocalFileName, outputDirectory));
             return Task.CompletedTask;
         }
     }

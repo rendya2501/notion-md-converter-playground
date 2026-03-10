@@ -16,7 +16,7 @@ public class NotionExporter(
     INotionClientWrapper _notionClient,
     IMarkdownAssembler _markdownAssembler,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
-    IOutputDirectoryProvider _outputDirectoryBuilder,
+    IOutputDirectoryProvider _outputDirectoryProvider,
     IPagePropertyMapper _pagePropertyMapper,
     PageExportEligibilityChecker _eligibilityChecker,
     ILogger<NotionExporter> _logger) : INotionExporter
@@ -105,7 +105,7 @@ public class NotionExporter(
             }
 
             // 出力ディレクトリを構築
-            var outputDirectory = _outputDirectoryBuilder.BuildAndCreate(pageProperty);
+            var outputDirectory = _outputDirectoryProvider.BuildAndCreate(pageProperty);
 
             // Markdownを組み立てる
             var markdown = await _markdownAssembler.AssembleAsync(pageProperty, outputDirectory);

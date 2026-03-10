@@ -8,11 +8,13 @@ namespace NotionMarkdownConverter.Domain.Utils;
 public static class PropertyParser
 {
     /// <summary>
-    /// 日付プロパティからDateTimeに変換を試みます
+    /// 日付プロパティからDateTimeへの変換を試みます。
+    /// <see cref="DatePropertyValue"/>、<see cref="CreatedTimePropertyValue"/>、
+    /// <see cref="LastEditedTimePropertyValue"/>、およびテキスト形式の日付文字列に対応します。
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="dateTime"></param>
-    /// <returns></returns>
+    /// <param name="value">変換対象のプロパティ値</param>
+    /// <param name="dateTime">変換に成功した場合、取得した日時。失敗した場合は <see cref="DateTime.MinValue"/>。</param>
+    /// <returns>変換に成功した場合は <c>true</c>、失敗した場合は <c>false</c></returns>
     public static bool TryParseAsDateTime(PropertyValue value, out DateTime dateTime)
     {
         dateTime = default;
@@ -44,11 +46,13 @@ public static class PropertyParser
     }
 
     /// <summary>
-    /// テキストプロパティから文字列に変換を試みます
+    /// テキスト系プロパティからプレーンテキスト文字列への変換を試みます。
+    /// <see cref="RichTextPropertyValue"/>、<see cref="TitlePropertyValue"/>、
+    /// <see cref="SelectPropertyValue"/> に対応します。
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="text"></param>
-    /// <returns></returns>
+    /// <param name="value">変換対象のプロパティ値</param>
+    /// <param name="text">変換に成功した場合、取得したプレーンテキスト。失敗した場合は空文字列。</param>
+    /// <returns>変換に成功した場合は <c>true</c>、失敗した場合は <c>false</c></returns>
     public static bool TryParseAsPlainText(PropertyValue value, out string text)
     {
         text = string.Empty;
@@ -73,11 +77,11 @@ public static class PropertyParser
     }
 
     /// <summary>
-    /// マルチセレクトプロパティから文字列リストに変換を試みます
+    /// マルチセレクトプロパティから文字列リストへの変換を試みます。
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="items"></param>
-    /// <returns></returns>
+    /// <param name="value">変換対象のプロパティ値</param>
+    /// <param name="items">変換に成功した場合、選択された項目名のリスト。失敗した場合は空リスト。</param>
+    /// <returns>変換に成功した場合は <c>true</c>、失敗した場合は <c>false</c></returns>
     public static bool TryParseAsStringList(PropertyValue value, out List<string> items)
     {
         items = [];
@@ -92,11 +96,11 @@ public static class PropertyParser
     }
 
     /// <summary>
-    /// チェックボックスプロパティからBooleanに変換を試みます
+    /// チェックボックスプロパティからboolへの変換を試みます。
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="result"></param>
-    /// <returns></returns>
+    /// <param name="value">変換対象のプロパティ値</param>
+    /// <param name="result">変換に成功した場合、チェックボックスの値。失敗した場合は <c>false</c>。</param>
+    /// <returns>変換に成功した場合は <c>true</c>、失敗した場合は <c>false</c></returns>
     public static bool TryParseAsBoolean(PropertyValue value, out bool result)
     {
         result = false;
@@ -111,8 +115,13 @@ public static class PropertyParser
     }
 
     /// <summary>
-    /// セレクトプロパティから指定された型のEnumに変換を試みます
+    /// セレクトプロパティから指定した列挙型への変換を試みます。
+    /// 完全一致のほか、スペースや記号を除去した正規化後の文字列でも照合します。
     /// </summary>
+    /// <typeparam name="T">変換先の列挙型</typeparam>
+    /// <param name="value">変換対象のプロパティ値</param>
+    /// <param name="result">変換に成功した場合、対応する列挙値。失敗した場合は <typeparamref name="T"/> のデフォルト値。</param>
+    /// <returns>変換に成功した場合は <c>true</c>、失敗した場合は <c>false</c></returns>
     public static bool TryParseAsEnum<T>(PropertyValue value, out T result) where T : struct, Enum
     {
         result = default;

@@ -10,7 +10,7 @@ namespace NotionMarkdownConverter.Application.Services;
 /// <summary>
 /// Markdown内のダウンロードリンクを処理するサービス
 /// </summary>
-public class MarkdownLinkProcessor(IFileDownloader _fileDownloader)
+public class MarkdownLinkProcessor(IFileDownloader _fileDownloader) : IMarkdownLinkProcessor
 {
     /// <summary>
     /// Markdown内のダウンロードリンクをローカルファイルパスに置換し、ファイルをダウンロードします。

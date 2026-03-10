@@ -35,9 +35,9 @@ public static class DependencyInjection
         // Notionのページをエクスポートするサービスを登録
         services.AddSingleton<INotionExporter, NotionExporter>();
         // Markdownの組み立てサービスを登録
-        services.AddSingleton<MarkdownAssembler>();
+        services.AddSingleton<IMarkdownAssembler, MarkdownAssembler>();
         // Markdown内のダウンロードリンク処理サービスを登録
-        services.AddSingleton<MarkdownLinkProcessor>();
+        services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
         // ページの公開対象判定サービスを登録
         services.AddSingleton<PageExportEligibilityChecker>();
 

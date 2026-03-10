@@ -16,7 +16,7 @@ public class MarkdownAssembler(
     INotionClientWrapper _notionClient,
     FrontmatterConverter _frontmatterConverter,
     ContentConverter _contentConverter,
-    MarkdownLinkProcessor _markdownLinkProcessor) : IMarkdownAssembler
+    IMarkdownLinkProcessor _markdownLinkProcessor) : IMarkdownAssembler
 {
     /// <summary>
     /// 指定されたページプロパティを元に、フロントマターと本文を組み立てたMarkdown文字列を生成します。

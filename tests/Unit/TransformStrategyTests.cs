@@ -305,6 +305,22 @@ public class TransformStrategyTests
         Assert.Contains("引用テキスト", result);
     }
 
+    [Fact]
+    public void Quote_WithChildren_CombinesTextAndChildrenInBlockquote()
+    {
+        var block = Wrap(new QuoteBlock
+        {
+            Quote = new QuoteBlock.Info { RichText = [MakeText("引用テキスト")] }
+        }, hasChildren: true);
+
+        var result = new QuoteTransformStrategy().Transform(
+            MakeContext(block, executeTransform: _ => "子コンテンツ"));
+
+        Assert.StartsWith("> ", result);
+        Assert.Contains("引用テキスト", result);
+        Assert.Contains("子コンテンツ", result);
+    }
+
     // ── CalloutTransformStrategy ──────────────────────────────────────
 
     [Fact]
@@ -317,6 +333,22 @@ public class TransformStrategyTests
         var result = new CalloutTransformStrategy().Transform(MakeContext(block));
         Assert.StartsWith("> ", result);
         Assert.Contains("コールアウト", result);
+    }
+
+    [Fact]
+    public void Callout_WithChildren_CombinesTextAndChildrenInBlockquote()
+    {
+        var block = Wrap(new CalloutBlock
+        {
+            Callout = new CalloutBlock.Info { RichText = [MakeText("コールアウト")] }
+        }, hasChildren: true);
+
+        var result = new CalloutTransformStrategy().Transform(
+            MakeContext(block, executeTransform: _ => "子コンテンツ"));
+
+        Assert.StartsWith("> ", result);
+        Assert.Contains("コールアウト", result);
+        Assert.Contains("子コンテンツ", result);
     }
 
     // ── TodoListItemTransformStrategy ─────────────────────────────────
@@ -343,6 +375,23 @@ public class TransformStrategyTests
         var result = new TodoListItemTransformStrategy().Transform(MakeContext(block));
         Assert.Contains("[ ]", result);
         Assert.Contains("未完了タスク", result);
+    }
+
+    [Fact]
+    public void TodoList_WithChildren_IndentsChildContent()
+    {
+        var block = Wrap(new ToDoBlock
+        {
+            ToDo = new ToDoBlock.Info { RichText = [MakeText("親タスク")], IsChecked = false }
+        }, hasChildren: true);
+
+        var result = new TodoListItemTransformStrategy().Transform(
+            MakeContext(block, executeTransform: _ => "- 子項目  "));
+
+        Assert.Contains("[ ]", result);
+        Assert.Contains("親タスク", result);
+        var lines = result.Split('\n');
+        Assert.True(lines[1].StartsWith("  "), $"子はデフォルト2スペースでインデントされるべき: '{lines[1]}'");
     }
 
     // ── ToggleTransformStrategy ───────────────────────────────────────

@@ -48,6 +48,61 @@ public class PropertyParserTests
         Assert.Equal(15, dateTime.Day);
     }
 
+    [Fact]
+    public void TryParseAsDateTime_LastEditedTimeProperty_ReturnsTrue()
+    {
+        var value = new LastEditedTimePropertyValue { LastEditedTime = "2024-06-01T09:30:00.000Z" };
+
+        var result = PropertyParser.TryParseAsDateTime(value, out var dateTime);
+
+        Assert.True(result);
+        Assert.Equal(2024, dateTime.Year);
+        Assert.Equal(6, dateTime.Month);
+        Assert.Equal(1, dateTime.Day);
+    }
+
+    [Fact]
+    public void TryParseAsDateTime_RichTextWithValidDateString_ParsesViaPlainText()
+    {
+        // defaultブランチ: TryParseAsPlainText が成功し、かつ DateTime.TryParse が成功するケース
+        var value = new RichTextPropertyValue
+        {
+            RichText = [new RichTextText { PlainText = "2024-03-15", Text = new Text { Content = "2024-03-15" } }]
+        };
+
+        var result = PropertyParser.TryParseAsDateTime(value, out var dateTime);
+
+        Assert.True(result);
+        Assert.Equal(2024, dateTime.Year);
+        Assert.Equal(3, dateTime.Month);
+        Assert.Equal(15, dateTime.Day);
+    }
+
+    [Fact]
+    public void TryParseAsDateTime_RichTextWithInvalidDateString_ReturnsFalse()
+    {
+        // defaultブランチ: TryParseAsPlainText は成功するが DateTime.TryParse が失敗するケース
+        var value = new RichTextPropertyValue
+        {
+            RichText = [new RichTextText { PlainText = "これは日付ではない", Text = new Text { Content = "これは日付ではない" } }]
+        };
+
+        var result = PropertyParser.TryParseAsDateTime(value, out _);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void TryParseAsDateTime_UnsupportedPropertyType_ReturnsFalse()
+    {
+        // defaultブランチ: TryParseAsPlainText 自体が false を返すケース（Checkboxはプレーンテキストに変換不可）
+        var value = new CheckboxPropertyValue { Checkbox = true };
+
+        var result = PropertyParser.TryParseAsDateTime(value, out _);
+
+        Assert.False(result);
+    }
+
     // ── TryParseAsPlainText ───────────────────────────────────────────
 
     [Fact]

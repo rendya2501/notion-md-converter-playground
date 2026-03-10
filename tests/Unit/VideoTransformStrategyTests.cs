@@ -161,4 +161,22 @@ public class VideoTransformStrategyTests
         Assert.DoesNotContain("<video", result);
         Assert.DoesNotContain("<iframe", result);
     }
+
+    [Theory]
+    [InlineData("https://youtu.be/")]                        // youtu.be のパスが空
+    [InlineData("https://www.youtube.com/watch")]            // ?v= クエリなし
+    [InlineData("https://www.youtube.com/watch?list=PLxxx")] // v= パラメータなし
+    [InlineData("https://www.youtube.com/shorts/")]          // /shorts/ の後が空
+    public void Transform_YouTubeUrlWithNoExtractableVideoId_FallsBackToMarkdownLink(string url)
+    {
+        // ToYouTubeEmbedUrl が null を返す（動画ID抽出失敗）→ Markdownリンクにフォールバック
+        var result = Transform(new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = url }
+        });
+
+        Assert.DoesNotContain("<iframe", result);
+        Assert.DoesNotContain("<video", result);
+        Assert.Contains($"[{url}]({url})", result);
+    }
 }

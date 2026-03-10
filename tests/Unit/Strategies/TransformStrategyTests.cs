@@ -1,9 +1,10 @@
 using Notion.Client;
+using NotionMarkdownConverter.Domain.Constants;
 using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
 
-namespace NotionMarkdownConverter.Tests.Unit.Strategies;
+namespace NotionMarkdownConverter.Tests.Unit;
 
 /// <summary>
 /// 各 TransformStrategy のユニットテスト。
@@ -415,5 +416,337 @@ public class TransformStrategyTests
                 {
                     Paragraph = new ParagraphBlock.Info { RichText = [] }
                 }))));
+    }
+
+    // ── BookmarkTransformStrategy ─────────────────────────────────────
+
+    [Fact]
+    public void Bookmark_BlockType_IsBookmark()
+    {
+        Assert.Equal(BlockType.Bookmark, new BookmarkTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void Bookmark_WithCaption_UsesCaptionAsLinkText()
+    {
+        var block = Wrap(new BookmarkBlock
+        {
+            Bookmark = new BookmarkBlock.Info
+            {
+                Url = "https://example.com",
+                Caption = [MakeText("キャプション")]
+            }
+        });
+
+        var result = new BookmarkTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[キャプション](https://example.com)", result);
+    }
+
+    [Fact]
+    public void Bookmark_WithoutCaption_UsesUrlAsLinkText()
+    {
+        var block = Wrap(new BookmarkBlock
+        {
+            Bookmark = new BookmarkBlock.Info
+            {
+                Url = "https://example.com",
+                Caption = []
+            }
+        });
+
+        var result = new BookmarkTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[https://example.com](https://example.com)", result);
+    }
+
+    // ── EmbedTransformStrategy ────────────────────────────────────────
+
+    [Fact]
+    public void Embed_BlockType_IsEmbed()
+    {
+        Assert.Equal(BlockType.Embed, new EmbedTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void Embed_WithCaption_UsesCaptionAsLinkText()
+    {
+        var block = Wrap(new EmbedBlock
+        {
+            Embed = new EmbedBlock.Info
+            {
+                Url = "https://example.com/embed",
+                Caption = [MakeText("埋め込みキャプション")]
+            }
+        });
+
+        var result = new EmbedTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[埋め込みキャプション](https://example.com/embed)", result);
+    }
+
+    [Fact]
+    public void Embed_WithoutCaption_UsesUrlAsLinkText()
+    {
+        var block = Wrap(new EmbedBlock
+        {
+            Embed = new EmbedBlock.Info
+            {
+                Url = "https://example.com/embed",
+                Caption = []
+            }
+        });
+
+        var result = new EmbedTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[https://example.com/embed](https://example.com/embed)", result);
+    }
+
+    // ── EquationTransformStrategy ─────────────────────────────────────
+
+    [Fact]
+    public void Equation_BlockType_IsEquation()
+    {
+        Assert.Equal(BlockType.Equation, new EquationTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void Equation_Transform_ReturnsBlockEquation()
+    {
+        var block = Wrap(new EquationBlock
+        {
+            Equation = new EquationBlock.Info { Expression = "E = mc^2" }
+        });
+
+        var result = new EquationTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Equal("$$\nE = mc^2\n$$", result);
+    }
+
+    // ── ImageTransformStrategy ────────────────────────────────────────
+
+    [Fact]
+    public void Image_BlockType_IsImage()
+    {
+        Assert.Equal(BlockType.Image, new ImageTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void Image_ExternalFile_ReturnsImageTagWithUrl()
+    {
+        var image = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/image.png" },
+            Caption = []
+        };
+        var block = Wrap(new ImageBlock { Image = image });
+
+        var result = new ImageTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("![](https://example.com/image.png)", result);
+    }
+
+    [Fact]
+    public void Image_ExternalFile_WithCaption_UsesCaptionAsAltText()
+    {
+        var image = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/image.png" },
+            Caption = [MakeText("alt テキスト")]
+        };
+        var block = Wrap(new ImageBlock { Image = image });
+
+        var result = new ImageTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("![alt テキスト](https://example.com/image.png)", result);
+    }
+
+    [Fact]
+    public void Image_UploadedFile_ReturnsImageTagWithDownloadMarker()
+    {
+        var image = new UploadedFile { Caption = [] };
+        image.File = new() { Url = "https://cdn.notion.so/image.png" };
+        var block = Wrap(new ImageBlock { Image = image });
+
+        var result = new ImageTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains("https://cdn.notion.so/image.png", result);
+    }
+
+    // ── FileTransformStrategy ─────────────────────────────────────────
+
+    [Fact]
+    public void File_BlockType_IsFile()
+    {
+        Assert.Equal(BlockType.File, new FileTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void File_ExternalFile_WithoutCaption_UsesNameAsLinkText()
+    {
+        var file = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/doc.pdf" },
+            Caption = [],
+            Name = "doc.pdf"
+        };
+        var block = Wrap(new FileBlock { File = file });
+
+        var result = new FileTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[doc.pdf](https://example.com/doc.pdf)", result);
+    }
+
+    [Fact]
+    public void File_ExternalFile_WithCaption_UsesCaptionAsLinkText()
+    {
+        var file = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/doc.pdf" },
+            Caption = [MakeText("ドキュメント")],
+            Name = "doc.pdf"
+        };
+        var block = Wrap(new FileBlock { File = file });
+
+        var result = new FileTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[ドキュメント](https://example.com/doc.pdf)", result);
+    }
+
+    [Fact]
+    public void File_UploadedFile_ReturnsLinkWithDownloadMarker()
+    {
+        var file = new UploadedFile { Caption = [], Name = "uploaded.pdf" };
+        file.File = new() { Url = "https://cdn.notion.so/uploaded.pdf" };
+        var block = Wrap(new FileBlock { File = file });
+
+        var result = new FileTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains("https://cdn.notion.so/uploaded.pdf", result);
+    }
+
+    // ── LinkPreviewTransformStrategy ──────────────────────────────────
+
+    [Fact]
+    public void LinkPreview_BlockType_IsLinkPreview()
+    {
+        Assert.Equal(BlockType.LinkPreview, new LinkPreviewTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void LinkPreview_Transform_ReturnsLinkWithUrlAsBothTextAndHref()
+    {
+        var block = Wrap(new LinkPreviewBlock
+        {
+            LinkPreview = new LinkPreviewBlock.Data { Url = "https://example.com" }
+        });
+
+        var result = new LinkPreviewTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Equal("[https://example.com](https://example.com)", result);
+    }
+
+    // ── PDFTransformStrategy ──────────────────────────────────────────
+
+    [Fact]
+    public void PDF_BlockType_IsPdf()
+    {
+        Assert.Equal(BlockType.PDF, new PDFTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void PDF_ExternalFile_UsesUrlAsDisplayText()
+    {
+        var pdf = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/doc.pdf" },
+            Caption = []
+        };
+        var block = Wrap(new PDFBlock { PDF = pdf });
+
+        var result = new PDFTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[https://example.com/doc.pdf](https://example.com/doc.pdf)", result);
+    }
+
+    [Fact]
+    public void PDF_ExternalFile_WithCaption_UsesCaptionAsDisplayText()
+    {
+        var pdf = new ExternalFile
+        {
+            External = new ExternalFile.Info { Url = "https://example.com/doc.pdf" },
+            Caption = [MakeText("資料")]
+        };
+        var block = Wrap(new PDFBlock { PDF = pdf });
+
+        var result = new PDFTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[資料](https://example.com/doc.pdf)", result);
+    }
+
+    [Fact]
+    public void PDF_UploadedFile_UsesFilenameAsDisplayText()
+    {
+        var pdf = new UploadedFile { Caption = [] };
+        pdf.File = new() { Url = "https://cdn.notion.so/documents/report.pdf" };
+        var block = Wrap(new PDFBlock { PDF = pdf });
+
+        var result = new PDFTransformStrategy().Transform(MakeContext(block));
+
+        // UploadedFile の場合、URLからファイル名を抽出して表示テキストにします。
+        Assert.Contains("[report.pdf]", result);
+        Assert.Contains(LinkConstants.DownloadMarker, result);
+    }
+
+    [Fact]
+    public void PDF_UploadedFile_WithCaption_UsesCaptionAsDisplayText()
+    {
+        var pdf = new UploadedFile { Caption = [MakeText("レポート")] };
+        pdf.File = new() { Url = "https://cdn.notion.so/documents/report.pdf" };
+        var block = Wrap(new PDFBlock { PDF = pdf });
+
+        var result = new PDFTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("[レポート]", result);
+    }
+
+    // ── ColumnListTransformStrategy ───────────────────────────────────
+
+    [Fact]
+    public void ColumnList_BlockType_IsColumnList()
+    {
+        Assert.Equal(BlockType.ColumnList, new ColumnListTransformStrategy().BlockType);
+    }
+
+    [Fact]
+    public void ColumnList_TwoColumns_JoinsColumnContentsWithNewline()
+    {
+        // 2つのカラムをそれぞれ ExecuteTransformBlocks で変換し、"\n" で結合します。
+        var col1 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } });
+        col1.Children = [];
+        var col2 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } });
+        col2.Children = [];
+
+        var columnList = Wrap(new ColumnListBlock());
+        columnList.Children = [col1, col2];
+
+        var callCount = 0;
+        var result = new ColumnListTransformStrategy().Transform(
+            MakeContext(columnList, executeTransform: _ => $"col{++callCount}"));
+
+        Assert.Equal("col1\ncol2", result);
+    }
+
+    [Fact]
+    public void ColumnList_EmptyColumns_ReturnsEmptyString()
+    {
+        var columnList = Wrap(new ColumnListBlock());
+        columnList.Children = [];
+
+        var result = new ColumnListTransformStrategy().Transform(MakeContext(columnList));
+
+        Assert.Equal(string.Empty, result);
     }
 }

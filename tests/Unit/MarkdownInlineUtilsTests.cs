@@ -119,6 +119,13 @@ public class MarkdownInlineUtilsTests
     }
 
     [Fact]
+    public void IFrame_ReturnsIFrameTagWithAllowFullscreen()
+    {
+        var result = MarkdownInlineUtils.IFrame("https://www.youtube.com/embed/abc123");
+        Assert.Equal("<iframe src=\"https://www.youtube.com/embed/abc123\" allowfullscreen></iframe>", result);
+    }
+
+    [Fact]
     public void Comment_ReturnsHtmlComment()
     {
         var result = MarkdownInlineUtils.Comment("コメント");

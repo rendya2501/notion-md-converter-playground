@@ -19,17 +19,14 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     [Fact]
     public async Task GetPagesForPublishing_ReturnsPages()
     {
-        // Arrange（準備）
-        // DIコンテナからNotionClientWrapperを取得
+        // Arrange
         var client = GetService<INotionClientWrapper>();
 
-        // Act（実行）
+        // Act
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
 
-        // Assert（検証）
-        // ページが取得できた（0件でも取得処理は成功）
+        // Assert（0件でも取得処理は成功）
         Assert.NotNull(pages);
-        // ページの内容をコンソールに出力（テスト結果で確認できる）
         foreach (var page in pages)
         {
             Console.WriteLine($"Page: {page.Id}");
@@ -45,23 +42,20 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     {
         // Arrange
         var client = GetService<INotionClientWrapper>();
+        // DIコンテナには IMarkdownAssembler として登録されているため、インターフェース経由で取得します。
         var assembler = GetService<IMarkdownAssembler>();
         var pagePropertyMapper = GetService<IPagePropertyMapper>();
 
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
 
-        // ページが0件なら検証できないのでスキップ
         if (pages.Count == 0)
         {
             Assert.Skip("テスト用DBにページが存在しないためスキップします。");
         }
 
         var firstPage = pages[0];
-
-        // PagePropertyMapperで変換
         var pageProperty = pagePropertyMapper.Map(firstPage);
 
-        // 出力ディレクトリを作成
         var outputDir = Path.Combine(Secrets.OutputDirectory, "test-output");
         Directory.CreateDirectory(outputDir);
 
@@ -71,11 +65,8 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         // Assert
         Assert.NotNull(markdown);
         Assert.NotEmpty(markdown);
-
-        // フロントマターが含まれているか
         Assert.Contains("---", markdown);
 
-        // 結果をファイルに書き出して目視確認できるようにする
         var outputPath = Path.Combine(outputDir, "test-output.md");
         await File.WriteAllTextAsync(outputPath, markdown);
         Console.WriteLine($"Output written to: {outputPath}");
@@ -99,7 +90,6 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         await exporter.ExportPagesAsync();
 
         // Assert
-        // 出力ディレクトリにファイルが生成されているか確認
         var files = Directory.GetFiles(Secrets.OutputDirectory, "*.md", SearchOption.AllDirectories);
         Assert.NotEmpty(files);
 

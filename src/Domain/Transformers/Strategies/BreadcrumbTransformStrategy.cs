@@ -5,7 +5,7 @@ using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 
 /// <summary>
-/// ブラウザパス変換ストラテジー
+/// パンくずリスト変換ストラテジー
 /// </summary>
 public class BreadcrumbTransformStrategy : IBlockTransformStrategy
 {

@@ -7,7 +7,7 @@ using NotionMarkdownConverter.Domain.Utils;
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 
 /// <summary>
-/// 見出し変換ストラテジー
+/// 見出し2（H2）変換ストラテジー
 /// </summary>
 public class HeadingTwoTransformStrategy : IBlockTransformStrategy
 {

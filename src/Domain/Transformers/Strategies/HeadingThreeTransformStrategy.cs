@@ -7,7 +7,7 @@ using NotionMarkdownConverter.Domain.Utils;
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 
 /// <summary>
-/// 見出し変換ストラテジー
+/// 見出し3（H3）変換ストラテジー
 /// </summary>
 public class HeadingThreeTransformStrategy : IBlockTransformStrategy
 {

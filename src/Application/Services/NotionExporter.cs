@@ -63,9 +63,9 @@ public class NotionExporter(
         // GitHub Actions の環境変数を更新
         _githubEnvironmentUpdater.UpdateEnvironment(exportedCount);
 
-        // ページ一覧の取得失敗だけを明示的にログに残して再スローします。
-        // 外側の try-catch に含めると UpdatePagePropertiesAsync など後続の失敗と
-        // エラーメッセージが混同されるため、ローカル関数として切り出しています。
+        // ページ一覧の取得
+        // ExportPagesAsync の try-catch スコープと分離するため、ローカル関数として切り出しています。
+        // ページ一覧取得失敗は後続処理がないため例外をそのまま再スローします。
         async Task<List<Page>> FetchPagesAsync()
         {
             try

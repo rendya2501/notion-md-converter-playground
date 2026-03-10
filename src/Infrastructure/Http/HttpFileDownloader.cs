@@ -46,7 +46,7 @@ public class HttpFileDownloader : IFileDownloader
     public async Task DownloadAsync(UrlFilePair urlFilePair, string outputDirectory)
     {
         var url = urlFilePair.OriginalUrl;
-        var fileName = urlFilePair.ConversionFileName;
+        var fileName = urlFilePair.LocalFileName;
         var filePath = Path.Combine(outputDirectory, fileName);
 
         // 再実行時の無駄なダウンロードを防ぐため、既存ファイルはスキップします。

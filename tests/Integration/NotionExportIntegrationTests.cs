@@ -1,5 +1,4 @@
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Application.Services;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
@@ -46,7 +45,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     {
         // Arrange
         var client = GetService<INotionClientWrapper>();
-        var assembler = GetService<MarkdownAssembler>();
+        var assembler = GetService<IMarkdownAssembler>();
         var pagePropertyMapper = GetService<IPagePropertyMapper>();
 
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);

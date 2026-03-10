@@ -3,7 +3,7 @@ using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
 
-namespace NotionMarkdownConverter.Tests.Unit.Strategies;
+namespace NotionMarkdownConverter.Tests.Unit;
 
 /// <summary>
 /// TableTransformStrategyのユニットテスト

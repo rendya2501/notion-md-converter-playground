@@ -88,7 +88,7 @@ public class MarkdownAssemblerTests : IDisposable
         services.AddSingleton<INotionClientWrapper>(new StubNotionClient(blocks ?? []));
         services.AddSingleton<IMarkdownLinkProcessor>(linkProcessor);
 
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         return (provider.GetRequiredService<IMarkdownAssembler>(), linkProcessor);
     }
 

@@ -26,7 +26,5 @@ public class GitHubEnvironmentUpdater(ILogger<GitHubEnvironmentUpdater> _logger)
 
         using var writer = new StreamWriter(githubOutput, append: true);
         writer.WriteLine($"exported_count={exportedCount}");
-
-        _logger.LogInformation("exported_count={exportedCount}", exportedCount);
     }
 }

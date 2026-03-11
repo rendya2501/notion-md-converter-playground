@@ -2,100 +2,87 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter.Application;
-using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Infrastructure;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
 /// <summary>
-/// 統合テストの基底クラス。
-/// DIコンテナの構築とUser Secretsの読み込みを担当します。
+/// Notion APIを使う統合テストの基底クラス。
+/// DIコンテナの構築とUser Secretsの読み込みを担います。
 /// </summary>
-public abstract class IntegrationTestBase : IDisposable
+public abstract class IntegrationTestBase
 {
-    /// <summary>
-    /// テスト用の設定値
-    /// </summary>
-    protected readonly TestSecrets Secrets;
+    private readonly IServiceProvider _serviceProvider;
 
-    /// <summary>
-    /// DIコンテナから解決したサービスプロバイダー
-    /// </summary>
-    protected readonly ServiceProvider ServiceProvider;
+    /// <summary>テスト実行に必要なシークレット情報。</summary>
+    protected IntegrationSecrets Secrets { get; }
 
     protected IntegrationTestBase()
     {
-        // User SecretsはUserSecretsIdを使って読み込む
-        // テストプロジェクトのアセンブリを指定することで、そのプロジェクトのsecrets.jsonが読まれる
-        var configuration = new ConfigurationBuilder()
+        // User Secrets からNotion認証情報を読み込む
+        var config = new ConfigurationBuilder()
             .AddUserSecrets<IntegrationTestBase>()
             .Build();
 
-        // シークレット値を読み込む
-        Secrets = new TestSecrets
-        {
-            NotionAuthToken = configuration["Notion:AuthToken"]
-                ?? throw new InvalidOperationException(
-                    "Notion:AuthToken が設定されていません。" +
-                    "'dotnet user-secrets set \"Notion:AuthToken\" \"your-token\"' を実行してください。"),
-            NotionDatabaseId = configuration["Notion:DatabaseId"]
-                ?? throw new InvalidOperationException("Notion:DatabaseId が設定されていません。"),
-            OutputDirectory = configuration["Test:OutputDirectory"]
-                ?? Path.Combine(Path.GetTempPath(), "notion-test-output")
-        };
+        Secrets = new IntegrationSecrets(
+            NotionAuthToken: config["Notion:AuthToken"] ?? throw new InvalidOperationException("User Secretsに Notion:AuthToken が設定されていません。"),
+            NotionDatabaseId: config["Notion:DatabaseId"] ?? throw new InvalidOperationException("User Secretsに Notion:DatabaseId が設定されていません。")
+        );
 
-        // DIコンテナを構築
-        var services = new ServiceCollection();
-        ConfigureServices(services, Secrets);
-        ServiceProvider = services.BuildServiceProvider();
-    }
-
-    /// <summary>
-    /// DIサービスを登録します。
-    /// Domain層・Infrastructure層は本番と同じ拡張メソッドを使い、
-    /// Application層のみテスト用設定（<see cref="TestSecrets"/>）で上書きします。
-    /// </summary>
-    private static void ConfigureServices(IServiceCollection services, TestSecrets secrets)
-    {
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Debug);
-        });
-
+        // OutputDirectoryPathTemplate はテスト側で決定した articles ベースパスを使う
+        // （派生クラスで NotionExportOptions.OutputDirectoryPathTemplate を上書き可能にするため、
+        //   仮値として空文字を設定し、後述の AddInfrastructureServices に委ねる）
         var options = new NotionExportOptions
         {
-            NotionAuthToken = secrets.NotionAuthToken,
-            NotionDatabaseId = secrets.NotionDatabaseId,
-            OutputDirectoryPathTemplate = Path.Combine(secrets.OutputDirectory, "{{slug}}")
+            NotionAuthToken = Secrets.NotionAuthToken,
+            NotionDatabaseId = Secrets.NotionDatabaseId,
+            OutputDirectoryPathTemplate = BuildOutputDirectoryPathTemplate(),
         };
 
-        // 各層のサービスを登録
-        services
-            .AddApplicationServices(options)
-            .AddInfrastructureServices();
+        var services = new ServiceCollection();
+        services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Warning));
+        services.AddApplicationServices(options);
+        services.AddInfrastructureServices();
+
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     /// <summary>
-    /// DIコンテナからサービスを取得するショートカット
+    /// テスト出力先のScribanテンプレートを構築します。
+    /// articles ベースディレクトリの下に YYYY/MM/スラッグ 形式で出力します。
     /// </summary>
-    protected T GetService<T>() where T : notnull
-        => ServiceProvider.GetRequiredService<T>();
-
-    public void Dispose()
+    private static string BuildOutputDirectoryPathTemplate()
     {
-        ServiceProvider.Dispose();
+        var articlesBase = GetArticlesBaseDirectory();
+        // パス区切りを / に統一してScribanテンプレートに埋め込む
+        var normalizedBase = articlesBase.Replace('\\', '/');
+        return $"{normalizedBase}/{{{{ publish | date.to_string '%Y' }}}}/{{{{ publish | date.to_string '%m' }}}}/{{{{ slug }}}}";
     }
+
+    /// <summary>
+    /// テスト出力先のベースディレクトリ（tests/Integration/articles/）を返します。
+    /// </summary>
+    /// <remarks>
+    /// AppContext.BaseDirectory は bin/Debug/net8.0/ なので、
+    /// 3階層上がると tests/Integration/、その下の articles/ を使用します。
+    /// </remarks>
+    internal static string GetArticlesBaseDirectory()
+    {
+        // bin/Debug/net8.0/ → ../../.. → tests/Integration/
+        return Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Integration", "articles"));
+    }
+
+    /// <summary>
+    /// DIコンテナから指定した型のサービスを取得します。
+    /// </summary>
+    /// <typeparam name="T">取得するサービスの型。</typeparam>
+    protected T GetService<T>() where T : notnull
+        => _serviceProvider.GetRequiredService<T>();
 }
 
-/// <summary>
-/// テスト用のシークレット設定値
-/// </summary>
-public class TestSecrets
-{
-    public string NotionAuthToken { get; set; } = string.Empty;
-    public string NotionDatabaseId { get; set; } = string.Empty;
-    public string OutputDirectory { get; set; } = string.Empty;
-}
+/// <summary>統合テスト実行に必要なシークレット情報。</summary>
+/// <param name="NotionAuthToken">Notion APIの認証トークン。</param>
+/// <param name="NotionDatabaseId">エクスポート対象のNotionデータベースID。</param>
+public record IntegrationSecrets(string NotionAuthToken, string NotionDatabaseId);

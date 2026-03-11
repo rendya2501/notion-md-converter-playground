@@ -86,6 +86,19 @@ public class MarkdownRichTextUtilsTests
         };
     }
 
+    /// <summary>
+    /// テスト用のRichTextEquationオブジェクトを生成します。
+    /// Notion.Clientでは Equation プロパティの型は独立した Equation クラスです。
+    /// RichTextEquation.RichTextEquationInfo は存在しません。
+    /// </summary>
+    private static RichTextEquation MakeEquation(string expression) =>
+        new()
+        {
+            PlainText = expression,
+            Equation = new Equation { Expression = expression },
+            Annotations = new Annotations()
+        };
+
     [Fact]
     public void RichTextsToMarkdown_PlainText_ReturnsPlainText()
     {
@@ -205,5 +218,44 @@ public class MarkdownRichTextUtilsTests
         var options = new MarkdownRichTextUtils.AnnotationOptions { Bold = false };
         var result = MarkdownRichTextUtils.RichTextsToMarkdown(richTexts, options);
         Assert.Equal("テキスト", result);
+    }
+
+    // ── インライン数式（RichTextEquation型）────────────────────────────
+    // MarkdownRichTextUtils内の以下の分岐が未テストだったため追加：
+    //   if (text.Type == RichTextType.Equation && enableAnnotations.Equation)
+    //       markdown = MarkdownInlineUtils.InlineEquation(markdown);
+
+    [Fact]
+    public void RichTextsToMarkdown_EquationRichText_ReturnsInlineEquation()
+    {
+        var richTexts = new List<RichTextBase> { MakeEquation("E=mc^2") };
+        var result = MarkdownRichTextUtils.RichTextsToMarkdown(richTexts);
+        Assert.Equal("$E=mc^2$", result);
+    }
+
+    [Fact]
+    public void RichTextsToMarkdown_EquationDisabledViaOptions_ReturnsPlainText()
+    {
+        // Equation = false のとき数式マークアップは適用されない
+        var richTexts = new List<RichTextBase> { MakeEquation("E=mc^2") };
+        var options = new MarkdownRichTextUtils.AnnotationOptions { Equation = false };
+        var result = MarkdownRichTextUtils.RichTextsToMarkdown(richTexts, options);
+        // 数式記号なしのプレーンテキストが返る
+        Assert.Equal("E=mc^2", result);
+        Assert.DoesNotContain("$", result);
+    }
+
+    [Fact]
+    public void RichTextsToMarkdown_MixedTextAndEquation_ConcatenatesCorrectly()
+    {
+        // 通常テキストとインライン数式が混在するケース（実際のNotionページで頻出）
+        var richTexts = new List<RichTextBase>
+        {
+            MakeText("質量エネルギー等価式は "),
+            MakeEquation("E=mc^2"),
+            MakeText(" です。")
+        };
+        var result = MarkdownRichTextUtils.RichTextsToMarkdown(richTexts);
+        Assert.Equal("質量エネルギー等価式は $E=mc^2$ です。", result);
     }
 }

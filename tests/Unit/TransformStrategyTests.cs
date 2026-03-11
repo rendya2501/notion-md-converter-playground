@@ -16,7 +16,12 @@ public class TransformStrategyTests
     // ── ヘルパー ──────────────────────────────────────────────────────
 
     private static RichTextText MakeText(string text) =>
-        new() { PlainText = text, Text = new Text { Content = text }, Annotations = new Annotations() };
+        new()
+        {
+            PlainText = text,
+            Text = new Text { Content = text },
+            Annotations = new Annotations()
+        };
 
     /// <summary>
     /// NotionBlock を生成します。HasChildren は Block.HasChildren プロパティで制御します。

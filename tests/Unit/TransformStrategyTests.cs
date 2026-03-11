@@ -613,14 +613,34 @@ public class TransformStrategyTests
     [Fact]
     public void Image_UploadedFile_ReturnsImageTagWithDownloadMarker()
     {
-        var image = new UploadedFile { Caption = [] };
-        image.File = new() { Url = "https://cdn.notion.so/image.png" };
+        var image = new UploadedFile
+        {
+            Caption = [],
+            File = new() { Url = "https://cdn.notion.so/image.png" }
+        };
         var block = Wrap(new ImageBlock { Image = image });
 
         var result = new ImageTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains(LinkConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/image.png", result);
+    }
+
+    [Fact]
+    public void Image_UploadedFile_WithCaption_UsesCaptionAsAltText()
+    {
+        // ExternalFile はキャプションあり・なし両方テスト済み。UploadedFile も同様に網羅する。
+        var image = new UploadedFile
+        {
+            Caption = [MakeText("アップロード画像")],
+            File = new() { Url = "https://cdn.notion.so/image.png" }
+        };
+        var block = Wrap(new ImageBlock { Image = image });
+
+        var result = new ImageTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("アップロード画像", result);
+        Assert.Contains(LinkConstants.DownloadMarker, result);
     }
 
     // ── FileTransformStrategy ─────────────────────────────────────────
@@ -666,14 +686,36 @@ public class TransformStrategyTests
     [Fact]
     public void File_UploadedFile_ReturnsLinkWithDownloadMarker()
     {
-        var file = new UploadedFile { Caption = [], Name = "uploaded.pdf" };
-        file.File = new() { Url = "https://cdn.notion.so/uploaded.pdf" };
+        var file = new UploadedFile
+        {
+            Caption = [],
+            Name = "uploaded.pdf",
+            File = new() { Url = "https://cdn.notion.so/uploaded.pdf" }
+        };
         var block = Wrap(new FileBlock { File = file });
 
         var result = new FileTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains(LinkConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/uploaded.pdf", result);
+    }
+
+    [Fact]
+    public void File_UploadedFile_WithCaption_UsesCaptionAsLinkText()
+    {
+        // PDF は UploadedFile+キャプションあり までテスト済み。File も同様に網羅する。
+        var file = new UploadedFile
+        {
+            Caption = [MakeText("アップロードファイル")],
+            Name = "uploaded.pdf",
+            File = new() { Url = "https://cdn.notion.so/uploaded.pdf" }
+        };
+        var block = Wrap(new FileBlock { File = file });
+
+        var result = new FileTransformStrategy().Transform(MakeContext(block));
+
+        Assert.Contains("アップロードファイル", result);
+        Assert.Contains(LinkConstants.DownloadMarker, result);
     }
 
     // ── LinkPreviewTransformStrategy ──────────────────────────────────
@@ -738,8 +780,11 @@ public class TransformStrategyTests
     [Fact]
     public void PDF_UploadedFile_UsesFilenameAsDisplayText()
     {
-        var pdf = new UploadedFile { Caption = [] };
-        pdf.File = new() { Url = "https://cdn.notion.so/documents/report.pdf" };
+        var pdf = new UploadedFile
+        {
+            Caption = [],
+            File = new() { Url = "https://cdn.notion.so/documents/report.pdf" }
+        };
         var block = Wrap(new PDFBlock { PDF = pdf });
 
         var result = new PDFTransformStrategy().Transform(MakeContext(block));
@@ -752,8 +797,11 @@ public class TransformStrategyTests
     [Fact]
     public void PDF_UploadedFile_WithCaption_UsesCaptionAsDisplayText()
     {
-        var pdf = new UploadedFile { Caption = [MakeText("レポート")] };
-        pdf.File = new() { Url = "https://cdn.notion.so/documents/report.pdf" };
+        var pdf = new UploadedFile
+        {
+            Caption = [MakeText("レポート")],
+            File = new() { Url = "https://cdn.notion.so/documents/report.pdf" }
+        };
         var block = Wrap(new PDFBlock { PDF = pdf });
 
         var result = new PDFTransformStrategy().Transform(MakeContext(block));
@@ -773,10 +821,14 @@ public class TransformStrategyTests
     public void ColumnList_TwoColumns_JoinsColumnContentsWithNewline()
     {
         // 2つのカラムをそれぞれ ExecuteTransformBlocks で変換し、"\n" で結合します。
-        var col1 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } });
-        col1.Children = [];
-        var col2 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } });
-        col2.Children = [];
+        var col1 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } })
+        {
+            Children = []
+        };
+        var col2 = new NotionBlock(new ParagraphBlock { Paragraph = new ParagraphBlock.Info { RichText = [] } })
+        {
+            Children = []
+        };
 
         var columnList = Wrap(new ColumnListBlock());
         columnList.Children = [col1, col2];

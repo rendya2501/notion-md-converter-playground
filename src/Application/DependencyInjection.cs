@@ -9,6 +9,7 @@ using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
 using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Extract;
+using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Application;
@@ -83,7 +84,7 @@ public static class DependencyInjection
         // ETLのステージを登録
         services.AddSingleton<NotionPageExtractor>();
         services.AddSingleton<NotionPageTransformer>();
-        
+        services.AddSingleton<NotionPageLoader>();
 
         return services;
     }

@@ -8,6 +8,8 @@ using NotionMarkdownConverter.Domain.Markdown.Converters;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
 using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
+using NotionMarkdownConverter.Extract;
+using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Application;
 
@@ -78,6 +80,10 @@ public static class DependencyInjection
         // ページプロパティマッパーを登録
         services.AddSingleton<IPagePropertyMapper, PagePropertyMapper>();
 
+        // ETLのステージを登録
+        services.AddSingleton<NotionPageExtractor>();
+        services.AddSingleton<NotionPageTransformer>();
+        
 
         return services;
     }

@@ -1,4 +1,7 @@
 using NotionMarkdownConverter.Application.Abstractions;
+using NotionMarkdownConverter.Pipeline;
+using NotionMarkdownConverter.Pipeline.Models;
+using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
@@ -59,11 +62,11 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     /// ページが0件の場合はスキップ。
     /// </summary>
     [Fact]
-    public async Task AssembleAsync_FromRealNotionPage_ProducesMarkdown()
+    public async Task TransformAsync_FromRealNotionPage_ProducesMarkdown()
     {
         // Arrange
         var client = GetService<INotionClientWrapper>();
-        var assembler = GetService<IMarkdownAssembler>();
+        var transformer = GetService<NotionPageTransformer>();
         var pagePropertyMapper = GetService<IPagePropertyMapper>();
 
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
@@ -73,28 +76,26 @@ public class NotionExportIntegrationTests : IntegrationTestBase
 
         var firstPage = pages[0];
         var pageProperty = pagePropertyMapper.Map(firstPage);
+        var blocks = await client.FetchBlockTreeAsync(pageProperty.PageId);
 
-        // 本番と同じ IOutputDirectoryBuilder を使ってパスを決定・ディレクトリを作成する
-        var outputDirBuilder = GetService<IOutputDirectoryProvider>();
-        var outputDir = outputDirBuilder.BuildAndCreate(pageProperty);
+        var extractedPage = new ExtractedPage(pageProperty, blocks);
 
         // Act
-        var markdown = await assembler.AssembleAsync(pageProperty, outputDir);
+        var result = await transformer.TransformAsync(extractedPage);
 
         // Assert
-        Assert.NotNull(markdown);
-        Assert.NotEmpty(markdown);
-        Assert.Contains("---", markdown);
+        Assert.NotNull(result.Markdown);
+        Assert.NotEmpty(result.Markdown);
+        Assert.Contains("---", result.Markdown);
 
-        // ファイル名は index.md で本番に準拠。BOM なし UTF-8 で書き出す。
-        var outputPath = Path.Combine(outputDir, "index.md");
-        await File.WriteAllTextAsync(outputPath, markdown,
+        var outputPath = Path.Combine(result.OutputDirectory, "index.md");
+        await File.WriteAllTextAsync(outputPath, result.Markdown,
             new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
             TestContext.Current.CancellationToken);
 
         Console.WriteLine($"Output written to: {outputPath}");
         Console.WriteLine("--- Markdown preview (first 500 chars) ---");
-        Console.WriteLine(markdown[..Math.Min(500, markdown.Length)]);
+        Console.WriteLine(result.Markdown[..Math.Min(500, result.Markdown.Length)]);
     }
 
     /// <summary>
@@ -111,10 +112,10 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     public async Task ExportPagesAsync_FullFlow_CreatesMarkdownFiles()
     {
         // Arrange
-        var exporter = GetService<INotionExporter>();
+        var pipeline = GetService<NotionExportPipeline>();
 
         // Act
-        await exporter.ExportPagesAsync();
+        await pipeline.RunAsync();
 
         // Assert: articles/ 以下に少なくとも1つの index.md が生成されていること
         var files = Directory.GetFiles(ArticlesBaseDirectory, "index.md", SearchOption.AllDirectories);

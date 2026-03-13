@@ -127,7 +127,6 @@ public class NotionPageExtractorTests
     public async Task ExtractAsync_OnePageFails_OtherPagesStillExtracted()
     {
         var client = new FakeNotionClient { Pages = [MakePage("page-1"), MakePage("page-2")] };
-        var callCount = 0;
         var mapper = new ThrowOnFirstCallMapper();
         var sut = CreateSut(client: client, mapper: mapper);
 

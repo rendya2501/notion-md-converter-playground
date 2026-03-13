@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NotionMarkdownConverter;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Infrastructure;
 using NotionMarkdownConverter.Pipeline;
 
 // コマンドライン引数を即時パース・バリデーションします。
@@ -31,13 +30,12 @@ services.AddLogging(builder =>
     builder.SetMinimumLevel(LogLevel.Information);
 });
 
-// 各層のサービスを登録
-services
-    .AddApplicationServices(options)
-    .AddInfrastructureServices();
+// アプリケーションのサービスを登録
+services.AddApplicationServices(options);
 
 // サービスプロバイダーの構築
 await using var serviceProvider = services.BuildServiceProvider();
 
+// パイプラインサービスの解決と実行
 var pipeline = serviceProvider.GetRequiredService<NotionExportPipeline>();
 await pipeline.RunAsync();

@@ -1,7 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Extract;
+using NotionMarkdownConverter.Infrastructure.FileSystem;
+using NotionMarkdownConverter.Infrastructure.GitHub;
+using NotionMarkdownConverter.Infrastructure.Http;
+using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline;
 using NotionMarkdownConverter.Transform;
@@ -12,12 +17,12 @@ using NotionMarkdownConverter.Transform.Strategies.Abstractions;
 namespace NotionMarkdownConverter;
 
 /// <summary>
-/// アプリケーションのサービスを登録します。
+/// DIコンテナへのサービス登録
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// アプリケーション層のサービスを登録します。
+    /// アプリケーションのサービスを登録します。
     /// </summary>
     /// <param name="services">サービスコレクション</param>
     /// <param name="options">
@@ -28,16 +33,39 @@ public static class DependencyInjection
         this IServiceCollection services,
         NotionExportOptions options)
     {
-        // Options.Createを使うことでIOptions<T>として注入可能にしつつ、
-        // Configureの遅延評価を排除します。
+        // --- Configuration ---
+        // Options.Createを使うことでIOptions<T>として注入可能にしつつ、Configureの遅延評価を排除します。
         services.AddSingleton(Options.Create(options));
 
-        // Markdown内のダウンロードリンク処理サービスを登録
-        services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
-        // ページの公開対象判定サービスを登録
-        services.AddSingleton<PageExportEligibilityChecker>();
+        // --- Infrastructure ---
+        services.AddHttpClient();
+        services.Configure<HttpFileDownloaderOptions>(o =>
+        {
+            o.MaxRetryCount = 3;
+            o.RetryDelayMilliseconds = 1000;
+            o.TimeoutSeconds = 30;
+            o.SkipExistingFiles = true;
+        });
+        services.AddSingleton<INotionClient>(provider =>
+        {
+            var config = provider.GetRequiredService<IOptions<NotionExportOptions>>().Value;
+            return NotionClientFactory.Create(new ClientOptions
+            {
+                AuthToken = config.NotionAuthToken
+            });
+        });
+        services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+        services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
+        services.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>();
+        services.AddSingleton<IFileDownloader, HttpFileDownloader>();
 
-        // ストラテジーの登録
+        // --- Extract ---
+        services.AddSingleton<IPagePropertyMapper, PagePropertyMapper>();
+        services.AddSingleton<PageExportEligibilityChecker>();
+        services.AddSingleton<NotionPageExtractor>();
+
+        // --- Transform ---
+        services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
         services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
         services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
         services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
@@ -64,20 +92,15 @@ public static class DependencyInjection
         services.AddSingleton<IBlockTransformStrategy, ToggleTransformStrategy>();
         services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
         services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
-        // ブロック変換ストラテジーコンテキストを登録
         services.AddSingleton<BlockTransformDispatcher>();
-
-        // マークダウンコンバーターを登録
         services.AddSingleton<ContentConverter>();
-        // フロントマター変換サービスを登録
         services.AddSingleton<FrontmatterConverter>();
-        // ページプロパティマッパーを登録
-        services.AddSingleton<IPagePropertyMapper, PagePropertyMapper>();
-
-        // ETLのステージを登録
-        services.AddSingleton<NotionPageExtractor>();
         services.AddSingleton<NotionPageTransformer>();
+
+        // --- Load ---
         services.AddSingleton<NotionPageLoader>();
+
+        // --- Pipeline ---
         services.AddSingleton<NotionExportPipeline>();
 
         return services;

@@ -1,7 +1,7 @@
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Application.Services;
+namespace NotionMarkdownConverter.Extract;
 
 /// <summary>
 /// ページをエクスポートすべきかどうかの判定を担う。

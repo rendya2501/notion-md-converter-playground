@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Mappers;
+using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Enums;
 

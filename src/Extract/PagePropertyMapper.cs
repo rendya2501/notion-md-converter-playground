@@ -1,11 +1,10 @@
 using Notion.Client;
-using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
 using NotionMarkdownConverter.Shared.Utils;
 
-namespace NotionMarkdownConverter.Domain.Mappers;
+namespace NotionMarkdownConverter.Extract;
 
 /// <summary>
 /// NotionページのプロパティをPagePropertyモデルに変換するマッパー

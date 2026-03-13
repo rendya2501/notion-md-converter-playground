@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Application.Configuration;
+using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline;
@@ -9,10 +9,10 @@ using NotionMarkdownConverter.Transform.Converters;
 using NotionMarkdownConverter.Transform.Strategies;
 using NotionMarkdownConverter.Transform.Strategies.Abstractions;
 
-namespace NotionMarkdownConverter.Application;
+namespace NotionMarkdownConverter;
 
 /// <summary>
-/// アプリケーション層のDIクラス
+/// アプリケーションのサービスを登録します。
 /// </summary>
 public static class DependencyInjection
 {

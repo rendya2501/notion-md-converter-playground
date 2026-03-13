@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Notion.Client;
-using NotionMarkdownConverter.Application.Configuration;
+using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Http;

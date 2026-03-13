@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Application.Configuration;
+using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Shared.Models;
 using Scriban;
 

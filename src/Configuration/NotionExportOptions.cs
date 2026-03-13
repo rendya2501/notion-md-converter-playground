@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Application.Configuration;
+namespace NotionMarkdownConverter.Configuration;
 
 /// <summary>
 /// Notionエクスポートの実行オプション

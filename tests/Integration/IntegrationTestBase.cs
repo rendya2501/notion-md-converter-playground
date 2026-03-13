@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Application;
-using NotionMarkdownConverter.Application.Configuration;
+using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Infrastructure;
 
 namespace NotionMarkdownConverter.Tests.Integration;

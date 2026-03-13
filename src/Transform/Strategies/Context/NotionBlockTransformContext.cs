@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Transform.Context;
+namespace NotionMarkdownConverter.Transform.Strategies.Context;
 
 /// <summary>
 /// ブロック変換処理のコンテキスト。

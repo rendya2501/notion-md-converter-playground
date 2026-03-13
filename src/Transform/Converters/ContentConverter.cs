@@ -1,5 +1,5 @@
 using NotionMarkdownConverter.Shared.Models;
-using NotionMarkdownConverter.Transform.Context;
+using NotionMarkdownConverter.Transform.Strategies.Context;
 
 namespace NotionMarkdownConverter.Transform.Converters;
 

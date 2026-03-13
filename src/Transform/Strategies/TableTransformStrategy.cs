@@ -1,8 +1,8 @@
 using Notion.Client;
 using NotionMarkdownConverter.Shared.Utils;
-using NotionMarkdownConverter.Transform.Context;
 using NotionMarkdownConverter.Transform.Enums;
 using NotionMarkdownConverter.Transform.Strategies.Abstractions;
+using NotionMarkdownConverter.Transform.Strategies.Context;
 using NotionMarkdownConverter.Transform.Utils;
 
 namespace NotionMarkdownConverter.Transform.Strategies;

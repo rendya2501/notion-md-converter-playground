@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Transform.Context;
+using NotionMarkdownConverter.Transform.Strategies.Context;
 
 namespace NotionMarkdownConverter.Transform.Strategies.Abstractions;
 

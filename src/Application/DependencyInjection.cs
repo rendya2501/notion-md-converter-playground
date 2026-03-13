@@ -1,16 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Domain.Markdown.Converters;
-using NotionMarkdownConverter.Domain.Transformers;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
-using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline;
 using NotionMarkdownConverter.Transform;
+using NotionMarkdownConverter.Transform.Converters;
+using NotionMarkdownConverter.Transform.Strategies;
+using NotionMarkdownConverter.Transform.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Application;
 

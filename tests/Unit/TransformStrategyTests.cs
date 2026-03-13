@@ -1,8 +1,8 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Transformers.Context;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
 using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Transform.Context;
+using NotionMarkdownConverter.Transform.Strategies;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

@@ -1,0 +1,18 @@
+using Notion.Client;
+using NotionMarkdownConverter.Transform.Context;
+using NotionMarkdownConverter.Transform.Strategies.Abstractions;
+
+namespace NotionMarkdownConverter.Transform.Strategies;
+
+/// <summary>
+/// デフォルトの変換ストラテジー
+/// </summary>
+public class DefaultTransformStrategy : IDefaultBlockTransformStrategy
+{
+    public BlockType BlockType => BlockType.Unsupported;
+
+    public string Transform(NotionBlockTransformContext context)
+    {
+        return string.Empty;
+    }
+}

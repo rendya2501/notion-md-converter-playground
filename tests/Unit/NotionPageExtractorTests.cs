@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Application.Services;
 using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;

@@ -1,10 +1,10 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Markdown.Converters;
-using NotionMarkdownConverter.Domain.Transformers;
-using NotionMarkdownConverter.Domain.Transformers.Context;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
-using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Transform;
+using NotionMarkdownConverter.Transform.Context;
+using NotionMarkdownConverter.Transform.Converters;
+using NotionMarkdownConverter.Transform.Strategies;
+using NotionMarkdownConverter.Transform.Strategies.Abstractions;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

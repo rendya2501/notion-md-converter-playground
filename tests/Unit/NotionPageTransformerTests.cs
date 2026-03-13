@@ -3,11 +3,11 @@ using Notion.Client;
 using NotionMarkdownConverter.Application;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Domain.Markdown.Converters;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
 using NotionMarkdownConverter.Transform;
+using NotionMarkdownConverter.Transform.Converters;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

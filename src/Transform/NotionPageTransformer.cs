@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Application.Abstractions;
+using NotionMarkdownConverter.Infrastructure;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Transform.Converters;
 

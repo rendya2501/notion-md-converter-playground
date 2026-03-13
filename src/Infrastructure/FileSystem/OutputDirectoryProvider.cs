@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Options;
-using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
 using NotionMarkdownConverter.Shared.Models;
 using Scriban;

@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Application.Abstractions;
+namespace NotionMarkdownConverter.Infrastructure;
 
 /// <summary>
 /// 出力ディレクトリのパスを構築し、ディレクトリを作成するサービスのインターフェース。

@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Application.Abstractions;
+namespace NotionMarkdownConverter.Infrastructure;
 
 /// <summary>
 /// GitHub環境変数の更新を行うサービスのインターフェース

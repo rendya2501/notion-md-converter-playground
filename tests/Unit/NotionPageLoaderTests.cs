@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using NotionMarkdownConverter.Application.Abstractions;
+using NotionMarkdownConverter.Infrastructure;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Shared.Enums;

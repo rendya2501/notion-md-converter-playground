@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Application.Abstractions;
 
 namespace NotionMarkdownConverter.Infrastructure.GitHub;
 

@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Application.Abstractions;
+namespace NotionMarkdownConverter.Infrastructure;
 
 /// <summary>
 /// ファイルダウンローダー

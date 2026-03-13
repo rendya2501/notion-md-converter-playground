@@ -1,5 +1,4 @@
 using Notion.Client;
-using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;

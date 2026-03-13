@@ -10,6 +10,7 @@ using NotionMarkdownConverter.Domain.Transformers.Strategies;
 using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
 using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Load;
+using NotionMarkdownConverter.Pipeline;
 using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Application;
@@ -35,10 +36,6 @@ public static class DependencyInjection
         // Configureの遅延評価を排除します。
         services.AddSingleton(Options.Create(options));
 
-        // Notionのページをエクスポートするサービスを登録
-        services.AddSingleton<INotionExporter, NotionExporter>();
-        // Markdownの組み立てサービスを登録
-        services.AddSingleton<IMarkdownAssembler, MarkdownAssembler>();
         // Markdown内のダウンロードリンク処理サービスを登録
         services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
         // ページの公開対象判定サービスを登録
@@ -85,6 +82,7 @@ public static class DependencyInjection
         services.AddSingleton<NotionPageExtractor>();
         services.AddSingleton<NotionPageTransformer>();
         services.AddSingleton<NotionPageLoader>();
+        services.AddSingleton<NotionExportPipeline>();
 
         return services;
     }

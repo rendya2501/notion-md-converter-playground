@@ -1,5 +1,5 @@
 using NotionMarkdownConverter.Extract;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Transform;

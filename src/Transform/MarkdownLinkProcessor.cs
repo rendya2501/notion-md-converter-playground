@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Infrastructure.Http;
 using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Models;
 using System.Security.Cryptography;

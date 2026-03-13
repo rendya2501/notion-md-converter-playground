@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;

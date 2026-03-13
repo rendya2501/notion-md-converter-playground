@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Infrastructure;
+namespace NotionMarkdownConverter.Infrastructure.FileSystem;
 
 /// <summary>
 /// 出力ディレクトリのパスを構築し、ディレクトリを作成するサービスのインターフェース。

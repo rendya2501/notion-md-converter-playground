@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline.Models;
 
 namespace NotionMarkdownConverter.Extract;

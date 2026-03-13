@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Infrastructure.GitHub;
+using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline.Models;
 using System.Text;
 

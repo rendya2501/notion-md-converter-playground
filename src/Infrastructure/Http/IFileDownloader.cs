@@ -1,6 +1,6 @@
 using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Infrastructure;
+namespace NotionMarkdownConverter.Infrastructure.Http;
 
 /// <summary>
 /// ファイルダウンローダー

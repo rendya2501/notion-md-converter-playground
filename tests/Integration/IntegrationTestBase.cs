@@ -41,7 +41,6 @@ public abstract class IntegrationTestBase
         var services = new ServiceCollection();
         services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Warning));
         services.AddApplicationServices(options);
-        services.AddInfrastructureServices();
 
         _serviceProvider = services.BuildServiceProvider();
     }

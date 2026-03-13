@@ -28,6 +28,7 @@ public class MarkdownAssemblerTests : IDisposable
     {
         if (Directory.Exists(_tempDir))
             Directory.Delete(_tempDir, recursive: true);
+        GC.SuppressFinalize(this);
     }
 
     // ── スタブ ────────────────────────────────────────────────────────
@@ -74,7 +75,7 @@ public class MarkdownAssemblerTests : IDisposable
     /// 後続のAddSingletonで上書きされるため、IFileDownloader未登録でも解決できます。
     /// .NET DIはサービスを遅延評価するため、上書きされたサービスは生成されません。
     /// </remarks>
-    private (IMarkdownAssembler assembler, CapturingLinkProcessor linkProcessor) CreateSut(
+    private static (IMarkdownAssembler assembler, CapturingLinkProcessor linkProcessor) CreateSut(
         List<NotionBlock>? blocks = null)
     {
         var linkProcessor = new CapturingLinkProcessor();

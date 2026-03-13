@@ -1,8 +1,8 @@
 namespace NotionMarkdownConverter.Shared.Models;
 
 /// <summary>
-/// URLとファイル名のペア
+/// ダウンロード対象のURLとローカル保存ファイル名のペア
 /// </summary>
-/// <param name="OriginalUrl">元のURL</param>
-/// <param name="LocalFileName">変換したファイル名</param>
+/// <param name="OriginalUrl">ダウンロード元のURL</param>
+/// <param name="LocalFileName">ローカルに保存するファイル名</param>
 public record UrlFilePair(string OriginalUrl, string LocalFileName);

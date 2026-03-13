@@ -1,6 +1,6 @@
 using Notion.Client;
 
-namespace NotionMarkdownConverter.Domain.Utils;
+namespace NotionMarkdownConverter.Shared.Utils;
 
 /// <summary>
 /// プロパティ値を変換するユーティリティクラス

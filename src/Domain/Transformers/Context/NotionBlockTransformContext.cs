@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Domain.Models;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Context;
 

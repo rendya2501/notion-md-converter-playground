@@ -1,9 +1,9 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Constants;
 using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
-using NotionMarkdownConverter.Domain.Utils;
+using NotionMarkdownConverter.Shared.Constants;
+using NotionMarkdownConverter.Shared.Utils;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 

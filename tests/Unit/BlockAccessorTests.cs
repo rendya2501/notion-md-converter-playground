@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Models;
-using NotionMarkdownConverter.Domain.Utils;
+using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Shared.Utils;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

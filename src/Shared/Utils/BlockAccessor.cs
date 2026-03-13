@@ -1,7 +1,7 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Models;
+using NotionMarkdownConverter.Shared.Models;
 
-namespace NotionMarkdownConverter.Domain.Utils;
+namespace NotionMarkdownConverter.Shared.Utils;
 
 /// <summary>
 /// Notionブロックを具体的な型として取り出すユーティリティ

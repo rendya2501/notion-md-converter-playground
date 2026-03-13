@@ -1,7 +1,7 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Constants;
-using NotionMarkdownConverter.Domain.Enums;
 using NotionMarkdownConverter.Domain.Mappers;
+using NotionMarkdownConverter.Shared.Constants;
+using NotionMarkdownConverter.Shared.Enums;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

@@ -1,5 +1,5 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Models;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Application.Abstractions;
 

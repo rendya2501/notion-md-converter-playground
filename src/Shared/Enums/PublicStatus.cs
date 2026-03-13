@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Domain.Enums;
+namespace NotionMarkdownConverter.Shared.Enums;
 
 /// <summary>
 /// 公開ステータス

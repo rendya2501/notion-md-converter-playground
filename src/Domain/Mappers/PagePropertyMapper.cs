@@ -1,9 +1,9 @@
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Domain.Constants;
-using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Models;
-using NotionMarkdownConverter.Domain.Utils;
+using NotionMarkdownConverter.Shared.Constants;
+using NotionMarkdownConverter.Shared.Enums;
+using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Shared.Utils;
 
 namespace NotionMarkdownConverter.Domain.Mappers;
 

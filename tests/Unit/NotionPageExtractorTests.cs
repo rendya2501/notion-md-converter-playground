@@ -2,9 +2,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Notion.Client;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Services;
-using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Extract;
+using NotionMarkdownConverter.Shared.Enums;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

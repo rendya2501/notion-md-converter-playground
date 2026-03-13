@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Infrastructure.FileSystem;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

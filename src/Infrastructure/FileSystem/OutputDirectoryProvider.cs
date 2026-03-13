@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using NotionMarkdownConverter.Application.Abstractions;
 using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Domain.Models;
+using NotionMarkdownConverter.Shared.Models;
 using Scriban;
 
 namespace NotionMarkdownConverter.Infrastructure.FileSystem;

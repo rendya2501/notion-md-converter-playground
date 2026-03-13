@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Domain.Models;
+namespace NotionMarkdownConverter.Shared.Models;
 
 /// <summary>
 /// URLとファイル名のペア

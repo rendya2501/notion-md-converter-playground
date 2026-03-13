@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Domain.Constants;
+namespace NotionMarkdownConverter.Shared.Constants;
 
 /// <summary>
 /// Notionページのプロパティ名を定義するクラス

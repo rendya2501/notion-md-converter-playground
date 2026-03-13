@@ -1,7 +1,7 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Transformers.Strategies;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

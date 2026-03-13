@@ -1,4 +1,4 @@
-namespace NotionMarkdownConverter.Domain.Constants;
+namespace NotionMarkdownConverter.Shared.Constants;
 
 /// <summary>
 /// NotionMarkdownConverterのリンクに関する定数を定義するクラス

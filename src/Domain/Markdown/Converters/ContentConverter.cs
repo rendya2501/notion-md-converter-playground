@@ -1,6 +1,6 @@
-using NotionMarkdownConverter.Domain.Models;
 using NotionMarkdownConverter.Domain.Transformers;
 using NotionMarkdownConverter.Domain.Transformers.Context;
+using NotionMarkdownConverter.Shared.Models;
 
 namespace NotionMarkdownConverter.Domain.Markdown.Converters;
 

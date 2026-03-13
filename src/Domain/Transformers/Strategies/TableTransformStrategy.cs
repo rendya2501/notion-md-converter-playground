@@ -3,7 +3,7 @@ using NotionMarkdownConverter.Domain.Markdown.Enums;
 using NotionMarkdownConverter.Domain.Markdown.Utils;
 using NotionMarkdownConverter.Domain.Transformers.Context;
 using NotionMarkdownConverter.Domain.Transformers.Strategies.Abstractions;
-using NotionMarkdownConverter.Domain.Utils;
+using NotionMarkdownConverter.Shared.Utils;
 
 namespace NotionMarkdownConverter.Domain.Transformers.Strategies;
 

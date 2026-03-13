@@ -1,6 +1,6 @@
-using NotionMarkdownConverter.Domain.Enums;
+using NotionMarkdownConverter.Shared.Enums;
 
-namespace NotionMarkdownConverter.Domain.Models;
+namespace NotionMarkdownConverter.Shared.Models;
 
 /// <summary>
 /// ページのプロパティ

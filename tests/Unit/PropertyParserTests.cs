@@ -1,6 +1,6 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Utils;
+using NotionMarkdownConverter.Shared.Enums;
+using NotionMarkdownConverter.Shared.Utils;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

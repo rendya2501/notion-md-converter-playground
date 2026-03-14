@@ -16,6 +16,7 @@ public class NotionPageExtractorTests
         public List<Page> Pages { get; set; } = [];
         public Exception? GetPagesException { get; set; }
         public List<string> FetchedBlockPageIds { get; } = [];
+        public Exception? FetchBlockTreeException { get; set; }
 
         public Task<List<Page>> GetPagesForPublishingAsync(string databaseId)
         {
@@ -25,9 +26,10 @@ public class NotionPageExtractorTests
 
         public Task<List<NotionBlock>> FetchBlockTreeAsync(string blockId)
         {
+            if (FetchBlockTreeException is not null) throw FetchBlockTreeException;
             FetchedBlockPageIds.Add(blockId);
             return Task.FromResult(new List<NotionBlock>());
-        }
+        }  
 
         public Task UpdatePagePropertiesAsync(string pageId, DateTime now)
             => Task.CompletedTask;
@@ -132,6 +134,21 @@ public class NotionPageExtractorTests
         var result = await sut.ExtractAsync("db-id");
 
         Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task ExtractAsync_FetchBlockTreeFails_PageIsSkipped()
+    {
+        var client = new FakeNotionClient
+        {
+            Pages = [MakePage("page-1")],
+            FetchBlockTreeException = new Exception("ブロック取得失敗")
+        };
+        var sut = CreateSut(client: client);
+
+        var result = await sut.ExtractAsync("db-id");
+
+        Assert.Empty(result);
     }
 
     private class ThrowOnFirstCallMapper : IPagePropertyMapper

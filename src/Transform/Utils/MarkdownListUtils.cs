@@ -21,5 +21,4 @@ public static class MarkdownListUtils
     /// チェックリスト変換
     /// </summary>
     public static string CheckList(string text, bool isChecked) => $"- [{(isChecked ? "x" : " ")}] {text}";
-
 }

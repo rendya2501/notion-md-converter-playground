@@ -9,10 +9,12 @@ public enum PublicStatus
     /// 公開済み
     /// </summary>
     Published,
+
     /// <summary>
     /// 公開待ち
     /// </summary>
     Queued,
+
     /// <summary>
     /// 非公開
     /// </summary>

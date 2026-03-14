@@ -178,5 +178,6 @@ public class OutputDirectoryProviderTests : IDisposable
     {
         if (Directory.Exists(_tempBase))
             Directory.Delete(_tempBase, recursive: true);
+        GC.SuppressFinalize(this);
     }
 }

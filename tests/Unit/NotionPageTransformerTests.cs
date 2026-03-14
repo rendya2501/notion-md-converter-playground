@@ -59,7 +59,7 @@ public class NotionPageTransformerTests : IDisposable
         services.AddSingleton<IMarkdownLinkProcessor>(linkProcessor);
         services.AddSingleton<IOutputDirectoryProvider>(new FakeOutputDirectoryProvider(_tempDir));
 
-        using var provider = services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
         var transformer = new NotionPageTransformer(
             provider.GetRequiredService<FrontmatterConverter>(),
             provider.GetRequiredService<ContentConverter>(),

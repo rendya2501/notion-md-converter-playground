@@ -54,6 +54,16 @@ public static class MarkdownBlockUtils
     }
 
     /// <summary>
+    /// テキストの前後に改行を付与します。
+    /// </summary>
+    /// <param name="text">前後に改行を付与するテキスト</param>
+    /// <returns>前後に改行が付与されたテキスト</returns>
+    public static string WrapWithNewLines(string text)
+    {
+        return $"\n{text}\n";
+    }
+
+    /// <summary>
     /// 水平線に変換します。
     /// </summary>
     /// <param name="style">水平線のスタイル。デフォルトはハイフン。</param>

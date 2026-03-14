@@ -18,6 +18,7 @@ public class EquationTransformStrategy : IBlockTransformStrategy
         // 方程式ブロックを取得
         var block = BlockAccessor.GetOriginalBlock<EquationBlock>(context.CurrentBlock);
         // 方程式をMarkdown形式で変換して返す
-        return MarkdownBlockUtils.BlockEquation(block.Equation.Expression);
+        return MarkdownBlockUtils.WrapWithNewLines(
+            MarkdownBlockUtils.BlockEquation(block.Equation.Expression));
     }
 }

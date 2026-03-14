@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
+using System.Text;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 
@@ -49,6 +51,13 @@ public class NotionPageLoaderTests : IDisposable
         public void UpdateEnvironment(int exportedCount) => LastExportedCount = exportedCount;
     }
 
+    private sealed class FakeFileSystem : IFileSystem
+    {
+        public void CreateDirectory(string path) { }
+        public Task WriteAllTextAsync(string path, string content, Encoding encoding)
+            => File.WriteAllTextAsync(path, content, encoding);
+    }
+
     // ── ヘルパー ──────────────────────────────────────────────────────
 
     private TransformedPage MakePage(string pageId, string markdown = "# content") =>
@@ -64,10 +73,12 @@ public class NotionPageLoaderTests : IDisposable
 
     private static NotionPageLoader CreateSut(
         FakeNotionClient? client = null,
-        FakeGitHubEnvironmentUpdater? ghUpdater = null) =>
+        FakeGitHubEnvironmentUpdater? ghUpdater = null,
+        IFileSystem? fileSystem = null) =>
         new(
             client ?? new FakeNotionClient(),
             ghUpdater ?? new FakeGitHubEnvironmentUpdater(),
+            fileSystem ?? new FakeFileSystem(),
             NullLogger<NotionPageLoader>.Instance);
 
     // ── テスト ────────────────────────────────────────────────────────
@@ -87,7 +98,7 @@ public class NotionPageLoaderTests : IDisposable
     [Fact]
     public async Task LoadAsync_SinglePage_WritesIndexMd()
     {
-        var sut = CreateSut();
+        var sut = CreateSut(fileSystem: new FileSystem());
         await sut.LoadAsync([MakePage("page-1", "# hello")]);
 
         var filePath = Path.Combine(_tempDir, "index.md");
@@ -145,7 +156,7 @@ public class NotionPageLoaderTests : IDisposable
     [Fact]
     public async Task LoadAsync_WrittenFile_IsUtf8WithoutBom()
     {
-        var sut = CreateSut();
+        var sut = CreateSut(fileSystem: new FileSystem());
         await sut.LoadAsync([MakePage("page-1", "テスト")]);
 
         var bytes = await File.ReadAllBytesAsync(Path.Combine(_tempDir, "index.md"), TestContext.Current.CancellationToken);

@@ -56,7 +56,7 @@ public static class DependencyInjection
         });
         services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
         services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
-        services.AddSingleton<IOutputDirectoryProvider, OutputDirectoryProvider>();
+        services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IFileDownloader, HttpFileDownloader>();
 
         // --- Extract ---
@@ -96,6 +96,7 @@ public static class DependencyInjection
         services.AddSingleton<ContentConverter>();
         services.AddSingleton<FrontmatterConverter>();
         services.AddSingleton<NotionPageTransformer>();
+        services.AddSingleton<OutputPathBuilder>();
 
         // --- Load ---
         services.AddSingleton<NotionPageLoader>();

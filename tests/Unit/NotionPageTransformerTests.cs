@@ -7,6 +7,7 @@ using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
 using NotionMarkdownConverter.Transform;
 using NotionMarkdownConverter.Transform.Converters;
+using System.Text;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 
@@ -44,9 +45,11 @@ public class NotionPageTransformerTests : IDisposable
         }
     }
 
-    private sealed class FakeOutputDirectoryProvider(string dir) : IOutputDirectoryProvider
+    private sealed class FakeFileSystem : IFileSystem
     {
-        public string BuildAndCreate(PageProperty pageProperty) => dir;
+        public void CreateDirectory(string path) { }
+        public Task WriteAllTextAsync(string path, string content, Encoding encoding)
+            => Task.CompletedTask;
     }
 
     // ── ビルダー ──────────────────────────────────────────────────────
@@ -57,14 +60,15 @@ public class NotionPageTransformerTests : IDisposable
         var services = new ServiceCollection();
         services.AddApplicationServices(new NotionExportOptions());
         services.AddSingleton<IMarkdownLinkProcessor>(linkProcessor);
-        services.AddSingleton<IOutputDirectoryProvider>(new FakeOutputDirectoryProvider(_tempDir));
+        services.AddSingleton<IFileSystem>(new FakeFileSystem());
 
         var provider = services.BuildServiceProvider();
         var transformer = new NotionPageTransformer(
-            provider.GetRequiredService<FrontmatterConverter>(),
-            provider.GetRequiredService<ContentConverter>(),
-            linkProcessor,
-            new FakeOutputDirectoryProvider(_tempDir));
+             provider.GetRequiredService<FrontmatterConverter>(),
+             provider.GetRequiredService<ContentConverter>(),
+             linkProcessor,
+             provider.GetRequiredService<OutputPathBuilder>(),
+             new FakeFileSystem());
 
         return (transformer, linkProcessor);
     }
@@ -164,26 +168,6 @@ public class NotionPageTransformerTests : IDisposable
         var result = await sut.TransformAsync(MakeExtractedPage(blocks: [MakeHeadingOne("見出し1")]));
 
         Assert.Contains("# 見出し1", result.Markdown);
-    }
-
-    // ── OutputDirectory ───────────────────────────────────────────────
-
-    [Fact]
-    public async Task TransformAsync_Always_ReturnsOutputDirectory()
-    {
-        var (sut, _) = CreateSut();
-        var result = await sut.TransformAsync(MakeExtractedPage());
-
-        Assert.Equal(_tempDir, result.OutputDirectory);
-    }
-
-    [Fact]
-    public async Task TransformAsync_Always_PassesOutputDirectoryToLinkProcessor()
-    {
-        var (sut, linkProcessor) = CreateSut();
-        await sut.TransformAsync(MakeExtractedPage(blocks: [MakeParagraph("テキスト")]));
-
-        Assert.Equal(_tempDir, linkProcessor.LastOutputDirectory);
     }
 
     // ── ゴールデンファイルテスト（MarkdownAssemblerTestsと同一入力） ──

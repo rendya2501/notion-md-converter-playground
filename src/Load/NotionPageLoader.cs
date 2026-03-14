@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline.Models;
@@ -13,6 +14,7 @@ namespace NotionMarkdownConverter.Load;
 public class NotionPageLoader(
     INotionClientWrapper _notionClient,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
+    IFileSystem _fileSystem,
     ILogger<NotionPageLoader> _logger)
 {
     /// <summary>
@@ -29,10 +31,10 @@ public class NotionPageLoader(
         {
             try
             {
-                await File.WriteAllTextAsync(
-                    Path.Combine(page.OutputDirectory, "index.md"),
-                    page.Markdown,
-                    new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                await _fileSystem.WriteAllTextAsync(
+                   Path.Combine(page.OutputDirectory, "index.md"),
+                   page.Markdown,
+                   new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
                 _logger.LogInformation("Load成功: PageId={PageId}, OutputDirectory={OutputDirectory}",
                     page.PageProperty.PageId, page.OutputDirectory);

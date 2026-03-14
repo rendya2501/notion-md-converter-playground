@@ -13,7 +13,8 @@ public class NotionPageTransformer(
     FrontmatterConverter _frontmatterConverter,
     ContentConverter _contentConverter,
     IMarkdownLinkProcessor _markdownLinkProcessor,
-    IOutputDirectoryProvider _outputDirectoryProvider)
+    OutputPathBuilder _outputPathBuilder,
+    IFileSystem _fileSystem)
 {
     /// <summary>
     /// ExtractedPageをMarkdown文字列と出力ディレクトリに変換します。
@@ -25,7 +26,10 @@ public class NotionPageTransformer(
         var pageProperty = extractedPage.PageProperty;
 
         // 出力ディレクトリを構築（リンク処理のダウンロード先として必要）
-        var outputDirectory = _outputDirectoryProvider.BuildAndCreate(pageProperty);
+        var outputDirectory = _outputPathBuilder.Build(pageProperty);
+
+        // ディレクトリを作成（既存の場合は何もしない）
+        _fileSystem.CreateDirectory(outputDirectory);
 
         // フロントマターを生成
         var frontmatter = _frontmatterConverter.Convert(pageProperty);

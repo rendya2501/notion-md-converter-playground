@@ -13,6 +13,7 @@ public class SyncedBlockTransformStrategy : IBlockTransformStrategy
 
     public string Transform(NotionBlockTransformContext context)
     {
-        return string.Empty;
+        // 同期ブロック自体は変換せず、子ブロックの変換結果をそのまま返す
+        return context.ExecuteTransformBlocks(context.CurrentBlock.Children);
     }
 }

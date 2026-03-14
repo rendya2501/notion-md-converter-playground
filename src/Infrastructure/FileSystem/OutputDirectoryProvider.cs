@@ -11,7 +11,7 @@ namespace NotionMarkdownConverter.Infrastructure.FileSystem;
 /// </summary>
 /// <remarks>
 /// パスの構築とディレクトリ作成をセットで行います。
-/// 現時点では呼び出し元（NotionExporter）が常にセットで必要とするため一本化しています。
+/// 現時点では呼び出し元（NotionPageTransformer）が常にセットで必要とするため一本化しています。
 /// パスのみ取得したいケースが生じた場合は、
 /// IOutputPathBuilder / IOutputDirectoryCreator への分離を検討してください。
 /// </remarks>

@@ -19,6 +19,10 @@ public class NotionExportPipeline(
     NotionPageLoader _loader,
     ILogger<NotionExportPipeline> _logger)
 {
+    /// <summary>
+    /// ETLパイプラインを実行します。
+    /// Extract → Transform → Load の順に各ステージを呼び出します。
+    /// </summary>
     public async Task RunAsync()
     {
         // Extract

@@ -14,6 +14,11 @@ public class NotionPageExtractor(
     PageExportEligibilityChecker _eligibilityChecker,
     ILogger<NotionPageExtractor> _logger)
 {
+    /// <summary>
+    /// 指定データベースから公開対象ページを取得し、ブロックツリーを付与して返します。
+    /// </summary>
+    /// <param name="databaseId">取得対象のNotionデータベースID</param>
+    /// <returns>公開対象と判定されたページのリスト</returns>
     public async Task<List<ExtractedPage>> ExtractAsync(string databaseId)
     {
         var pages = await _notionClient.GetPagesForPublishingAsync(databaseId);

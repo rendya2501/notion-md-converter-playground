@@ -15,6 +15,11 @@ public class NotionPageTransformer(
     IMarkdownLinkProcessor _markdownLinkProcessor,
     IOutputDirectoryProvider _outputDirectoryProvider)
 {
+    /// <summary>
+    /// ExtractedPageをMarkdown文字列と出力ディレクトリに変換します。
+    /// </summary>
+    /// <param name="extractedPage">Extractステージの出力</param>
+    /// <returns>Markdown文字列と出力先ディレクトリを含むTransformedPage</returns>
     public async Task<TransformedPage> TransformAsync(ExtractedPage extractedPage)
     {
         var pageProperty = extractedPage.PageProperty;

@@ -15,6 +15,11 @@ public class NotionPageLoader(
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     ILogger<NotionPageLoader> _logger)
 {
+    /// <summary>
+    /// TransformedPageのリストをファイルに書き出し、Notionのプロパティを更新します。
+    /// </summary>
+    /// <param name="transformedPages">Transformステージの出力リスト</param>
+    /// <returns>エクスポートに成功したページ数</returns>
     public async Task<int> LoadAsync(List<TransformedPage> transformedPages)
     {
         var now = DateTime.UtcNow;

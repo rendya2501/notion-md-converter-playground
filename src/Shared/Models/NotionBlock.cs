@@ -5,7 +5,7 @@ namespace NotionMarkdownConverter.Shared.Models;
 /// <summary>
 /// Notionのブロック
 /// </summary>
-/// <param name="_block"></param>
+/// <param name="_block">ラップ対象のNotionブロック</param>
 public class NotionBlock(IBlock _block)
 {
     /// <summary>

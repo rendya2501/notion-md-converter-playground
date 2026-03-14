@@ -25,3 +25,5 @@ src/
 ├── Infrastructure/         ← そのまま
 └── Program.cs
 ```
+
+`Get-ChildItem -Recurse -Exclude "bin","obj" src,tests | Where-Object { $_.FullName -notmatch "\\(bin|obj)\\" } | Select-Object FullName`

@@ -1,4 +1,5 @@
 using NotionMarkdownConverter.Infrastructure.FileSystem;
+using NotionMarkdownConverter.Infrastructure.Http;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Transform.Converters;
 
@@ -12,7 +13,8 @@ namespace NotionMarkdownConverter.Transform;
 public class NotionPageTransformer(
     FrontmatterConverter _frontmatterConverter,
     ContentConverter _contentConverter,
-    IMarkdownLinkProcessor _markdownLinkProcessor,
+    MarkdownLinkReplacer _linkReplacer,
+    IFileDownloader _fileDownloader,
     OutputPathBuilder _outputPathBuilder,
     IFileSystem _fileSystem)
 {
@@ -27,19 +29,20 @@ public class NotionPageTransformer(
 
         // 出力ディレクトリを構築（リンク処理のダウンロード先として必要）
         var outputDirectory = _outputPathBuilder.Build(pageProperty);
-
         // ディレクトリを作成（既存の場合は何もしない）
         _fileSystem.CreateDirectory(outputDirectory);
 
         // フロントマターを生成
         var frontmatter = _frontmatterConverter.Convert(pageProperty);
-
         // ブロックをMarkdownに変換（ブロックはExtract済み）
         var content = _contentConverter.Convert(extractedPage.Blocks);
 
-        // ダウンロードリンクをローカルパスに置換
-        var processedContent = await _markdownLinkProcessor.ProcessLinksAsync(content, outputDirectory);
+        // リンク置換（純粋なstring操作）
+        var (replacedContent, urlFilePairs) = _linkReplacer.Replace(content);
+                // ファイルダウンロード（Infrastructure操作）
+        await Task.WhenAll(urlFilePairs.Select(pair =>
+            _fileDownloader.DownloadAsync(pair, outputDirectory)));
 
-        return new TransformedPage(pageProperty, frontmatter + processedContent, outputDirectory);
+        return new TransformedPage(pageProperty, frontmatter + replacedContent, outputDirectory);
     }
 }

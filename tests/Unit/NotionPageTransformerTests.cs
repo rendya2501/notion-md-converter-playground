@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Notion.Client;
 using NotionMarkdownConverter.Configuration;
 using NotionMarkdownConverter.Infrastructure.FileSystem;
+using NotionMarkdownConverter.Infrastructure.Http;
 using NotionMarkdownConverter.Pipeline.Models;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
@@ -32,17 +33,10 @@ public class NotionPageTransformerTests : IDisposable
 
     // ── Fake ──────────────────────────────────────────────────────────
 
-    private sealed class CapturingLinkProcessor : IMarkdownLinkProcessor
+    private sealed class FakeFileDownloader : IFileDownloader
     {
-        public string? LastMarkdown { get; private set; }
-        public string? LastOutputDirectory { get; private set; }
-
-        public Task<string> ProcessLinksAsync(string markdown, string outputDirectory)
-        {
-            LastMarkdown = markdown;
-            LastOutputDirectory = outputDirectory;
-            return Task.FromResult(markdown);
-        }
+        public Task DownloadAsync(UrlFilePair urlFilePair, string outputDirectory)
+            => Task.CompletedTask;
     }
 
     private sealed class FakeFileSystem : IFileSystem
@@ -54,23 +48,21 @@ public class NotionPageTransformerTests : IDisposable
 
     // ── ビルダー ──────────────────────────────────────────────────────
 
-    private (NotionPageTransformer transformer, CapturingLinkProcessor linkProcessor) CreateSut()
+    private NotionPageTransformer CreateSut()
     {
-        var linkProcessor = new CapturingLinkProcessor();
         var services = new ServiceCollection();
         services.AddApplicationServices(new NotionExportOptions());
-        services.AddSingleton<IMarkdownLinkProcessor>(linkProcessor);
+        services.AddSingleton<IFileDownloader>(new FakeFileDownloader());
         services.AddSingleton<IFileSystem>(new FakeFileSystem());
 
         var provider = services.BuildServiceProvider();
-        var transformer = new NotionPageTransformer(
-             provider.GetRequiredService<FrontmatterConverter>(),
-             provider.GetRequiredService<ContentConverter>(),
-             linkProcessor,
-             provider.GetRequiredService<OutputPathBuilder>(),
-             new FakeFileSystem());
-
-        return (transformer, linkProcessor);
+        return new NotionPageTransformer(
+            provider.GetRequiredService<FrontmatterConverter>(),
+            provider.GetRequiredService<ContentConverter>(),
+            provider.GetRequiredService<MarkdownLinkReplacer>(),
+            new FakeFileDownloader(),
+            provider.GetRequiredService<OutputPathBuilder>(),
+            new FakeFileSystem());
     }
 
     // ── テストデータ ──────────────────────────────────────────────────
@@ -134,7 +126,7 @@ public class NotionPageTransformerTests : IDisposable
     [Fact]
     public async Task TransformAsync_Always_ContainsFrontmatterDelimiters()
     {
-        var (sut, _) = CreateSut();
+        var sut = CreateSut();
         var result = await sut.TransformAsync(MakeExtractedPage());
 
         var dashes = result.Markdown.Split('\n').Count(l => l.TrimEnd() == "---");
@@ -144,7 +136,7 @@ public class NotionPageTransformerTests : IDisposable
     [Fact]
     public async Task TransformAsync_WithTitle_FrontmatterContainsTitle()
     {
-        var (sut, _) = CreateSut();
+        var sut = CreateSut();
         var result = await sut.TransformAsync(MakeExtractedPage("マイタイトル"));
 
         Assert.Contains("title: \"マイタイトル\"", result.Markdown);
@@ -155,7 +147,7 @@ public class NotionPageTransformerTests : IDisposable
     [Fact]
     public async Task TransformAsync_WithParagraph_BodyContainsParagraphText()
     {
-        var (sut, _) = CreateSut();
+        var sut = CreateSut();
         var result = await sut.TransformAsync(MakeExtractedPage(blocks: [MakeParagraph("段落テキスト")]));
 
         Assert.Contains("段落テキスト", result.Markdown);
@@ -164,7 +156,7 @@ public class NotionPageTransformerTests : IDisposable
     [Fact]
     public async Task TransformAsync_WithHeadingOne_BodyContainsMarkdownH1()
     {
-        var (sut, _) = CreateSut();
+        var sut = CreateSut();
         var result = await sut.TransformAsync(MakeExtractedPage(blocks: [MakeHeadingOne("見出し1")]));
 
         Assert.Contains("# 見出し1", result.Markdown);
@@ -189,7 +181,7 @@ public class NotionPageTransformerTests : IDisposable
             [MakeHeadingOne("はじめに"), MakeParagraph("これはテスト段落です。")]
         );
 
-        var (sut, _) = CreateSut();
+        var sut = CreateSut();
         var result = await sut.TransformAsync(extractedPage);
 
         Assert.Contains("type: \"article\"", result.Markdown);

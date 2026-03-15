@@ -67,7 +67,6 @@ public static class DependencyInjection
         services.AddSingleton<NotionPageExtractor>();
 
         // --- Transform ---
-        services.AddSingleton<IMarkdownLinkProcessor, MarkdownLinkProcessor>();
         services.AddSingleton<IBlockTransformStrategy, BookmarkTransformStrategy>();
         services.AddSingleton<IBlockTransformStrategy, BreadcrumbTransformStrategy>();
         services.AddSingleton<IBlockTransformStrategy, BulletedListItemTransformStrategy>();
@@ -95,6 +94,8 @@ public static class DependencyInjection
         services.AddSingleton<IBlockTransformStrategy, VideoTransformStrategy>();
         services.AddSingleton<IDefaultBlockTransformStrategy, DefaultTransformStrategy>();
         services.AddSingleton<BlockTransformDispatcher>();
+
+        services.AddSingleton<MarkdownLinkReplacer>();
         services.AddSingleton<ContentConverter>();
         services.AddSingleton<FrontmatterConverter>();
         services.AddSingleton<NotionPageTransformer>();

@@ -491,5 +491,4 @@ launchSettings.json
 
 # tests/.gitignore の場合
 # 統合テスト出力
-Integration/articles/*
-!Integration/articles/.gitignore
+tests/Integration/articles/

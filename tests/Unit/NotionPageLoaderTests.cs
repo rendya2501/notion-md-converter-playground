@@ -111,23 +111,23 @@ public class NotionPageLoaderTests : IDisposable
     [Fact]
     public async Task LoadAsync_SuccessfulLoad_CallsUpdatePageProperties()
     {
-        var weiter = new FakeNotionWriter();
-        var sut = CreateSut(writer: weiter);
+        var writer = new FakeNotionWriter();
+        var sut = CreateSut(writer: writer);
 
         await sut.LoadAsync([MakePage("page-1")]);
 
-        Assert.Contains("page-1", weiter.UpdatedPageIds);
+        Assert.Contains("page-1", writer.UpdatedPageIds);
     }
 
     [Fact]
     public async Task LoadAsync_UpdateFails_ExportedCountStillIncremented()
     {
-        var weiter = new FakeNotionWriter
+        var writer = new FakeNotionWriter
         {
             UpdateException = new Exception("Notion API error")
         };
         var ghUpdater = new FakeGitHubEnvironmentUpdater();
-        var sut = CreateSut(writer: weiter, ghUpdater: ghUpdater);
+        var sut = CreateSut(writer: writer, ghUpdater: ghUpdater);
 
         var result = await sut.LoadAsync([MakePage("page-1")]);
 

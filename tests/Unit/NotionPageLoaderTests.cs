@@ -49,7 +49,7 @@ public class NotionPageLoaderTests : IDisposable
     {
         public void CreateDirectory(string path) { }
         public Task WriteAllTextAsync(string path, string content, Encoding encoding)
-            => File.WriteAllTextAsync(path, content, encoding);
+            => Task.CompletedTask; // 何もしない
     }
 
     // ── ヘルパー ──────────────────────────────────────────────────────

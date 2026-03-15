@@ -21,11 +21,12 @@ public class EmbedTransformStrategy : IBlockTransformStrategy
         var url = originalBlock.Embed.Url;
         // 埋め込みのキャプションをMarkdown形式に変換
         var caption = MarkdownRichTextUtils.RichTextsToMarkdown(originalBlock.Embed.Caption);
-        // 表示テキストの決定（キャプションが空の場合はURLを使用）
-        var displayText = !string.IsNullOrEmpty(caption) ? caption : url;
 
-        // リンクを生成し、最後に改行用スペースを追加
-        return MarkdownInlineUtils.AppendTrailingSpaces(
-            MarkdownInlineUtils.Link(displayText, url));
+        // キャプションがある場合はリンク形式、ない場合はURLそのまま（Zennがリンクカードとして処理）
+        if (!string.IsNullOrEmpty(caption))
+            return MarkdownInlineUtils.AppendTrailingSpaces(
+                MarkdownInlineUtils.Link(caption, url));
+
+        return url;
     }
 }

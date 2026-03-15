@@ -540,7 +540,7 @@ public class TransformStrategyTests
     }
 
     [Fact]
-    public void Embed_WithoutCaption_UsesUrlAsLinkText()
+    public void Embed_WithoutCaption_ReturnsUrlAsIs()
     {
         var block = Wrap(new EmbedBlock
         {
@@ -553,7 +553,7 @@ public class TransformStrategyTests
 
         var result = new EmbedTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains("[https://example.com/embed](https://example.com/embed)", result);
+        Assert.Equal("https://example.com/embed", result);
     }
 
     // ── EquationTransformStrategy ─────────────────────────────────────
@@ -732,7 +732,7 @@ public class TransformStrategyTests
     }
 
     [Fact]
-    public void LinkPreview_Transform_ReturnsLinkWithUrlAsBothTextAndHref()
+    public void LinkPreview_Transform_ReturnsUrlAsIs()
     {
         var block = Wrap(new LinkPreviewBlock
         {
@@ -741,7 +741,7 @@ public class TransformStrategyTests
 
         var result = new LinkPreviewTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Equal("[https://example.com](https://example.com)", result);
+        Assert.Equal("https://example.com", result);
     }
 
     // ── PDFTransformStrategy ──────────────────────────────────────────

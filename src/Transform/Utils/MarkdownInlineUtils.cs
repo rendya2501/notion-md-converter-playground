@@ -111,14 +111,6 @@ public static class MarkdownInlineUtils
         return $"![{text}]({urlText})";
     }
 
-    /// <summary>videoタグに変換</summary>
-    public static string Video(string url) => 
-        $"<video controls src=\"{url}\"></video>";
-
-    /// <summary>iframeタグに変換</summary>
-    public static string IFrame(string url) =>
-        $"<iframe src=\"{url}\" allowfullscreen></iframe>";
-
     /// <summary>コメント変換</summary>
     public static string Comment(string text) => $"<!-- {text} -->";
 

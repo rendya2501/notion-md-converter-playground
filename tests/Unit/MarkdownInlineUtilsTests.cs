@@ -112,20 +112,6 @@ public class MarkdownInlineUtilsTests
     }
 
     [Fact]
-    public void Video_ReturnsVideoTag()
-    {
-        var result = MarkdownInlineUtils.Video("https://example.com/video.mp4");
-        Assert.Equal("<video controls src=\"https://example.com/video.mp4\"></video>", result);
-    }
-
-    [Fact]
-    public void IFrame_ReturnsIFrameTagWithAllowFullscreen()
-    {
-        var result = MarkdownInlineUtils.IFrame("https://www.youtube.com/embed/abc123");
-        Assert.Equal("<iframe src=\"https://www.youtube.com/embed/abc123\" allowfullscreen></iframe>", result);
-    }
-
-    [Fact]
     public void Comment_ReturnsHtmlComment()
     {
         var result = MarkdownInlineUtils.Comment("コメント");

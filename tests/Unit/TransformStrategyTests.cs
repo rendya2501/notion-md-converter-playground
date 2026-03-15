@@ -574,7 +574,7 @@ public class TransformStrategyTests
 
         var result = new EquationTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Equal("$$\nE = mc^2\n$$", result);
+        Assert.Equal("\n$$\nE = mc^2\n$$\n", result);
     }
 
     // ── ImageTransformStrategy ────────────────────────────────────────

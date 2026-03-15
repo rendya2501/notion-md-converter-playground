@@ -1,0 +1,3 @@
+# 統合テスト出力
+tests/Integration/articles/*
+!tests/Integration/articles/.gitignore

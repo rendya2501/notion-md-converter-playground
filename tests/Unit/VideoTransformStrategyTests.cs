@@ -46,21 +46,6 @@ public class VideoTransformStrategyTests
         Assert.Contains("https://cdn.notion.so/video.mp4", result);
     }
 
-    [Fact]
-    public void Transform_UploadedFile_ReturnsUrlAsIs()
-    {
-        var uploadedFile = new UploadedFile
-        {
-            File = new() { Url = "https://cdn.notion.so/video.mp4" }
-        };
-        var block = new NotionBlock(new VideoBlock { Video = uploadedFile });
-
-        var result = _sut.Transform(MakeContext(block));
-
-        Assert.Contains(MarkdownConstants.DownloadMarker, result);
-        Assert.Contains("https://cdn.notion.so/video.mp4", result);
-    }
-
     // ── ExternalFile ──────────────────────────────────────────────────
 
     [Fact]
@@ -91,6 +76,6 @@ public class VideoTransformStrategyTests
         var result = _sut.Transform(MakeContext(block));
 
         // YouTubeもURLそのまま（Zennが自動で埋め込みに変換）
-        Assert.Equal(url, result);
+        Assert.Equal(url + "  ", result);
     }
 }

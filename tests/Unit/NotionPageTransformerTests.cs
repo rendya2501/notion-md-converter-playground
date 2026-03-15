@@ -14,8 +14,6 @@ namespace NotionMarkdownConverter.Tests.Unit;
 
 /// <summary>
 /// NotionPageTransformerのユニットテスト。
-/// MarkdownAssemblerTestsのゴールデンファイルテストと同一の入力・期待値を使い、
-/// ETL移行後も振る舞いが変わっていないことを保証します。
 /// </summary>
 public class NotionPageTransformerTests : IDisposable
 {

@@ -4,10 +4,10 @@ using NotionMarkdownConverter.Shared.Models;
 namespace NotionMarkdownConverter.Infrastructure.Notion;
 
 /// <summary>
-/// Notion APIクライアントのラッパーインターフェース。
-/// Notion APIの操作を抽象化し、テスト時のモック差し替えを可能にします。
+/// Notionからページ・ブロックを読み取る操作のインターフェース。
+/// Extractステージで使用します。
 /// </summary>
-public interface INotionClientWrapper
+public interface INotionPageReader
 {
     /// <summary>
     /// 公開待ちステータスのページ一覧を取得します。
@@ -15,14 +15,6 @@ public interface INotionClientWrapper
     /// <param name="databaseId">取得対象のNotionデータベースID</param>
     /// <returns>公開待ちページのリスト</returns>
     Task<List<Page>> GetPagesForPublishingAsync(string databaseId);
-
-    /// <summary>
-    /// エクスポート完了後にページのプロパティを更新します。
-    /// クロール日時を記録し、公開ステータスを公開済みに変更します。
-    /// </summary>
-    /// <param name="pageId">更新対象のページID</param>
-    /// <param name="now">クロール日時として記録する日時（UTC）</param>
-    Task UpdatePagePropertiesAsync(string pageId, DateTime now);
 
     /// <summary>
     /// 指定ブロックの子ブロックをすべて再帰的に取得し、ツリー構造として返します。

@@ -54,7 +54,9 @@ public static class DependencyInjection
                 AuthToken = config.NotionAuthToken
             });
         });
-        services.AddSingleton<INotionClientWrapper, NotionClientWrapper>();
+        services.AddSingleton<NotionClientWrapper>();
+        services.AddSingleton<INotionPageReader>(p => p.GetRequiredService<NotionClientWrapper>());
+        services.AddSingleton<INotionPageWriter>(p => p.GetRequiredService<NotionClientWrapper>());
         services.AddSingleton<IGitHubEnvironmentUpdater, GitHubEnvironmentUpdater>();
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddSingleton<IFileDownloader, HttpFileDownloader>();

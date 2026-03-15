@@ -12,7 +12,7 @@ namespace NotionMarkdownConverter.Load;
 /// TransformedPageを受け取り、ファイル書き出しとNotion側のステータス更新を行います。
 /// </summary>
 public class NotionPageLoader(
-    INotionClientWrapper _notionClient,
+    INotionPageWriter _notionWriter,
     IGitHubEnvironmentUpdater _githubEnvironmentUpdater,
     IFileSystem _fileSystem,
     ILogger<NotionPageLoader> _logger)
@@ -47,7 +47,7 @@ public class NotionPageLoader(
 
             try
             {
-                await _notionClient.UpdatePagePropertiesAsync(page.PageProperty.PageId, now);
+                await _notionWriter.UpdatePagePropertiesAsync(page.PageProperty.PageId, now);
             }
             catch (Exception ex)
             {

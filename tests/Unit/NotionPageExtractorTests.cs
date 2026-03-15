@@ -11,12 +11,12 @@ public class NotionPageExtractorTests
 {
     // ── Fake ──────────────────────────────────────────────────────────
 
-    private class FakeNotionClient : INotionClientWrapper
+    private class FakeNotionReader : INotionPageReader
     {
         public List<Page> Pages { get; set; } = [];
         public Exception? GetPagesException { get; set; }
-        public List<string> FetchedBlockPageIds { get; } = [];
         public Exception? FetchBlockTreeException { get; set; }
+        public List<string> FetchedBlockPageIds { get; } = [];
 
         public Task<List<Page>> GetPagesForPublishingAsync(string databaseId)
         {
@@ -29,10 +29,7 @@ public class NotionPageExtractorTests
             if (FetchBlockTreeException is not null) throw FetchBlockTreeException;
             FetchedBlockPageIds.Add(blockId);
             return Task.FromResult(new List<NotionBlock>());
-        }  
-
-        public Task UpdatePagePropertiesAsync(string pageId, DateTime now)
-            => Task.CompletedTask;
+        }
     }
 
     private class FakePagePropertyMapper : IPagePropertyMapper
@@ -59,10 +56,10 @@ public class NotionPageExtractorTests
     private static Page MakePage(string id) => new() { Id = id };
 
     private static NotionPageExtractor CreateSut(
-        FakeNotionClient? client = null,
+        FakeNotionReader? reader = null,
         IPagePropertyMapper? mapper = null) =>
         new(
-            client ?? new FakeNotionClient(),
+            reader ?? new FakeNotionReader(),
             mapper ?? new FakePagePropertyMapper(),
             new PageExportEligibilityChecker(),
             NullLogger<NotionPageExtractor>.Instance);
@@ -72,11 +69,11 @@ public class NotionPageExtractorTests
     [Fact]
     public async Task ExtractAsync_GetPagesFails_ThrowsException()
     {
-        var client = new FakeNotionClient
+        var reader = new FakeNotionReader
         {
             GetPagesException = new Exception("API error")
         };
-        var sut = CreateSut(client: client);
+        var sut = CreateSut(reader: reader);
 
         await Assert.ThrowsAsync<Exception>(() => sut.ExtractAsync("db-id"));
     }
@@ -92,8 +89,8 @@ public class NotionPageExtractorTests
     [Fact]
     public async Task ExtractAsync_EligiblePage_ReturnsExtractedPage()
     {
-        var client = new FakeNotionClient { Pages = [MakePage("page-1")] };
-        var sut = CreateSut(client: client);
+        var reader = new FakeNotionReader { Pages = [MakePage("page-1")] };
+        var sut = CreateSut(reader: reader);
 
         var result = await sut.ExtractAsync("db-id");
 
@@ -104,32 +101,32 @@ public class NotionPageExtractorTests
     [Fact]
     public async Task ExtractAsync_EligiblePage_FetchesBlockTree()
     {
-        var client = new FakeNotionClient { Pages = [MakePage("page-1")] };
-        var sut = CreateSut(client: client);
+        var reader = new FakeNotionReader { Pages = [MakePage("page-1")] };
+        var sut = CreateSut(reader: reader);
 
         await sut.ExtractAsync("db-id");
 
-        Assert.Contains("page-1", client.FetchedBlockPageIds);
+        Assert.Contains("page-1", reader.FetchedBlockPageIds);
     }
 
     [Fact]
     public async Task ExtractAsync_IneligiblePage_IsExcluded()
     {
-        var client = new FakeNotionClient { Pages = [MakePage("skip-page")] };
-        var sut = CreateSut(client: client, mapper: new IneligiblePagePropertyMapper());
+        var reader = new FakeNotionReader { Pages = [MakePage("skip-page")] };
+        var sut = CreateSut(reader: reader, mapper: new IneligiblePagePropertyMapper());
 
         var result = await sut.ExtractAsync("db-id");
 
         Assert.Empty(result);
-        Assert.Empty(client.FetchedBlockPageIds);
+        Assert.Empty(reader.FetchedBlockPageIds);
     }
 
     [Fact]
     public async Task ExtractAsync_OnePageFails_OtherPagesStillExtracted()
     {
-        var client = new FakeNotionClient { Pages = [MakePage("page-1"), MakePage("page-2")] };
+        var reader = new FakeNotionReader { Pages = [MakePage("page-1"), MakePage("page-2")] };
         var mapper = new ThrowOnFirstCallMapper();
-        var sut = CreateSut(client: client, mapper: mapper);
+        var sut = CreateSut(reader: reader, mapper: mapper);
 
         var result = await sut.ExtractAsync("db-id");
 
@@ -139,12 +136,12 @@ public class NotionPageExtractorTests
     [Fact]
     public async Task ExtractAsync_FetchBlockTreeFails_PageIsSkipped()
     {
-        var client = new FakeNotionClient
+        var reader = new FakeNotionReader
         {
             Pages = [MakePage("page-1")],
             FetchBlockTreeException = new Exception("ブロック取得失敗")
         };
-        var sut = CreateSut(client: client);
+        var sut = CreateSut(reader: reader);
 
         var result = await sut.ExtractAsync("db-id");
 

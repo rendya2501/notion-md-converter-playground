@@ -26,13 +26,10 @@ public class NotionPageLoaderTests : IDisposable
 
     // ── Fake ──────────────────────────────────────────────────────────
 
-    private class FakeNotionClient : INotionClientWrapper
+    private class FakeNotionWriter : INotionPageWriter
     {
         public List<string> UpdatedPageIds { get; } = [];
         public Exception? UpdateException { get; set; }
-
-        public Task<List<Notion.Client.Page>> GetPagesForPublishingAsync(string databaseId)
-            => Task.FromResult(new List<Notion.Client.Page>());
 
         public Task UpdatePagePropertiesAsync(string pageId, DateTime now)
         {
@@ -40,9 +37,6 @@ public class NotionPageLoaderTests : IDisposable
             UpdatedPageIds.Add(pageId);
             return Task.CompletedTask;
         }
-
-        public Task<List<NotionBlock>> FetchBlockTreeAsync(string blockId)
-            => Task.FromResult(new List<NotionBlock>());
     }
 
     private class FakeGitHubEnvironmentUpdater : IGitHubEnvironmentUpdater
@@ -72,11 +66,11 @@ public class NotionPageLoaderTests : IDisposable
             _tempDir);
 
     private static NotionPageLoader CreateSut(
-        FakeNotionClient? client = null,
+        FakeNotionWriter? writer = null,
         FakeGitHubEnvironmentUpdater? ghUpdater = null,
         IFileSystem? fileSystem = null) =>
         new(
-            client ?? new FakeNotionClient(),
+            writer ?? new FakeNotionWriter(),
             ghUpdater ?? new FakeGitHubEnvironmentUpdater(),
             fileSystem ?? new FakeFileSystem(),
             NullLogger<NotionPageLoader>.Instance);
@@ -117,23 +111,23 @@ public class NotionPageLoaderTests : IDisposable
     [Fact]
     public async Task LoadAsync_SuccessfulLoad_CallsUpdatePageProperties()
     {
-        var client = new FakeNotionClient();
-        var sut = CreateSut(client: client);
+        var weiter = new FakeNotionWriter();
+        var sut = CreateSut(writer: weiter);
 
         await sut.LoadAsync([MakePage("page-1")]);
 
-        Assert.Contains("page-1", client.UpdatedPageIds);
+        Assert.Contains("page-1", weiter.UpdatedPageIds);
     }
 
     [Fact]
     public async Task LoadAsync_UpdateFails_ExportedCountStillIncremented()
     {
-        var client = new FakeNotionClient
+        var weiter = new FakeNotionWriter
         {
             UpdateException = new Exception("Notion API error")
         };
         var ghUpdater = new FakeGitHubEnvironmentUpdater();
-        var sut = CreateSut(client: client, ghUpdater: ghUpdater);
+        var sut = CreateSut(writer: weiter, ghUpdater: ghUpdater);
 
         var result = await sut.LoadAsync([MakePage("page-1")]);
 

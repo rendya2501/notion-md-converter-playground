@@ -46,7 +46,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     public async Task GetPagesForPublishing_ReturnsPages()
     {
         // Arrange
-        var client = GetService<INotionClientWrapper>();
+        var client = GetService<INotionPageReader>();
 
         // Act
         var pages = await client.GetPagesForPublishingAsync(Secrets.NotionDatabaseId);
@@ -66,7 +66,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
     public async Task TransformAsync_FromRealNotionPage_ProducesMarkdown()
     {
         // Arrange
-        var client = GetService<INotionClientWrapper>();
+        var client = GetService<INotionPageReader>();
         var transformer = GetService<NotionPageTransformer>();
         var pagePropertyMapper = GetService<IPagePropertyMapper>();
 

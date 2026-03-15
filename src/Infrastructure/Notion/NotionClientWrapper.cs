@@ -9,7 +9,7 @@ namespace NotionMarkdownConverter.Infrastructure.Notion;
 /// Notion APIクライアントのラッパー。
 /// ページネーションの処理や再帰的なブロック取得を隠蔽します。
 /// </summary>
-public class NotionClientWrapper(INotionClient _client) : INotionClientWrapper
+public class NotionClientWrapper(INotionClient _client) : INotionPageReader, INotionPageWriter
 {
     /// <summary>
     /// 公開待ちステータスのページ一覧を取得します。

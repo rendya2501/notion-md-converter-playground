@@ -9,7 +9,7 @@ namespace NotionMarkdownConverter.Extract;
 /// Notionから公開対象ページを取得し、ブロックツリーを付与して返します。
 /// </summary>
 public class NotionPageExtractor(
-    INotionClientWrapper _notionClient,
+    INotionPageReader _notionReader,
     IPagePropertyMapper _pagePropertyMapper,
     PageExportEligibilityChecker _eligibilityChecker,
     ILogger<NotionPageExtractor> _logger)
@@ -21,7 +21,7 @@ public class NotionPageExtractor(
     /// <returns>公開対象と判定されたページのリスト</returns>
     public async Task<List<ExtractedPage>> ExtractAsync(string databaseId)
     {
-        var pages = await _notionClient.GetPagesForPublishingAsync(databaseId);
+        var pages = await _notionReader.GetPagesForPublishingAsync(databaseId);
         var now = DateTime.UtcNow;
         var result = new List<ExtractedPage>();
 
@@ -37,7 +37,7 @@ public class NotionPageExtractor(
                     continue;
                 }
 
-                var blocks = await _notionClient.FetchBlockTreeAsync(pageProperty.PageId);
+                var blocks = await _notionReader.FetchBlockTreeAsync(pageProperty.PageId);
                 result.Add(new ExtractedPage(pageProperty, blocks));
 
                 _logger.LogInformation("Extract成功: PageId={PageId}", page.Id);

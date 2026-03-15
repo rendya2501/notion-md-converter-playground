@@ -13,7 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B9E56941
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CA4BCDC0-86BB-4C97-A5AC-BEF3A0BADD39}"
 	ProjectSection(SolutionItems) = preProject
-		docs\api.md = docs\api.md
 		docs\memo.md = docs\memo.md
 		README.md = README.md
 		docs\structure.md = docs\structure.md

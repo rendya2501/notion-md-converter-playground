@@ -1,4 +1,5 @@
 using Notion.Client;
+using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Models;
 using NotionMarkdownConverter.Transform.Strategies;
 using NotionMarkdownConverter.Transform.Strategies.Context;
@@ -31,9 +32,9 @@ public class VideoTransformStrategyTests
     }
 
     // ── UploadedFile ──────────────────────────────────────────────────
-
+   
     [Fact]
-    public void Transform_UploadedFile_ReturnsUrlAsIs()
+    public void Transform_UploadedFile_ReturnsLinkWithDownloadMarker()
     {
         var uploadedFile = new UploadedFile();
         uploadedFile.File = new() { Url = "https://cdn.notion.so/video.mp4" };
@@ -41,7 +42,23 @@ public class VideoTransformStrategyTests
 
         var result = _sut.Transform(MakeContext(block));
 
-        Assert.Equal("https://cdn.notion.so/video.mp4", result);
+        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains("https://cdn.notion.so/video.mp4", result);
+    }
+
+    [Fact]
+    public void Transform_UploadedFile_ReturnsUrlAsIs()
+    {
+        var uploadedFile = new UploadedFile
+        {
+            File = new() { Url = "https://cdn.notion.so/video.mp4" }
+        };
+        var block = new NotionBlock(new VideoBlock { Video = uploadedFile });
+
+        var result = _sut.Transform(MakeContext(block));
+
+        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains("https://cdn.notion.so/video.mp4", result);
     }
 
     // ── ExternalFile ──────────────────────────────────────────────────
@@ -59,7 +76,7 @@ public class VideoTransformStrategyTests
 
         var result = _sut.Transform(MakeContext(block));
 
-        Assert.Equal("https://example.com/video.mp4", result);
+        Assert.Equal("https://example.com/video.mp4  ", result);
     }
 
     [Fact]

@@ -39,7 +39,7 @@ public class NotionPageTransformer(
 
         // リンク置換（純粋なstring操作）
         var (replacedContent, urlFilePairs) = _linkReplacer.Replace(content);
-                // ファイルダウンロード（Infrastructure操作）
+        // ファイルダウンロード（Infrastructure操作）
         await Task.WhenAll(urlFilePairs.Select(pair =>
             _fileDownloader.DownloadAsync(pair, outputDirectory)));
 

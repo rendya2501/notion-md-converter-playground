@@ -96,10 +96,10 @@ public static class DependencyInjection
         services.AddSingleton<BlockTransformDispatcher>();
 
         services.AddSingleton<MarkdownLinkReplacer>();
+        services.AddSingleton<OutputPathBuilder>();
         services.AddSingleton<ContentConverter>();
         services.AddSingleton<FrontmatterConverter>();
         services.AddSingleton<NotionPageTransformer>();
-        services.AddSingleton<OutputPathBuilder>();
 
         // --- Load ---
         services.AddSingleton<NotionPageLoader>();

@@ -1,8 +1,0 @@
-namespace NotionMarkdownConverter.Domain.Models;
-
-/// <summary>
-/// URLとファイル名のペア
-/// </summary>
-/// <param name="OriginalUrl">元のURL</param>
-/// <param name="LocalFileName">変換したファイル名</param>
-public record UrlFilePair(string OriginalUrl, string LocalFileName);

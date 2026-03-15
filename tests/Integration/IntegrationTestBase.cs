@@ -1,9 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Application;
-using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter.Configuration;
 
 namespace NotionMarkdownConverter.Tests.Integration;
 
@@ -43,7 +41,6 @@ public abstract class IntegrationTestBase
         var services = new ServiceCollection();
         services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Warning));
         services.AddApplicationServices(options);
-        services.AddInfrastructureServices();
 
         _serviceProvider = services.BuildServiceProvider();
     }

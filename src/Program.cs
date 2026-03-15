@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NotionMarkdownConverter.Application;
-using NotionMarkdownConverter.Application.Abstractions;
-using NotionMarkdownConverter.Application.Configuration;
-using NotionMarkdownConverter.Infrastructure;
+using NotionMarkdownConverter;
+using NotionMarkdownConverter.Configuration;
+using NotionMarkdownConverter.Pipeline;
 
 // コマンドライン引数を即時パース・バリデーションします。
 // Configure内で行うと遅延評価により、NotionExportOptionsの初回アクセス時まで
@@ -31,16 +30,12 @@ services.AddLogging(builder =>
     builder.SetMinimumLevel(LogLevel.Information);
 });
 
-// 各層のサービスを登録
-services
-    .AddApplicationServices(options)
-    .AddInfrastructureServices();
+// アプリケーションのサービスを登録
+services.AddApplicationServices(options);
 
 // サービスプロバイダーの構築
 await using var serviceProvider = services.BuildServiceProvider();
 
-// NotionExporterの取得
-var exporter = serviceProvider.GetRequiredService<INotionExporter>();
-
-// Notionのページのエクスポートを実行
-await exporter.ExportPagesAsync();
+// パイプラインサービスの解決と実行
+var pipeline = serviceProvider.GetRequiredService<NotionExportPipeline>();
+await pipeline.RunAsync();

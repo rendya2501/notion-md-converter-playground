@@ -1,5 +1,5 @@
-using NotionMarkdownConverter.Domain.Markdown.Enums;
-using NotionMarkdownConverter.Domain.Markdown.Utils;
+using NotionMarkdownConverter.Transform.Enums;
+using NotionMarkdownConverter.Transform.Utils;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

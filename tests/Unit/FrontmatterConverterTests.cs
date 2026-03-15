@@ -1,6 +1,6 @@
-using NotionMarkdownConverter.Domain.Enums;
-using NotionMarkdownConverter.Domain.Markdown.Converters;
-using NotionMarkdownConverter.Domain.Models;
+using NotionMarkdownConverter.Shared.Enums;
+using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Transform.Converters;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 

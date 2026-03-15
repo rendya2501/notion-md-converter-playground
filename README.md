@@ -1,43 +1,167 @@
-# notion-to-markdown-converter-playground
+# NotionMarkdownConverter
 
-NotionからMarkdownへの変換機能の実験場所
+NotionデータベースのページをMarkdownファイルとしてエクスポートするGitHub Actionsツールです。
+公開待ち（Queued）ステータスのページを取得し、Zenn向けのMarkdownに変換してリポジトリに書き出します。
 
-## ドキュメント
+## 機能
 
-- [セットアップガイド](docs/setup.md)
-- [API仕様書](docs/api.md)
-- [アーキテクチャ設計書](docs/architecture.md)
-- [コントリビューションガイドライン](CONTRIBUTING.md)
-- [変更履歴](CHANGELOG.md)
+- Notionデータベースから公開待ちページを自動取得
+- フロントマター（title, description, tags, date, type）を自動生成
+- 画像・PDFなどの添付ファイルをローカルにダウンロード
+- エクスポート完了後にNotionの公開ステータスを自動更新
+- エクスポート件数をGitHub Actionsのoutputとして出力
 
-## 必要条件
+## 対応ブロック
+
+| ブロック               | 出力形式                                     |
+| ---------------------- | -------------------------------------------- |
+| Paragraph              | テキスト（Markdown改行付き）                 |
+| Heading 1 / 2 / 3      | `#` / `##` / `###`                           |
+| Bulleted list item     | `- `                                         |
+| Numbered list item     | `1.` `2.` ...（連番自動計算）                |
+| To do                  | `- [ ]` / `- [x]`                            |
+| Toggle                 | `<details>` / `<summary>`                    |
+| Quote                  | `>`                                          |
+| Callout                | `>`                                          |
+| Code                   | コードフェンス（言語指定付き）               |
+| Equation               | `$$` ブロック数式                            |
+| Divider                | `---`                                        |
+| Table                  | Markdownテーブル                             |
+| Column list            | 左から右に並べて出力                         |
+| Image                  | `![]()` （Notionホスト画像はローカル保存）   |
+| File / PDF             | リンク（Notionホストファイルはローカル保存） |
+| Bookmark               | リンク                                       |
+| Embed / Link Preview   | URL直接出力（Zennがリンクカードとして処理）  |
+| Video                  | URL直接出力（ZennがYouTubeを自動埋め込み）   |
+| Synced block           | 内部ブロックをそのまま出力                   |
+| Breadcrumb             | 出力なし                                     |
+| Table of contents      | 出力なし                                     |
+
+## セットアップ
+
+### 1. Notion の準備
+
+1. [Notion Integrations](https://www.notion.so/my-integrations) でインテグレーションを作成し、APIトークンを取得します。
+2. エクスポート対象のデータベースにインテグレーションを接続します。
+3. データベースに以下のプロパティを追加します。
+
+| プロパティ名  | 種類           | 用途                                              |
+| ------------- | -------------- | ------------------------------------------------- |
+| `Title`       | タイトル       | 記事タイトル                                      |
+| `PublicStatus`| セレクト       | `Queued`（公開待ち）/ `Published`（公開済み）     |
+| `PublishedAt` | 日時           | 公開日時（未来日時の場合はスキップ）              |
+| `Slug`        | テキスト       | 出力ディレクトリ名（未設定時はタイトルを使用）    |
+| `Description` | テキスト       | 記事の説明文                                      |
+| `Tags`        | マルチセレクト | タグ一覧                                          |
+| `Type`        | セレクト       | 記事タイプ（例: `article`, `idea`）               |
+| `CrawledAt`   | 日時           | エクスポート日時（ツールが自動更新）              |
+
+### 2. GitHub Secrets の設定
+
+リポジトリの Settings > Secrets and variables > Actions に以下を追加します。
+
+| シークレット名         | 値                                     |
+| ---------------------- | -------------------------------------- |
+| `NOTION_AUTH_TOKEN`    | NotionのAPIトークン                    |
+| `NOTION_DATABASE_ID`   | エクスポート対象のデータベースID       |
+
+### 3. GitHub Actions ワークフローの設定
+
+```yaml
+name: Export Notion to Markdown
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日0時に実行
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Export Notion pages
+        id: notion-export
+        uses: your-account/notion-to-markdown-converter-playground@main
+        with:
+          notion_auth_token: ${{ secrets.NOTION_AUTH_TOKEN }}
+          notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
+          output_directory_path_template: "articles/{{ publish | date.to_string '%Y' }}/{{ publish | date.to_string '%m' }}/{{ slug }}"
+
+      - name: Commit and push
+        if: steps.notion-export.outputs.exported_count != '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: export notion pages"
+          git push
+```
+
+## 入力パラメータ
+
+| パラメータ名                      | 必須 | デフォルト値                                          | 説明                            |
+| --------------------------------- | ---- | ----------------------------------------------------- | ------------------------------- |
+| `notion_auth_token`               | ✅   | -                                                     | Notion APIの認証トークン        |
+| `notion_database_id`              | ✅   | -                                                     | エクスポート対象のデータベースID |
+| `output_directory_path_template`  | -    | `output/{{publish\|date.to_string('%Y/%m')}}/{{slug}}` | 出力ディレクトリのパステンプレート |
+
+### output_directory_path_template の書き方
+
+[Scriban](https://github.com/scriban/scriban) テンプレート構文を使用します。
+
+```txt
+利用可能な変数:
+  publish  - 公開日時（DateTime型）
+  title    - 記事タイトル
+  slug     - スラグ（未設定時はtitleが使用される）
+
+使用例:
+  articles/{{ publish | date.to_string '%Y' }}/{{ publish | date.to_string '%m' }}/{{ slug }}
+  → articles/2024/03/my-post
+```
+
+## 出力
+
+| アウトプット名   | 説明                         |
+| ---------------- | ---------------------------- |
+| `exported_count` | エクスポートに成功したページ数 |
+
+エクスポートされた各ページは `{output_directory}/index.md` として書き出されます。
+
+## 開発
+
+### 必要環境
 
 - .NET 8.0 SDK
-- Visual Studio 2022 または Visual Studio Code
-- Git
-- Notion APIキー
 
-## クイックスタート
+### セットアップ
 
-1. リポジトリのクローン
-   ```bash
-   git clone https://github.com/your-username/notion-to-markdown-converter-playground.git
-   cd notion-to-markdown-converter-playground
-   ```
+```bash
+git clone https://github.com/your-account/notion-to-markdown-converter-playground.git
+cd notion-to-markdown-converter-playground
+dotnet restore ./src/NotionMarkdownConverter.csproj
+```
 
-2. 依存関係のインストール
-   ```bash
-   dotnet restore
-   ```
+### テスト
 
-3. ビルド
-   ```bash
-   dotnet build
-   ```
+```bash
+dotnet test
+```
 
-4. 実行
-   ```bash
-   dotnet run
-   ```
+### 統合テスト
 
-詳細な使用方法については、[セットアップガイド](docs/setup.md)を参照してください。
+統合テストはNotionのAPIを実際に叩くため、User Secretsの設定が必要です。
+
+```bash
+cd tests
+dotnet user-secrets set "Notion:AuthToken" "secret_xxx"
+dotnet user-secrets set "Notion:DatabaseId" "xxx"
+dotnet test --filter "Category=Integration"
+```
+
+## ライセンス
+
+MIT

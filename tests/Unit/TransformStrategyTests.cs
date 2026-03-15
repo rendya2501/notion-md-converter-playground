@@ -1,8 +1,8 @@
 using Notion.Client;
-using NotionMarkdownConverter.Domain.Constants;
-using NotionMarkdownConverter.Domain.Models;
-using NotionMarkdownConverter.Domain.Transformers.Context;
-using NotionMarkdownConverter.Domain.Transformers.Strategies;
+using NotionMarkdownConverter.Shared.Constants;
+using NotionMarkdownConverter.Shared.Models;
+using NotionMarkdownConverter.Transform.Strategies;
+using NotionMarkdownConverter.Transform.Strategies.Context;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 
@@ -540,7 +540,7 @@ public class TransformStrategyTests
     }
 
     [Fact]
-    public void Embed_WithoutCaption_UsesUrlAsLinkText()
+    public void Embed_WithoutCaption_ReturnsUrlAsIs()
     {
         var block = Wrap(new EmbedBlock
         {
@@ -553,7 +553,7 @@ public class TransformStrategyTests
 
         var result = new EmbedTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains("[https://example.com/embed](https://example.com/embed)", result);
+        Assert.Equal("https://example.com/embed", result);
     }
 
     // ── EquationTransformStrategy ─────────────────────────────────────
@@ -574,7 +574,7 @@ public class TransformStrategyTests
 
         var result = new EquationTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Equal("$$\nE = mc^2\n$$", result);
+        Assert.Equal("\n$$\nE = mc^2\n$$\n", result);
     }
 
     // ── ImageTransformStrategy ────────────────────────────────────────
@@ -627,7 +627,7 @@ public class TransformStrategyTests
 
         var result = new ImageTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/image.png", result);
     }
 
@@ -645,7 +645,7 @@ public class TransformStrategyTests
         var result = new ImageTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains("アップロード画像", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     // ── FileTransformStrategy ─────────────────────────────────────────
@@ -701,7 +701,7 @@ public class TransformStrategyTests
 
         var result = new FileTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/uploaded.pdf", result);
     }
 
@@ -720,7 +720,7 @@ public class TransformStrategyTests
         var result = new FileTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains("アップロードファイル", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     // ── LinkPreviewTransformStrategy ──────────────────────────────────
@@ -732,7 +732,7 @@ public class TransformStrategyTests
     }
 
     [Fact]
-    public void LinkPreview_Transform_ReturnsLinkWithUrlAsBothTextAndHref()
+    public void LinkPreview_Transform_ReturnsUrlAsIs()
     {
         var block = Wrap(new LinkPreviewBlock
         {
@@ -741,7 +741,7 @@ public class TransformStrategyTests
 
         var result = new LinkPreviewTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Equal("[https://example.com](https://example.com)", result);
+        Assert.Equal("https://example.com", result);
     }
 
     // ── PDFTransformStrategy ──────────────────────────────────────────
@@ -796,7 +796,7 @@ public class TransformStrategyTests
 
         // UploadedFile の場合、URLからファイル名を抽出して表示テキストにします。
         Assert.Contains("[report.pdf]", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     [Fact]

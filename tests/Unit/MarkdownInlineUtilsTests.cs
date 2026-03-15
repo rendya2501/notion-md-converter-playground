@@ -1,4 +1,4 @@
-using NotionMarkdownConverter.Domain.Markdown.Utils;
+using NotionMarkdownConverter.Transform.Utils;
 
 namespace NotionMarkdownConverter.Tests.Unit;
 
@@ -109,20 +109,6 @@ public class MarkdownInlineUtilsTests
     {
         var result = MarkdownInlineUtils.Image("代替テキスト", "https://example.com/image.png", "200");
         Assert.Equal("![代替テキスト](https://example.com/image.png =200x)", result);
-    }
-
-    [Fact]
-    public void Video_ReturnsVideoTag()
-    {
-        var result = MarkdownInlineUtils.Video("https://example.com/video.mp4");
-        Assert.Equal("<video controls src=\"https://example.com/video.mp4\"></video>", result);
-    }
-
-    [Fact]
-    public void IFrame_ReturnsIFrameTagWithAllowFullscreen()
-    {
-        var result = MarkdownInlineUtils.IFrame("https://www.youtube.com/embed/abc123");
-        Assert.Equal("<iframe src=\"https://www.youtube.com/embed/abc123\" allowfullscreen></iframe>", result);
     }
 
     [Fact]

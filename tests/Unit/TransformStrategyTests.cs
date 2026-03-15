@@ -627,7 +627,7 @@ public class TransformStrategyTests
 
         var result = new ImageTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/image.png", result);
     }
 
@@ -645,7 +645,7 @@ public class TransformStrategyTests
         var result = new ImageTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains("アップロード画像", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     // ── FileTransformStrategy ─────────────────────────────────────────
@@ -701,7 +701,7 @@ public class TransformStrategyTests
 
         var result = new FileTransformStrategy().Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/uploaded.pdf", result);
     }
 
@@ -720,7 +720,7 @@ public class TransformStrategyTests
         var result = new FileTransformStrategy().Transform(MakeContext(block));
 
         Assert.Contains("アップロードファイル", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     // ── LinkPreviewTransformStrategy ──────────────────────────────────
@@ -796,7 +796,7 @@ public class TransformStrategyTests
 
         // UploadedFile の場合、URLからファイル名を抽出して表示テキストにします。
         Assert.Contains("[report.pdf]", result);
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
     }
 
     [Fact]

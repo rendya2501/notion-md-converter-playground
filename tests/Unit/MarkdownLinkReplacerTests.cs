@@ -1,5 +1,4 @@
 using NotionMarkdownConverter.Shared.Constants;
-using NotionMarkdownConverter.Shared.Models;
 using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Tests.Unit;
@@ -31,12 +30,12 @@ public class MarkdownLinkReplacerTests
     public void Replace_ImageWithMarker_ReplacesUrlWithLocalFileName()
     {
         var originalUrl = "https://example.com/image.png";
-        var markedUrl = LinkConstants.DownloadMarker + originalUrl;
+        var markedUrl = MarkdownConstants.DownloadMarker + originalUrl;
         var markdown = $"![代替テキスト]({markedUrl})";
 
         var (replacedMarkdown, _) = _sut.Replace(markdown);
 
-        Assert.DoesNotContain(LinkConstants.DownloadMarker, replacedMarkdown);
+        Assert.DoesNotContain(MarkdownConstants.DownloadMarker, replacedMarkdown);
         Assert.Matches(@"!\[代替テキスト\]\([0-9A-F]+\.png\)", replacedMarkdown);
     }
 
@@ -44,12 +43,12 @@ public class MarkdownLinkReplacerTests
     public void Replace_FileLink_ReplacesUrlWithLocalFileName()
     {
         var originalUrl = "https://example.com/document.pdf";
-        var markedUrl = LinkConstants.DownloadMarker + originalUrl;
+        var markedUrl = MarkdownConstants.DownloadMarker + originalUrl;
         var markdown = $"[ドキュメント]({markedUrl})";
 
         var (replacedMarkdown, _) = _sut.Replace(markdown);
 
-        Assert.DoesNotContain(LinkConstants.DownloadMarker, replacedMarkdown);
+        Assert.DoesNotContain(MarkdownConstants.DownloadMarker, replacedMarkdown);
     }
 
     // ── UrlFilePair 生成 ──────────────────────────────────────────────
@@ -58,7 +57,7 @@ public class MarkdownLinkReplacerTests
     public void Replace_ImageWithMarker_ReturnsCorrectUrlFilePair()
     {
         var originalUrl = "https://example.com/image.png";
-        var markedUrl = LinkConstants.DownloadMarker + originalUrl;
+        var markedUrl = MarkdownConstants.DownloadMarker + originalUrl;
         var markdown = $"![img]({markedUrl})";
 
         var (_, urlFilePairs) = _sut.Replace(markdown);
@@ -77,14 +76,14 @@ public class MarkdownLinkReplacerTests
     {
         var url1 = "https://example.com/image1.png";
         var url2 = "https://example.com/image2.jpg";
-        var markdown = $"![img1]({LinkConstants.DownloadMarker + url1})\n![img2]({LinkConstants.DownloadMarker + url2})";
+        var markdown = $"![img1]({MarkdownConstants.DownloadMarker + url1})\n![img2]({MarkdownConstants.DownloadMarker + url2})";
 
         var (replacedMarkdown, urlFilePairs) = _sut.Replace(markdown);
 
         Assert.Equal(2, urlFilePairs.Count());
         Assert.Contains(urlFilePairs, p => p.OriginalUrl == url1);
         Assert.Contains(urlFilePairs, p => p.OriginalUrl == url2);
-        Assert.DoesNotContain(LinkConstants.DownloadMarker, replacedMarkdown);
+        Assert.DoesNotContain(MarkdownConstants.DownloadMarker, replacedMarkdown);
     }
 
     // ── 重複リンク ────────────────────────────────────────────────────
@@ -93,7 +92,7 @@ public class MarkdownLinkReplacerTests
     public void Replace_DuplicateLinks_ReturnsOneUrlFilePair()
     {
         var url = "https://example.com/image.png";
-        var markedUrl = LinkConstants.DownloadMarker + url;
+        var markedUrl = MarkdownConstants.DownloadMarker + url;
         var markdown = $"![img1]({markedUrl})\n![img2]({markedUrl})";
 
         var (replacedMarkdown, urlFilePairs) = _sut.Replace(markdown);
@@ -111,7 +110,7 @@ public class MarkdownLinkReplacerTests
     public void Replace_SameUrl_GeneratesSameLocalFileName()
     {
         var url = "https://example.com/image.png";
-        var markedUrl = LinkConstants.DownloadMarker + url;
+        var markedUrl = MarkdownConstants.DownloadMarker + url;
 
         var (result1, _) = _sut.Replace($"![img]({markedUrl})");
         var (result2, _) = _sut.Replace($"![img]({markedUrl})");
@@ -125,8 +124,8 @@ public class MarkdownLinkReplacerTests
         var url1 = "https://example.com/image1.png";
         var url2 = "https://example.com/image2.png";
 
-        var (_, pairs1) = _sut.Replace($"![img]({LinkConstants.DownloadMarker + url1})");
-        var (_, pairs2) = _sut.Replace($"![img]({LinkConstants.DownloadMarker + url2})");
+        var (_, pairs1) = _sut.Replace($"![img]({MarkdownConstants.DownloadMarker + url1})");
+        var (_, pairs2) = _sut.Replace($"![img]({MarkdownConstants.DownloadMarker + url2})");
 
         Assert.NotEqual(pairs1.First().LocalFileName, pairs2.First().LocalFileName);
     }
@@ -141,7 +140,7 @@ public class MarkdownLinkReplacerTests
     public void Replace_PreservesFileExtension(string filename, string expectedExt)
     {
         var url = $"https://example.com/{filename}";
-        var markdown = $"![img]({LinkConstants.DownloadMarker + url})";
+        var markdown = $"![img]({MarkdownConstants.DownloadMarker + url})";
 
         var (_, urlFilePairs) = _sut.Replace(markdown);
 

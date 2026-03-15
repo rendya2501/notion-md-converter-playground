@@ -53,17 +53,17 @@ public class MarkdownLinkReplacer
     /// </summary>
     private static IEnumerable<string> ExtractDownloadLinks(string markdown)
     {
-        var pattern = @"!?\[.*?\]\(\s*(" + Regex.Escape(LinkConstants.DownloadMarker) + @".*?)\s*\)";
+        var pattern = @"!?\[.*?\]\(\s*(" + Regex.Escape(MarkdownConstants.DownloadMarker) + @".*?)\s*\)";
         return Regex.Matches(markdown, pattern)
             .Select(m => m.Groups[1].Value)
             .Distinct();
     }
 
     /// <summary>
-    /// URLに含まれる <see cref="LinkConstants.DownloadMarker"/> を除去します。
+    /// URLに含まれる <see cref="MarkdownConstants.DownloadMarker"/> を除去します。
     /// </summary>
     private static string SanitizeUrl(string url)
-        => url.Replace(LinkConstants.DownloadMarker, string.Empty);
+        => url.Replace(MarkdownConstants.DownloadMarker, string.Empty);
 
     /// <summary>
     /// Markdown内のダウンロードリンクをローカルファイル名に一括置換します。

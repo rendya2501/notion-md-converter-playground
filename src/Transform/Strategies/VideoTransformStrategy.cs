@@ -29,7 +29,7 @@ public class VideoTransformStrategy : IBlockTransformStrategy
             UploadedFile uploadedFile => MarkdownInlineUtils.AppendTrailingSpaces(
                 MarkdownInlineUtils.Link(
                     Path.GetFileName(new Uri(uploadedFile.File.Url).LocalPath),
-                    LinkConstants.DownloadMarker + uploadedFile.File.Url)),
+                    MarkdownConstants.DownloadMarker + uploadedFile.File.Url)),
 
             // 外部URL（YouTube等）はそのまま出力（Zennが処理）
             ExternalFile externalFile => MarkdownInlineUtils.AppendTrailingSpaces(externalFile.External.Url),

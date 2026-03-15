@@ -1,9 +1,9 @@
 namespace NotionMarkdownConverter.Shared.Constants;
 
 /// <summary>
-/// NotionMarkdownConverterのリンクに関する定数を定義するクラス
+/// Markdown変換に関する定数を定義するクラス
 /// </summary>
-public static class LinkConstants
+public static class MarkdownConstants
 {
     /// <summary>
     /// ダウンロードマーカー

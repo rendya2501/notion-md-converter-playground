@@ -49,7 +49,7 @@ src/
 │   └── NotionExportPipeline.cs  # Extract → Transform → Load を順に呼び出すオーケストレーター
 │
 ├── Shared/                      # 複数ステージから参照される共有モデル・ユーティリティ
-│   ├── Constants/               # LinkConstants, NotionPagePropertyNames
+│   ├── Constants/               # MarkdownConstants, NotionPagePropertyNames
 │   ├── Enums/                   # PublicStatus
 │   ├── Models/                  # NotionBlock, PageProperty, UrlFilePair
 │   └── Utils/                   # BlockAccessor, PropertyParser

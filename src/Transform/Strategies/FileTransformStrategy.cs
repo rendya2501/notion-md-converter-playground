@@ -26,7 +26,7 @@ public class FileTransformStrategy : IBlockTransformStrategy
         var url = block.File switch
         {
             ExternalFile externalFile => externalFile.External.Url,
-            UploadedFile uploadedFile => LinkConstants.DownloadMarker + uploadedFile.File.Url,
+            UploadedFile uploadedFile => MarkdownConstants.DownloadMarker + uploadedFile.File.Url,
             _ => string.Empty
         };
 

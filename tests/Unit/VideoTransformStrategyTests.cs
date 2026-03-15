@@ -42,7 +42,7 @@ public class VideoTransformStrategyTests
 
         var result = _sut.Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/video.mp4", result);
     }
 
@@ -57,7 +57,7 @@ public class VideoTransformStrategyTests
 
         var result = _sut.Transform(MakeContext(block));
 
-        Assert.Contains(LinkConstants.DownloadMarker, result);
+        Assert.Contains(MarkdownConstants.DownloadMarker, result);
         Assert.Contains("https://cdn.notion.so/video.mp4", result);
     }
 

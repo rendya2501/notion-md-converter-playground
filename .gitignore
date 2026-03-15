@@ -488,3 +488,8 @@ launchSettings.json
 
 # Cursor rules
 .cursorrules
+
+# tests/.gitignore の場合
+# 統合テスト出力
+Integration/articles/*
+!Integration/articles/.gitignore

@@ -54,9 +54,7 @@ NotionデータベースのページをMarkdownファイルとしてエクスポ
 | `Tags`        | マルチセレクト | タグ一覧                                          |
 | `PublicStatus`| セレクト       | `Unpublished`（非公開） / `Queued`（公開待ち）/ `Published`（公開済み）|
 | `Description` | テキスト       | 記事の説明文                                      |
-| `CrawledAt`   | 日時           | エクスポート日時（ツールが自動更新）              |
-
-
+| `_SystemCrawledAt`   | 日時           | エクスポート日時（ツールが自動更新）              |
 
 ### 2. GitHub Secrets の設定
 

@@ -4,6 +4,7 @@ using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Load;
 using NotionMarkdownConverter.Pipeline.Models;
+using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Shared.Enums;
 using NotionMarkdownConverter.Shared.Models;
 using System.Text;
@@ -95,7 +96,7 @@ public class NotionPageLoaderTests : IDisposable
         var sut = CreateSut(fileSystem: new FileSystem());
         await sut.LoadAsync([MakePage("page-1", "# hello")]);
 
-        var filePath = Path.Combine(_tempDir, "index.md");
+        var filePath = Path.Combine(_tempDir, MarkdownConstants.OutputFileName);
         Assert.True(File.Exists(filePath));
         Assert.Contains("# hello", await File.ReadAllTextAsync(filePath, TestContext.Current.CancellationToken));
     }
@@ -153,7 +154,7 @@ public class NotionPageLoaderTests : IDisposable
         var sut = CreateSut(fileSystem: new FileSystem());
         await sut.LoadAsync([MakePage("page-1", "テスト")]);
 
-        var bytes = await File.ReadAllBytesAsync(Path.Combine(_tempDir, "index.md"), TestContext.Current.CancellationToken);
+        var bytes = await File.ReadAllBytesAsync(Path.Combine(_tempDir, MarkdownConstants.OutputFileName), TestContext.Current.CancellationToken);
         // BOMあり UTF-8 は EF BB BF で始まる
         Assert.False(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF);
     }

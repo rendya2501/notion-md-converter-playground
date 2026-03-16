@@ -2,6 +2,7 @@ using NotionMarkdownConverter.Extract;
 using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline;
 using NotionMarkdownConverter.Pipeline.Models;
+using NotionMarkdownConverter.Shared.Constants;
 using NotionMarkdownConverter.Transform;
 
 namespace NotionMarkdownConverter.Tests.Integration;
@@ -89,7 +90,7 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         Assert.NotEmpty(result.Markdown);
         Assert.Contains("---", result.Markdown);
 
-        var outputPath = Path.Combine(result.OutputDirectory, "index.md");
+        var outputPath = Path.Combine(result.OutputDirectory, MarkdownConstants.OutputFileName);
         await File.WriteAllTextAsync(outputPath, result.Markdown,
             new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false),
             TestContext.Current.CancellationToken);
@@ -118,8 +119,8 @@ public class NotionExportIntegrationTests : IntegrationTestBase
         // Act
         await pipeline.RunAsync();
 
-        // Assert: articles/ 以下に少なくとも1つの index.md が生成されていること
-        var files = Directory.GetFiles(ArticlesBaseDirectory, "index.md", SearchOption.AllDirectories);
+        // Assert: articles/ 以下に少なくとも1つの出力ファイルが生成されていること
+        var files = Directory.GetFiles(ArticlesBaseDirectory, MarkdownConstants.OutputFileName, SearchOption.AllDirectories);
         Assert.NotEmpty(files);
 
         foreach (var file in files)

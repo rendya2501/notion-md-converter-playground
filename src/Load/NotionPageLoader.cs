@@ -3,6 +3,7 @@ using NotionMarkdownConverter.Infrastructure.FileSystem;
 using NotionMarkdownConverter.Infrastructure.GitHub;
 using NotionMarkdownConverter.Infrastructure.Notion;
 using NotionMarkdownConverter.Pipeline.Models;
+using NotionMarkdownConverter.Shared.Constants;
 using System.Text;
 
 namespace NotionMarkdownConverter.Load;
@@ -32,7 +33,7 @@ public class NotionPageLoader(
             try
             {
                 await _fileSystem.WriteAllTextAsync(
-                   Path.Combine(page.OutputDirectory, "index.md"),
+                   Path.Combine(page.OutputDirectory, MarkdownConstants.OutputFileName),
                    page.Markdown,
                    new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 

@@ -12,4 +12,9 @@ public static class MarkdownConstants
     /// マークダウン内でダウンロード対象を示すために使用されます。
     /// </remarks>
     public const string DownloadMarker = "#DOWNLOAD#";
+
+    /// <summary>
+    /// エクスポートされるMarkdownファイルのファイル名
+    /// </summary>
+    public const string OutputFileName = "index.md";
 }

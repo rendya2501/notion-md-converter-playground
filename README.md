@@ -56,6 +56,8 @@ NotionデータベースのページをMarkdownファイルとしてエクスポ
 | `Description` | テキスト       | 記事の説明文                                      |
 | `_SystemCrawledAt`   | 日時           | エクスポート日時（ツールが自動更新）              |
 
+![](https://private-user-images.githubusercontent.com/60930906/563999838-c50d592f-4440-4d70-80cc-73f5cf7d8db9.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NzM2NDkyNjMsIm5iZiI6MTc3MzY0ODk2MywicGF0aCI6Ii82MDkzMDkwNi81NjM5OTk4MzgtYzUwZDU5MmYtNDQ0MC00ZDcwLTgwY2MtNzNmNWNmN2Q4ZGI5LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAzMTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMzE2VDA4MTYwM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTc3OWU2MjY5MzdlNDY2OTYxN2QyOThlOGMwMTQyYjg1Mjc1NGQzMDExODM5N2Q0NDRiMTM1YmY5NTAwMmYzNjcmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.nJGUshGUzWuHkkxHRFOpAgcgIkFpU7GR8zsHSYJB7Ew)
+
 ### 2. GitHub Secrets の設定
 
 リポジトリの Settings > Secrets and variables > Actions に以下を追加します。

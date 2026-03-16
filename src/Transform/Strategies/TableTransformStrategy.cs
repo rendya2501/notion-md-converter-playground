@@ -34,8 +34,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
 
         // データ行のセルを取得
         var rowsCells = rows
-            .Select(s => BlockAccessor.GetOriginalBlock<TableRowBlock>(s).
-                TableRow.Cells
+            .Select(s => BlockAccessor.GetOriginalBlock<TableRowBlock>(s).TableRow.Cells
                 .Select(cell => MarkdownRichTextUtils.RichTextsToMarkdown(cell))
                 .ToList())
             .ToList();

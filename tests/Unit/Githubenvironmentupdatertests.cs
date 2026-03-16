@@ -5,7 +5,7 @@ namespace NotionMarkdownConverter.Tests.Unit;
 
 /// <summary>
 /// GitHubEnvironmentUpdaterのユニットテスト。
-/// GITHUB_OUTPUT 環境変数の有無による分岐と、ファイルへの書き込みを検証します。
+/// <see cref="GitHubOutputConstants.EnvVarName"/> 環境変数の有無による分岐と、ファイルへの書き込みを検証します。
 /// </summary>
 public class GitHubEnvironmentUpdaterTests : IDisposable
 {
@@ -14,12 +14,13 @@ public class GitHubEnvironmentUpdaterTests : IDisposable
 
     public GitHubEnvironmentUpdaterTests()
     {
-        _originalGitHubOutput = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
+        _originalGitHubOutput = Environment.GetEnvironmentVariable(GitHubOutputConstants.EnvVarName);
     }
 
     public void Dispose()
     {
-        Environment.SetEnvironmentVariable("GITHUB_OUTPUT", _originalGitHubOutput);
+        Environment.SetEnvironmentVariable(GitHubOutputConstants.EnvVarName, _originalGitHubOutput);
+        GC.SuppressFinalize(this);
     }
 
     private static GitHubEnvironmentUpdater CreateSut() =>
@@ -30,8 +31,8 @@ public class GitHubEnvironmentUpdaterTests : IDisposable
     [Fact]
     public void UpdateEnvironment_WhenGitHubOutputNotSet_DoesNotThrow()
     {
-        // GITHUB_OUTPUT が未設定の場合は警告ログを出力して正常終了する
-        Environment.SetEnvironmentVariable("GITHUB_OUTPUT", null);
+        // GitHubOutputConstants.EnvVarName が未設定の場合は警告ログを出力して正常終了する
+        Environment.SetEnvironmentVariable(GitHubOutputConstants.EnvVarName, null);
         var ex = Record.Exception(() => CreateSut().UpdateEnvironment(5));
         Assert.Null(ex);
     }
@@ -44,11 +45,11 @@ public class GitHubEnvironmentUpdaterTests : IDisposable
         var tempFile = Path.GetTempFileName();
         try
         {
-            Environment.SetEnvironmentVariable("GITHUB_OUTPUT", tempFile);
+            Environment.SetEnvironmentVariable(GitHubOutputConstants.EnvVarName, tempFile);
             CreateSut().UpdateEnvironment(42);
 
             var content = File.ReadAllText(tempFile);
-            Assert.Contains("exported_count=42", content);
+            Assert.Contains($"{GitHubOutputConstants.ExportedCountKey}=42", content);
         }
         finally
         {
@@ -63,11 +64,11 @@ public class GitHubEnvironmentUpdaterTests : IDisposable
         var tempFile = Path.GetTempFileName();
         try
         {
-            Environment.SetEnvironmentVariable("GITHUB_OUTPUT", tempFile);
+            Environment.SetEnvironmentVariable(GitHubOutputConstants.EnvVarName, tempFile);
             CreateSut().UpdateEnvironment(0);
 
             var content = File.ReadAllText(tempFile);
-            Assert.Contains("exported_count=0", content);
+            Assert.Contains($"{GitHubOutputConstants.ExportedCountKey}=0", content);
         }
         finally
         {
@@ -83,12 +84,12 @@ public class GitHubEnvironmentUpdaterTests : IDisposable
         try
         {
             File.WriteAllText(tempFile, "previous_step=done\n");
-            Environment.SetEnvironmentVariable("GITHUB_OUTPUT", tempFile);
+            Environment.SetEnvironmentVariable(GitHubOutputConstants.EnvVarName, tempFile);
             CreateSut().UpdateEnvironment(3);
 
             var content = File.ReadAllText(tempFile);
             Assert.Contains("previous_step=done", content);
-            Assert.Contains("exported_count=3", content);
+            Assert.Contains($"{GitHubOutputConstants.ExportedCountKey}=3", content);
         }
         finally
         {

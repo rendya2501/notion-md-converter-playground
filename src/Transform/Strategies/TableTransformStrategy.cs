@@ -40,7 +40,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
             .ToList();
 
         // テーブルを生成
-        return Table(headerCells, rowsCells);
+        return CreateTable(headerCells, rowsCells);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class TableTransformStrategy : IBlockTransformStrategy
     /// <param name="headers">ヘッダー行のセル文字列リスト</param>
     /// <param name="rows">データ行ごとのセル文字列リスト。各行のセル数がヘッダーより少ない場合は空文字で補完します。</param>
     /// <returns>Markdown形式のテーブル文字列</returns>
-    private static string Table(List<string> headers, List<List<string>> rows)
+    private static string CreateTable(List<string> headers, List<List<string>> rows)
     {
         // 各列の最大長を計算
         // データ行のセル数がヘッダーより少ない場合は空文字で補完し、IndexOutOfRangeを防ぎます。

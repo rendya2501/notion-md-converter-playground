@@ -28,14 +28,14 @@ public class FrontmatterConverter
 
         sb.AppendLine("---");
 
+        // タイトルは必須
+        sb.AppendLine($"{TitleName}: \"{pageProperty.Title}\"");
+
         // タイプがあれば追加
         if (!string.IsNullOrWhiteSpace(pageProperty.Type))
         {
             sb.AppendLine($"{TypeName}: \"{pageProperty.Type}\"");
         }
-
-        // タイトルは必須
-        sb.AppendLine($"{TitleName}: \"{pageProperty.Title}\"");
 
         // 説明文があれば追加
         if (!string.IsNullOrWhiteSpace(pageProperty.Description))

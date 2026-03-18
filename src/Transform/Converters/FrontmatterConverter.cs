@@ -53,6 +53,7 @@ public class FrontmatterConverter
         // 公開日時があれば追加
         if (pageProperty.PublishedDateTime.HasValue)
         {
+            // yyyy-MM-dd形式で日付を出力したいなら「Value:yyyy-MM-dd」とする
             sb.AppendLine($"{PublishedName}: \"{pageProperty.PublishedDateTime.Value:s}\"");
         }
 

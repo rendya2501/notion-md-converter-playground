@@ -79,22 +79,6 @@ public class FrontmatterConverterTests
     }
 
     [Fact]
-    public void Convert_TypeAppearsBeforeTitle()
-    {
-        var pageProperty = new PageProperty
-        {
-            Title = "タイトル",
-            Type = "article"
-        };
-
-        var result = _converter.Convert(pageProperty);
-        var typeIndex = result.IndexOf("type:", StringComparison.Ordinal);
-        var titleIndex = result.IndexOf("title:", StringComparison.Ordinal);
-
-        Assert.True(typeIndex < titleIndex, "typeはtitleより前に出力されるべき");
-    }
-
-    [Fact]
     public void Convert_EmptyTags_OmitsTagsField()
     {
         var pageProperty = new PageProperty

@@ -167,3 +167,11 @@ dotnet test --filter "Category=Integration"
 ## ライセンス
 
 MIT
+
+## 参考
+
+| リポジトリ / サイト | 参考にした点 |
+| --- | --- |
+| [yucchiy/blog.yucchiy.com](https://github.com/yucchiy/blog.yucchiy.com) | Notionを記事管理に使う実例 |
+| [salvage0707/notion-md-converter](https://github.com/salvage0707/notion-md-converter) | 類似ツールの実装アプローチ |
+| [nmc-demo.malvageee.com](https://nmc-demo.malvageee.com/) | 上記のデモサイト |
